@@ -1,5 +1,11 @@
 package backend;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,10 +25,9 @@ public class ImageUtils {
         return image;
     }
 
-    public static boolean writeImage(BufferedImage image, String path){
-        File out = new File(path);
+    public static boolean writeImage(BufferedImage image, File file){
         try {
-            ImageIO.write(image,"bmp",out);
+            ImageIO.write(image,"png",file);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -44,5 +49,23 @@ public class ImageUtils {
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    public static WritableImage copyImage(Image image){
+        Integer height = Utils.toInteger(image.getHeight());
+        Integer width = Utils.toInteger(image.getWidth());
+
+
+        WritableImage writableImage
+                = new WritableImage(width,height);
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+        for (int y = 0; y < height; y++){
+            for (int x = 0; x < width; x++){
+                Color color = image.getPixelReader().getColor(x, y);
+                pixelWriter.setColor(x, y, color);
+            }
+        }
+        return writableImage;
     }
 }
