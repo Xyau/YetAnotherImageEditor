@@ -1,21 +1,15 @@
+package frontend;
+
 import backend.Colors;
 import backend.Utils;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 
-public class RGBChooser {
+public class RGBChooserView {
     private TextField redArea;
     private TextField blueArea;
     private TextField greenArea;
@@ -35,7 +29,7 @@ public class RGBChooser {
     private static final Integer AREA_SPACE_BETWEEN = 40;
     private static final Integer AREA_OFFSET = 20;
 
-    public RGBChooser(WritableImageView writableImageView){
+    public RGBChooserView(WritableImageView writableImageView){
         this.writableImageView = writableImageView;
 
         redArea = initTextField(0);

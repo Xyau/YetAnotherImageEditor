@@ -23,11 +23,13 @@ public class DrawLineTransformation implements Transformation {
     public WritableImage transform(WritableImage writableImage) {
         Canvas canvas = new Canvas(writableImage.getWidth(), writableImage.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(writableImage,0,0);
+        gc.fillText("asda",0,500);
         gc.setStroke(color);
         gc.setLineWidth(5);
         gc.strokeLine(x1, y1, x2, y2);
-        gc.drawImage(writableImage,0,0);
-        return canvas.snapshot(null,null);
+
+        return canvas.snapshot(null,writableImage);
     }
 
     @Override

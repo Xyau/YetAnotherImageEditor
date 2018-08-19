@@ -1,23 +1,23 @@
 import backend.ImageUtils;
 import backend.TransformationManager;
 import backend.Utils;
+import frontend.RGBChooserView;
 import frontend.TransformationManagerView;
+import frontend.WritableImageView;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Menu;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import sun.java2d.windows.GDIRenderer;
+import transformations.DarkenTransformation;
 import transformations.DrawLineTransformation;
 import transformations.DrawSquareTransformation;
 import transformations.Transformation;
@@ -29,7 +29,7 @@ public class HelloWorld extends Application {
 
     private WritableImageView currentImage;
 
-    private RGBChooser rgbChooser;
+    private RGBChooserView rgbChooserView;
 
     private EventHandler<? super MouseEvent> nextAction;
 
@@ -47,7 +47,7 @@ public class HelloWorld extends Application {
             if(nextAction == null){
                 Color c = iv1.getWritableImage().getPixelReader()
                         .getColor(Utils.toInteger(event.getX()),Utils.toInteger(event.getY()));
-                rgbChooser.updateAreasWith(c);
+                rgbChooserView.updateAreasWith(c);
             } else {
                 nextAction.handle(event);
             }
@@ -92,17 +92,24 @@ public class HelloWorld extends Application {
 
     public Button getDrawCircleAtButton(){
         Button button = new Button();
-        button.setLayoutX(500);
-        button.setLayoutY(20);
         button.setText("Draw circle");
         button.setOnMouseClicked( buttonClickEvent -> {
             nextAction = imageClickEvent -> {
                 Integer x = Utils.toInteger(imageClickEvent.getX());
                 Integer y = Utils.toInteger(imageClickEvent.getY());
                 Transformation transformation = new DrawSquareTransformation(x,y,50,50,Color.RED);
-
                 transformationManagerView.addTransformation(transformation);
             };
+        });
+        return button;
+    }
+
+    public Button getDarkenButton(){
+        Button button = new Button();
+        button.setText("Darken");
+        button.setOnMouseClicked( buttonClickEvent -> {
+            Transformation transformation = new DarkenTransformation();
+            transformationManagerView.addTransformation(transformation);
         });
         return button;
     }
@@ -117,11 +124,11 @@ public class HelloWorld extends Application {
                 Integer x1 = Utils.toInteger(imageClickEvent.getX());
                 Integer y1 = Utils.toInteger(imageClickEvent.getY());
                 nextAction = secondImageClickEvent -> {
-                    Integer x2 = Utils.toInteger(imageClickEvent.getX());
-                    Integer y2 = Utils.toInteger(imageClickEvent.getY());
+                    Integer x2 = Utils.toInteger(secondImageClickEvent.getX());
+                    Integer y2 = Utils.toInteger(secondImageClickEvent.getY());
 
                     Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
-                    transformation.transform(currentImage.writableImage);
+                    transformationManagerView.addTransformation(transformation);
                     nextAction = null;
                 };
             };
@@ -135,7 +142,7 @@ public class HelloWorld extends Application {
 
         GridPane root = new GridPane();
         currentImage = getCurrentImageView();
-        rgbChooser = new RGBChooser(currentImage);
+        rgbChooserView = new RGBChooserView(currentImage);
         TransformationManager transformationManager = new TransformationManager(currentImage.getWritableImage());
         transformationManagerView = new TransformationManagerView(transformationManager,currentImage);
 
@@ -143,9 +150,11 @@ public class HelloWorld extends Application {
         root.add(transformationManagerView,0,0);
         root.add(getDrawCircleAtButton(),0,1);
         root.add(getGradientMenu(),1,1);
-        root.add(rgbChooser.getPane(),1,2);
+        root.add(rgbChooserView.getPane(),1,2);
         root.add(getSaveButton(primaryStage),2,1);
         root.add(getLoadButton(primaryStage),3,1);
+        root.add(getDarkenButton(),4,1);
+//        root.add(getCanvas(),2,3);
 
         root.add(currentImage,0,3,5,5);
         Scene scene = new Scene(root, 1000, 1000);
