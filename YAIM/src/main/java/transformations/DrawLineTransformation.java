@@ -1,5 +1,6 @@
 package transformations;
 
+import backend.ImageUtils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
@@ -21,15 +22,14 @@ public class DrawLineTransformation implements Transformation {
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
-        Canvas canvas = new Canvas(writableImage.getWidth(), writableImage.getHeight());
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        GraphicsContext gc = ImageUtils.getGraphicsContextFromImage(writableImage);
         gc.drawImage(writableImage,0,0);
         gc.fillText("asda",0,500);
         gc.setStroke(color);
         gc.setLineWidth(5);
         gc.strokeLine(x1, y1, x2, y2);
 
-        return canvas.snapshot(null,writableImage);
+        return ImageUtils.getImageFromGraphicsContext(gc,writableImage);
     }
 
     @Override

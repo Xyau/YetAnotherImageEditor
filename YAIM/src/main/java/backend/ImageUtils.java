@@ -1,5 +1,7 @@
 package backend;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -67,5 +69,16 @@ public class ImageUtils {
             }
         }
         return writableImage;
+    }
+
+    public static GraphicsContext getGraphicsContextFromImage(WritableImage writableImage){
+        javafx.scene.canvas.Canvas canvas = new Canvas(writableImage.getWidth(), writableImage.getHeight());
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(writableImage,0,0);
+        return gc;
+    }
+
+    public static WritableImage getImageFromGraphicsContext(GraphicsContext gc, WritableImage writableImage){
+        return gc.getCanvas().snapshot(null,writableImage);
     }
 }

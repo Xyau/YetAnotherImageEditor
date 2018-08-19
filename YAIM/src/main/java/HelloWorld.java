@@ -15,7 +15,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import transformations.DarkenTransformation;
 import transformations.DrawLineTransformation;
@@ -136,6 +138,17 @@ public class HelloWorld extends Application {
         return button;
     }
 
+    Popup getPopup(){
+        Popup popup = new Popup();
+        popup.getContent().add(rgbChooserView.getPane());
+        popup.setX(300);
+        popup.setY(200);
+        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
+
+
+        return popup;
+    }
+
     @Override
     public void start(Stage primaryStage) {
 
@@ -154,7 +167,7 @@ public class HelloWorld extends Application {
         root.add(getSaveButton(primaryStage),2,1);
         root.add(getLoadButton(primaryStage),3,1);
         root.add(getDarkenButton(),4,1);
-//        root.add(getCanvas(),2,3);
+//        root.add(,2,3);
 
         root.add(currentImage,0,3,5,5);
         Scene scene = new Scene(root, 1000, 1000);
@@ -162,6 +175,7 @@ public class HelloWorld extends Application {
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
+        getPopup().show(primaryStage);
     }
     public static void main(String[] args) {
         launch(args);
