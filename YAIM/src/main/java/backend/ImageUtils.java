@@ -58,8 +58,7 @@ public class ImageUtils {
         Integer width = Utils.toInteger(image.getWidth());
 
 
-        WritableImage writableImage
-                = new WritableImage(width,height);
+        WritableImage writableImage = new WritableImage(width,height);
         PixelWriter pixelWriter = writableImage.getPixelWriter();
 
         for (int y = 0; y < height; y++){

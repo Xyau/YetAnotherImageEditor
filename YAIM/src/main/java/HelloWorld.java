@@ -1,6 +1,8 @@
 import backend.ImageUtils;
+import backend.Images;
 import backend.TransformationManager;
 import backend.Utils;
+import frontend.PixelPickerControlPane;
 import frontend.RGBChooserView;
 import frontend.TransformationManagerView;
 import frontend.WritableImageView;
@@ -39,8 +41,7 @@ public class HelloWorld extends Application {
         WritableImageView iv1 = new WritableImageView();
         iv1.setLayoutX(40);
         iv1.setLayoutY(100);
-        File f = new File("./YAIM/src/main/noImage.jpg");
-        iv1.setWritableImage(ImageUtils.copyImage(new Image(f.toURI().toString())));
+        iv1.setWritableImage(ImageUtils.copyImage(Images.NO_IMAGE));
         iv1.setOnMouseClicked( event -> {
             System.out.println("Click event at: (" + event.getX() +
                     "," + event.getY() + ")");
@@ -180,6 +181,7 @@ public class HelloWorld extends Application {
         // Load
         root.add(getLoadButton(primaryStage,0),0,1);
         root.add(getLoadButton(primaryStage, 1),1,1);
+        root.add(new PixelPickerControlPane(currentImage),2,1);
 
         // Filters
         root.add(getDrawCircleAtButton(),0,2);

@@ -19,23 +19,32 @@ import java.util.function.Consumer;
 
 public class PixelPickerControlPane extends GridPane
 {
-    private TextArea xArea;
-    private TextArea yArea;
-
-    private Text xLabel = new Text("X:");
-    private Text yLabel = new Text("Y:");
+    TextAreaControlPane fieldX = new TextAreaControlPane("X:" );
+    TextAreaControlPane fieldY = new TextAreaControlPane("Y:" );
 
     private ImageView imageView;
 
-    private AtomicReference<Pixel> pixel;
-
     public PixelPickerControlPane(ImageView imageView){
         this.imageView = imageView;
-        pixel = new AtomicReference<>();
+        add(fieldX,0,0);
+        add(fieldY,1,0);
     }
 
     public Optional<Pixel> getChosenPixel(){
-        return Optional.ofNullable(pixel.get());
+        Integer x,y;
+        try {
+            x = Integer.valueOf(fieldX.getText());
+            y = Integer.valueOf(fieldY.getText());
+        } catch (Exception e){
+            return Optional.empty();
+        }
+        if (imageView.getImage().getHeight() > y ||
+                imageView.getImage().getWidth() > x ||
+                x < 0 || y < 0){
+            return Optional.empty();
+        }
+
+        return Optional.of(new Pixel(x,y));
     }
 
     public void focus(ImageView imageView){
@@ -43,7 +52,7 @@ public class PixelPickerControlPane extends GridPane
             Integer x = Utils.toInteger(event.getX());
             Integer y = Utils.toInteger(event.getY());
 
-            pixel.set(new Pixel(x,y));
+//            pixel.set(new Pixel(x,y));
         });
     }
 }
