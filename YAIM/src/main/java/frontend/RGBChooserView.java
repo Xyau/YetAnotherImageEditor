@@ -45,6 +45,7 @@ public class RGBChooserView {
         setColorButton = new Button();
         setColorButton.setText("Set Pixel Color");
         setColorButton.setLayoutX((AREA_WIDTH+AREA_SPACE_BETWEEN)*4);
+        setColorButton.setLayoutY(20);
         setColorButton.setOnMouseClicked(event -> {
             double red = Double.parseDouble(redArea.getText())/255;
             double blue = Double.parseDouble(blueArea.getText())/255;
@@ -94,7 +95,7 @@ public class RGBChooserView {
         pane.getChildren().add(setColorButton);
         pane.setLayoutX(20);
         pane.setLayoutY(0);
-        pane.setBackground(Colors.RED_BACKGROUND);
+//        pane.setBackground(Colors.RED_BACKGROUND);
         return pane;
     }
 }
