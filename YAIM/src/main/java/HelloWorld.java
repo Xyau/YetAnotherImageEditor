@@ -12,6 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -19,10 +20,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import transformations.DarkenTransformation;
-import transformations.DrawLineTransformation;
-import transformations.DrawSquareTransformation;
-import transformations.Transformation;
+import transformations.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -41,7 +39,8 @@ public class HelloWorld extends Application {
         WritableImageView iv1 = new WritableImageView();
         iv1.setLayoutX(40);
         iv1.setLayoutY(100);
-        iv1.setWritableImage(ImageUtils.copyImage(new Image("noImage.jpg")));
+        File f = new File("./YAIM/src/main/noImage.jpg");
+        iv1.setWritableImage(ImageUtils.copyImage(new Image(f.toURI().toString())));
         iv1.setOnMouseClicked( event -> {
             System.out.println("Click event at: (" + event.getX() +
                     "," + event.getY() + ")");
@@ -129,7 +128,8 @@ public class HelloWorld extends Application {
                     Integer x2 = Utils.toInteger(secondImageClickEvent.getX());
                     Integer y2 = Utils.toInteger(secondImageClickEvent.getY());
 
-                    Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
+//                    Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
+                    Transformation transformation = new GradientTransformation(x1,y1,x2,y2,Color.OLIVE, Color.BLUE);
                     transformationManagerView.addTransformation(transformation);
                     nextAction = null;
                 };
