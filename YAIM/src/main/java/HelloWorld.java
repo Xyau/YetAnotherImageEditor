@@ -7,11 +7,11 @@ import frontend.WritableImageView;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -19,10 +19,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import transformations.DarkenTransformation;
-import transformations.DrawLineTransformation;
-import transformations.DrawSquareTransformation;
-import transformations.Transformation;
+import transformations.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,6 +27,7 @@ import java.io.File;
 public class HelloWorld extends Application {
 
     private WritableImageView currentImage;
+    private WritableImageView currentImage2;
 
     private RGBChooserView rgbChooserView;
 
@@ -41,7 +39,8 @@ public class HelloWorld extends Application {
         WritableImageView iv1 = new WritableImageView();
         iv1.setLayoutX(40);
         iv1.setLayoutY(100);
-        iv1.setWritableImage(ImageUtils.copyImage(new Image("noImage.jpg")));
+        File f = new File("./YAIM/src/main/noImage.jpg");
+        iv1.setWritableImage(ImageUtils.copyImage(new Image(f.toURI().toString())));
         iv1.setOnMouseClicked( event -> {
             System.out.println("Click event at: (" + event.getX() +
                     "," + event.getY() + ")");
@@ -72,22 +71,31 @@ public class HelloWorld extends Application {
         return btn;
     }
 
-    private void reloadCurrentImage(Image image){
-        currentImage.setWritableImage(ImageUtils.copyImage(image));
+    private void reloadImage(WritableImageView writableImageView, Image image){
+        writableImageView.setWritableImage(ImageUtils.copyImage(image));
     }
 
-    private Button getLoadButton(final Stage stage){
+    private Button getLoadButton(final Stage stage, int imgIdx){
         Button btn = new Button();
         btn.setLayoutX(120);
         btn.setLayoutY(50);
-        btn.setText("Load Image");
+        btn.setText("Load Image " + (imgIdx + 1));
         btn.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(stage);
             BufferedImage image = ImageUtils.readImage(file.getPath());
             Image fxImage = SwingFXUtils.toFXImage(image,null);
-            reloadCurrentImage(fxImage);
+            switch (imgIdx) {
+                case 0:
+                    reloadImage(currentImage, fxImage);
+                    break;
+                case 1:
+                    reloadImage(currentImage2, fxImage);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid image index");
+            }
         });
         return btn;
     }
@@ -129,7 +137,8 @@ public class HelloWorld extends Application {
                     Integer x2 = Utils.toInteger(secondImageClickEvent.getX());
                     Integer y2 = Utils.toInteger(secondImageClickEvent.getY());
 
-                    Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
+//                    Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
+                    Transformation transformation = new GradientTransformation(x1,y1,x2,y2,Color.OLIVE, Color.BLUE);
                     transformationManagerView.addTransformation(transformation);
                     nextAction = null;
                 };
@@ -143,7 +152,7 @@ public class HelloWorld extends Application {
         popup.getContent().add(rgbChooserView.getPane());
         popup.setX(300);
         popup.setY(200);
-        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
+//        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
 
 
         return popup;
@@ -154,28 +163,44 @@ public class HelloWorld extends Application {
 
 
         GridPane root = new GridPane();
+        root.setHgap(3.0);
+        root.setVgap(3.0);
         currentImage = getCurrentImageView();
+        currentImage2 = getCurrentImageView();
         rgbChooserView = new RGBChooserView(currentImage);
         TransformationManager transformationManager = new TransformationManager(currentImage.getWritableImage());
         transformationManagerView = new TransformationManagerView(transformationManager,currentImage);
 
         currentImage.setImage(transformationManager.getImage());
-        root.add(transformationManagerView,0,0);
-        root.add(getDrawCircleAtButton(),0,1);
-        root.add(getGradientMenu(),1,1);
-        root.add(rgbChooserView.getPane(),1,2);
-        root.add(getSaveButton(primaryStage),2,1);
-        root.add(getLoadButton(primaryStage),3,1);
-        root.add(getDarkenButton(),4,1);
-//        root.add(,2,3);
 
-        root.add(currentImage,0,3,5,5);
+        // History
+        root.add(transformationManagerView,0,0);
+        root.setColumnSpan(transformationManagerView, 10);
+
+        // Load
+        root.add(getLoadButton(primaryStage,0),0,1);
+        root.add(getLoadButton(primaryStage, 1),1,1);
+
+        // Filters
+        root.add(getDrawCircleAtButton(),0,2);
+        root.add(getGradientMenu(),1,2);
+        root.add(getSaveButton(primaryStage),3,2);
+        root.add(getDarkenButton(),4,2);
+
+        // Color pane
+        Node rgbChooser = rgbChooserView.getPane();
+        root.add(rgbChooser,0,3);
+        root.setColumnSpan(rgbChooser, 5);
+
+        // Images
+        root.add(currentImage,0,4, 5,5);
+        root.add(currentImage2,5,4,5,5);
         Scene scene = new Scene(root, 1000, 1000);
 
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
-        getPopup().show(primaryStage);
+//        getPopup().show(primaryStage);
     }
     public static void main(String[] args) {
         launch(args);
