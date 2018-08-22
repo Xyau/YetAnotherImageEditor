@@ -1,10 +1,8 @@
 package frontend;
 
-import backend.ImageUtils;
-import backend.Images;
-import backend.TransformationManager;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import repositories.ImagesRepository;
+import backend.TransformationManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -34,7 +32,7 @@ public class TransformationManagerView extends GridPane {
         imageView.setOnMouseClicked(event ->{
             Boolean result = transformationManager.toggleTransformation(index);
             linkedImageView.setImage(transformationManager.getImage());
-            imageView.setImage(result?transformationManager.getImageAt(index):Images.RED_CROSS);
+            imageView.setImage(result?transformationManager.getImageAt(index):ImagesRepository.RED_CROSS);
             for (int i = index+1; i < transformationManager.size(); i++) {
                 if (transformationManager.isTransformationEnabled(i)) {
                     transformationImageViews.get(i).setImage(transformationManager.getImageAt(i));
@@ -62,6 +60,8 @@ public class TransformationManagerView extends GridPane {
         add(pane,index,0);
     }
 
-
+    public Image getImage(){
+        return transformationManager.getImage();
+    }
 
 }

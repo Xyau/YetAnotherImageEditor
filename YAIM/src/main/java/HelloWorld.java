@@ -1,58 +1,50 @@
-import backend.ImageUtils;
-import backend.Images;
-import backend.TransformationManager;
-import backend.Utils;
-import frontend.PixelPickerControlPane;
+import backend.*;
 import frontend.RGBChooserView;
 import frontend.TransformationManagerView;
 import frontend.WritableImageView;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
+import repositories.ImagesRepository;
+import repositories.StagesRepository;
+import repositories.ThingsRepository;
 import transformations.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HelloWorld extends Application {
 
-    private WritableImageView currentImage;
+    private EventManageableImageView currentImage;
     private WritableImageView currentImage2;
 
     private RGBChooserView rgbChooserView;
 
-    private EventHandler<? super MouseEvent> nextAction;
-
     private TransformationManagerView transformationManagerView;
 
-    private WritableImageView getCurrentImageView(){
-        WritableImageView iv1 = new WritableImageView();
+    private EventManageableImageView setupCurrentImageView(){
+        EventManageableImageView iv1 = new EventManageableImageView();
         iv1.setLayoutX(40);
         iv1.setLayoutY(100);
-        iv1.setWritableImage(ImageUtils.copyImage(Images.NO_IMAGE));
-        iv1.setOnMouseClicked( event -> {
+        iv1.setWritableImage(ImageUtils.copyImage(ImagesRepository.NO_IMAGE));
+        iv1.addPasiveEvent(event -> {
             System.out.println("Click event at: (" + event.getX() +
                     "," + event.getY() + ")");
+        });
 
-            if(nextAction == null){
-                Color c = iv1.getWritableImage().getPixelReader()
-                        .getColor(Utils.toInteger(event.getX()),Utils.toInteger(event.getY()));
-                rgbChooserView.updateAreasWith(c);
-            } else {
-                nextAction.handle(event);
-            }
+        iv1.addPasiveEvent( event -> {
+            Color c = transformationManagerView.getImage().getPixelReader()
+                    .getColor(Utils.toInteger(event.getX()),Utils.toInteger(event.getY()));
+            rgbChooserView.updateAreasWith(c);
         });
         return iv1;
     }
@@ -67,7 +59,7 @@ public class HelloWorld extends Application {
             fileChooser.setTitle("Open Resource File");
             fileChooser.setSelectedExtensionFilter(ThingsRepository.EXTENSION_FILTER);
             File file = fileChooser.showSaveDialog(stage);
-            ImageUtils.writeImage(SwingFXUtils.fromFXImage(currentImage.getWritableImage(),null),file);
+            ImageUtils.writeImage(SwingFXUtils.fromFXImage(transformationManagerView.getImage(),null),file);
         });
         return btn;
     }
@@ -78,17 +70,17 @@ public class HelloWorld extends Application {
 
     private Button getLoadButton(final Stage stage, int imgIdx){
         Button btn = new Button();
-        btn.setLayoutX(120);
-        btn.setLayoutY(50);
         btn.setText("Load Image " + (imgIdx + 1));
-        btn.setOnAction(event -> {
+        btn.setOnMouseClicked(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(stage);
             BufferedImage image = ImageUtils.readImage(file.getPath());
-            Image fxImage = SwingFXUtils.toFXImage(image,null);
+            WritableImage fxImage = ImageUtils.copyImage(SwingFXUtils.toFXImage(image,null));
+
             switch (imgIdx) {
                 case 0:
+//                    transformationManagerView.addTransformation(new LoadImageTransformation(fxImage));
                     reloadImage(currentImage, fxImage);
                     break;
                 case 1:
@@ -105,25 +97,37 @@ public class HelloWorld extends Application {
         Button button = new Button();
         button.setText("Draw circle");
         button.setOnMouseClicked( buttonClickEvent -> {
-            nextAction = imageClickEvent -> {
-                Integer x = Utils.toInteger(imageClickEvent.getX());
-                Integer y = Utils.toInteger(imageClickEvent.getY());
-                Transformation transformation = new DrawSquareTransformation(x,y,50,50,Color.RED);
+            AtomicReference<Pixel> pixel = new AtomicReference<>();
+            currentImage.addActiveEventToQueue( mouseEvent -> {
+                pixel.set(Utils.getPixelFromMouseEvent(mouseEvent));
+            });
+
+            currentImage.setWhenQueueFinished( ()->{
+                Transformation transformation = new DrawSquareTransformation(pixel.get().getX(),
+                        pixel.get().getY(),50,50,Color.RED);
                 transformationManagerView.addTransformation(transformation);
-            };
+            });
         });
         return button;
     }
 
-    public Button getDarkenButton(){
+    public Button getDrawLineAtButton(){
         Button button = new Button();
-        button.setText("Darken");
+        button.setText("Draw Line");
+        //Get the auxiliary panel from the things repository
+        FocusablePane focusablePane = ThingsRepository.getDrawLineAtPanel(currentImage,transformationManagerView);
+        //When the button is clicked, a new window appears with the auxiliary controls
         button.setOnMouseClicked( buttonClickEvent -> {
-            Transformation transformation = new DarkenTransformation();
-            transformationManagerView.addTransformation(transformation);
+            //Get the window where the auxiliary panel will be put
+            Stage stage = StagesRepository.getDrawLineStage(focusablePane);
+            //Show the window
+            stage.show();
+            //Trigger the focus checks, so it captures the mouse input events
+            focusablePane.recievedFocus(currentImage);
         });
         return button;
     }
+
 
     public Button getGradientMenu(){
         Button button = new Button();
@@ -131,43 +135,37 @@ public class HelloWorld extends Application {
         button.setLayoutY(20);
         button.setText("Draw gradient");
         button.setOnMouseClicked( buttonClickEvent -> {
-                nextAction = imageClickEvent -> {
-                Integer x1 = Utils.toInteger(imageClickEvent.getX());
-                Integer y1 = Utils.toInteger(imageClickEvent.getY());
-                nextAction = secondImageClickEvent -> {
-                    Integer x2 = Utils.toInteger(secondImageClickEvent.getX());
-                    Integer y2 = Utils.toInteger(secondImageClickEvent.getY());
+            AtomicReference<Pixel> first = new AtomicReference<>();
+            AtomicReference<Pixel> second = new AtomicReference<>();
 
+            //First get the first pixel (This is if you dont want the aux panel)
+            currentImage.addActiveEventToQueue( mouseEvent -> {
+                first.set(Utils.getPixelFromMouseEvent(mouseEvent));
+            },true);
+
+            //Get the second pixel
+            currentImage.addActiveEventToQueue( mouseEvent -> {
+                second.set(Utils.getPixelFromMouseEvent(mouseEvent));
+            },true);
+
+            //Set what to do when both of the active events are done
+            currentImage.setWhenQueueFinished( () ->{
+                Transformation transformation = new GradientTransformation(first.get().getX()
+                        ,first.get().getY(),second.get().getX(),second.get().getY(),Color.OLIVE, Color.BLUE);
 //                    Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
-                    Transformation transformation = new GradientTransformation(x1,y1,x2,y2,Color.OLIVE, Color.BLUE);
-                    transformationManagerView.addTransformation(transformation);
-                    nextAction = null;
-                };
-            };
+                transformationManagerView.addTransformation(transformation);
+            });
         });
         return button;
     }
 
-    Popup getPopup(){
-        Popup popup = new Popup();
-        popup.getContent().add(rgbChooserView.getPane());
-        popup.setX(300);
-        popup.setY(200);
-//        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
-
-
-        return popup;
-    }
-
     @Override
     public void start(Stage primaryStage) {
-
-
         GridPane root = new GridPane();
         root.setHgap(3.0);
         root.setVgap(3.0);
-        currentImage = getCurrentImageView();
-        currentImage2 = getCurrentImageView();
+        currentImage = setupCurrentImageView();
+            currentImage2 = setupCurrentImageView();
         rgbChooserView = new RGBChooserView(currentImage);
         TransformationManager transformationManager = new TransformationManager(currentImage.getWritableImage());
         transformationManagerView = new TransformationManagerView(transformationManager,currentImage);
@@ -181,20 +179,20 @@ public class HelloWorld extends Application {
         // Load
         root.add(getLoadButton(primaryStage,0),0,1);
         root.add(getLoadButton(primaryStage, 1),1,1);
-        root.add(new PixelPickerControlPane(currentImage),2,1);
+        root.add(getDrawLineAtButton(),2,1);
 
         // Filters
         root.add(getDrawCircleAtButton(),0,2);
         root.add(getGradientMenu(),1,2);
         root.add(getSaveButton(primaryStage),3,2);
-        root.add(getDarkenButton(),4,2);
+        root.add(ThingsRepository.getDarkenButton(transformationManagerView),4,2);
 
         // Color pane
         Node rgbChooser = rgbChooserView.getPane();
         root.add(rgbChooser,0,3);
         root.setColumnSpan(rgbChooser, 5);
 
-        // Images
+        // ImagesRepository
         root.add(currentImage,0,4, 5,5);
         root.add(currentImage2,5,4,5,5);
         Scene scene = new Scene(root, 1000, 1000);
