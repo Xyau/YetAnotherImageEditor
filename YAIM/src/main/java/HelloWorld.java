@@ -128,6 +128,16 @@ public class HelloWorld extends Application {
         return button;
     }
 
+    public Button getNegativeButton(){
+        Button button = new Button();
+        button.setText("Negative");
+        button.setOnMouseClicked( buttonClickEvent -> {
+            Transformation transformation = new NegativeTransformation();
+            transformationManagerView.addTransformation(transformation);
+        });
+        return button;
+    }
+
 
     public Button getGradientMenu(){
         Button button = new Button();
@@ -172,32 +182,32 @@ public class HelloWorld extends Application {
 
         currentImage.setImage(transformationManager.getImage());
 
-        // History
+        // Row 0: History
         root.add(transformationManagerView,0,0);
         root.setColumnSpan(transformationManagerView, 10);
 
-        // Load
+        // Row 1: Load
         root.add(getLoadButton(primaryStage,0),0,1);
         root.add(getLoadButton(primaryStage, 1),1,1);
-        root.add(getDrawLineAtButton(),2,1);
 
-        // Filters
+        // Row 2: Filters
         root.add(getDrawCircleAtButton(),0,2);
         root.add(getGradientMenu(),1,2);
         root.add(getSaveButton(primaryStage),3,2);
+        root.add(getNegativeButton(),4,2);
         root.add(ThingsRepository.getDarkenButton(transformationManagerView),4,2);
 
-        // Color pane
+        // Row 3: Color pane
         Node rgbChooser = rgbChooserView.getPane();
         root.add(rgbChooser,0,3);
         root.setColumnSpan(rgbChooser, 5);
 
-        // ImagesRepository
+        // Row 4: Images
         root.add(currentImage,0,4, 5,5);
         root.add(currentImage2,5,4,5,5);
-        Scene scene = new Scene(root, 1000, 1000);
 
-        primaryStage.setTitle("Hello World!");
+        Scene scene = new Scene(root, 1000, 1000);
+        primaryStage.setTitle("Yet Another Image Editor");
         primaryStage.setScene(scene);
         primaryStage.show();
 //        getPopup().show(primaryStage);
