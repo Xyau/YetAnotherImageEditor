@@ -195,7 +195,8 @@ public class HelloWorld extends Application {
         root.add(getGradientMenu(),1,2);
         root.add(getSaveButton(primaryStage),3,2);
         root.add(getNegativeButton(),4,2);
-        root.add(ThingsRepository.getDarkenButton(transformationManagerView),4,2);
+        root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,2);
+        root.add(getDrawLineAtButton(),6,2);
 
         // Row 3: Color pane
         Node rgbChooser = rgbChooserView.getPane();
