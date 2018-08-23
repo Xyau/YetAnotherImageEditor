@@ -12,15 +12,19 @@ public class TextAreaControlPane extends GridPane {
     private Consumer<String> onUpdate;
 
     public TextAreaControlPane(String label){
-        this(label,x -> {});
+        this(label,x -> {},1);
     }
 
-    public TextAreaControlPane(String label, Consumer<String> onUpdate) {
+    public TextAreaControlPane(String label,Integer width){
+        this(label,x->{},width);
+    }
+
+    public TextAreaControlPane(String label, Consumer<String> onUpdate, Integer width) {
         this.onUpdate = onUpdate;
         this.label = new Text(label);
 
         textArea = new TextArea();
-        textArea.setPrefColumnCount(1);
+        textArea.setPrefColumnCount(width);
         textArea.setPrefRowCount(1);
 
         textArea.setOnKeyPressed(event -> onUpdate.accept(event.getText()));

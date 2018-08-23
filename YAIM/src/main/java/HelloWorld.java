@@ -7,6 +7,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
@@ -25,11 +26,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HelloWorld extends Application {
 
     private EventManageableImageView currentImage;
-    private WritableImageView currentImage2;
+    private EventManageableImageView previewImage;
 
     private RGBChooserView rgbChooserView;
 
     private TransformationManagerView transformationManagerView;
+    private MenuBar menuBar;
 
     private EventManageableImageView setupCurrentImageView(){
         EventManageableImageView iv1 = new EventManageableImageView();
@@ -75,20 +77,10 @@ public class HelloWorld extends Application {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(stage);
-            BufferedImage image = ImageUtils.readImage(file.getPath());
-            WritableImage fxImage = ImageUtils.copyImage(SwingFXUtils.toFXImage(image,null));
+            WritableImage image = ImageUtils.readImage(file);
 
-            switch (imgIdx) {
-                case 0:
-//                    transformationManagerView.addTransformation(new LoadImageTransformation(fxImage));
-                    reloadImage(currentImage, fxImage);
-                    break;
-                case 1:
-                    reloadImage(currentImage2, fxImage);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid image index");
-            }
+            transformationManagerView.setInitialImage(image);
+            currentImage.setImage(image);
         });
         return btn;
     }
@@ -175,39 +167,43 @@ public class HelloWorld extends Application {
         root.setHgap(3.0);
         root.setVgap(3.0);
         currentImage = setupCurrentImageView();
-            currentImage2 = setupCurrentImageView();
+        previewImage = setupCurrentImageView();
         rgbChooserView = new RGBChooserView(currentImage);
         TransformationManager transformationManager = new TransformationManager(currentImage.getWritableImage());
-        transformationManagerView = new TransformationManagerView(transformationManager,currentImage);
+        transformationManagerView = new TransformationManagerView(transformationManager,currentImage,previewImage);
 
         currentImage.setImage(transformationManager.getImage());
 
-        // Row 0: History
-        root.add(transformationManagerView,0,0);
+        // Row 1: History
+        root.add(transformationManagerView,0,1);
         root.setColumnSpan(transformationManagerView, 10);
 
-        // Row 1: Load
-        root.add(getLoadButton(primaryStage,0),0,1);
-        root.add(getLoadButton(primaryStage, 1),1,1);
+        // Row 2: Load
+        root.add(getLoadButton(primaryStage,0),0,2);
+        root.add(getLoadButton(primaryStage, 1),1,2);
 
-        // Row 2: Filters
-        root.add(getDrawCircleAtButton(),0,2);
-        root.add(getGradientMenu(),1,2);
-        root.add(getSaveButton(primaryStage),3,2);
-        root.add(getNegativeButton(),4,2);
-        root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,2);
-        root.add(getDrawLineAtButton(),6,2);
+        // Row 3: Filters
+        root.add(getDrawCircleAtButton(),0,3);
+        root.add(getGradientMenu(),1,3);
+        root.add(getSaveButton(primaryStage),3,3);
+        root.add(getNegativeButton(),4,3);
+        root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,3);
+        root.add(getDrawLineAtButton(),6,3);
 
-        // Row 3: Color pane
+        // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
-        root.add(rgbChooser,0,3);
+        root.add(rgbChooser,0,4);
         root.setColumnSpan(rgbChooser, 5);
 
-        // Row 4: Images
-        root.add(currentImage,0,4, 5,5);
-        root.add(currentImage2,5,4,5,5);
+        // Row 5: Images
+        root.add(currentImage,0,5, 5,5);
+        root.add(previewImage,5,5,5,5);
 
         Scene scene = new Scene(root, 1000, 1000);
+        menuBar = new MenuBar();
+        menuBar.getMenus().add(ThingsRepository.getImageMenu(scene,transformationManagerView));
+        root.add(menuBar,0,0);
+//        ((VBox)     scene.getRoot()).getChildren().addAll(menuBar);
         primaryStage.setTitle("Yet Another Image Editor");
         primaryStage.setScene(scene);
         primaryStage.show();

@@ -24,7 +24,6 @@ public class DrawLineTransformation implements Transformation {
     public WritableImage transform(WritableImage writableImage) {
         GraphicsContext gc = ImageUtils.getGraphicsContextFromImage(writableImage);
         gc.drawImage(writableImage,0,0);
-        gc.fillText("asda",0,500);
         gc.setStroke(color);
         gc.setLineWidth(5);
         gc.strokeLine(x1, y1, x2, y2);

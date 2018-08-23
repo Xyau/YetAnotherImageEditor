@@ -66,6 +66,11 @@ public class TransformationManager {
         return transformations.get(index).isEnabled();
     }
 
+    public void setInitialImage(Image initialImage) {
+        this.initialImage = initialImage;
+        recalculateImage();
+    }
+
     private class ToggableTransformation{
         private Transformation transformation;
 

@@ -4,9 +4,14 @@ import backend.EventManageableImageView;
 import backend.FocusablePane;
 import backend.Pixel;
 import backend.Utils;
+import frontend.ImageLoadControl;
+import frontend.ImageOperationsControl;
 import frontend.PixelPickerControlPane;
 import frontend.TransformationManagerView;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import transformations.DarkenTransformation;
@@ -48,8 +53,7 @@ public class ThingsRepository {
         });
 
         drawLinePanel.add(firstPixelPicker,0,0);
-        drawLinePanel.add(secondPixelPicker,0,1
-        );
+        drawLinePanel.add(secondPixelPicker,0,1);
         return drawLinePanel;
     }
 
@@ -73,4 +77,19 @@ public class ThingsRepository {
         });
         return button;
     }
+
+    public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
+        Menu imageMenu = new Menu("Image");
+        MenuItem menuItem = new MenuItem("Image Operations");
+        ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
+
+        menuItem.setOnAction( event -> {
+            StagesRepository.getImageOperationsStage(imageOperationsControl).show();
+        });
+
+        imageMenu.getItems().add(menuItem);
+        return imageMenu;
+    }
+
+
 }

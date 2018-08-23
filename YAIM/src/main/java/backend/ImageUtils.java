@@ -15,6 +15,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.BiFunction;
 
 public class ImageUtils {
     public static BufferedImage createImage(int rgb, int height, int width){
@@ -37,13 +38,41 @@ public class ImageUtils {
         return true;
     }
 
-    public static BufferedImage readImage(String path){
+    public static BufferedImage readBufferedImage(String path){
         try {
             return ImageIO.read(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static WritableImage transformImages(WritableImage imageToWriteIn, Image image, BiFunction<Color,Color,Color> function){
+        for (int i = 0; i < imageToWriteIn.getWidth(); i++) {
+            for (int j = 0; j < imageToWriteIn.getHeight(); j++) {
+                if(isPixelInImage(image,new Pixel(i,j))){
+                    Color writableColor = imageToWriteIn.getPixelReader().getColor(i,j);
+                    Color color = image.getPixelReader().getColor(i,j);
+                    Color resultColor = function.apply(writableColor,color);
+                    imageToWriteIn.getPixelWriter().setColor(i,j,resultColor);
+                }
+            }
+        }
+        return imageToWriteIn;
+    }
+
+
+    public static Boolean isPixelInImage(Image image, Pixel pixel){
+        return pixel.getX() > 0 && pixel.getX() < image.getWidth() &&
+                pixel.getY() > 0 && pixel.getY() < image.getHeight();
+    }
+
+    public static WritableImage readImage(String path){
+        return copyImage(new Image(new File(path).toURI().toString()));
+    }
+
+    public static WritableImage readImage(File file){
+        return copyImage(new Image(file.toURI().toString()));
     }
 
     public static BufferedImage deepCopy(BufferedImage bi) {

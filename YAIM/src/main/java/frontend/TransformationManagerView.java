@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.ImageUtils;
 import javafx.scene.image.Image;
 import repositories.ImagesRepository;
 import backend.TransformationManager;
@@ -14,11 +15,18 @@ import java.util.List;
 public class TransformationManagerView extends GridPane {
 
     public static Integer TRANSFORMATION_SIZE = 30;
-    public static Integer PANE_OFFSET = 10;
 
     private TransformationManager transformationManager;
     private List<ImageView> transformationImageViews;
     private ImageView linkedImageView;
+    private WritableImageView previewImageView;
+
+    public TransformationManagerView(TransformationManager transformationManager, ImageView linkedImageView, WritableImageView previewImageView) {
+        this.transformationManager = transformationManager;
+        this.linkedImageView = linkedImageView;
+        this.previewImageView = previewImageView;
+        transformationImageViews = new ArrayList<>();
+    }
 
     private Pane getNewTransPane(Integer index, TransformationManager transformationManager) {
         Pane pane = new Pane();
@@ -39,19 +47,8 @@ public class TransformationManagerView extends GridPane {
                 }
             }
         });
-//        Button transformationDeleteButton = new Button();
-//        transformationDeleteButton.setText("X");
-//        transformationDeleteButton.setLayoutY(0);
-//        transformationDeleteButton.setLayoutX(TRANSFORMATION_SIZE-transformationDeleteButton.getWidth());\
-
         pane.getChildren().addAll(imageView);
         return pane;
-    }
-
-    public TransformationManagerView(TransformationManager transformationManager, ImageView linkedImageView) {
-        this.transformationManager = transformationManager;
-        this.linkedImageView = linkedImageView;
-        transformationImageViews = new ArrayList<>();
     }
 
     public void addTransformation(Transformation transformation){
@@ -64,4 +61,12 @@ public class TransformationManagerView extends GridPane {
         return transformationManager.getImage();
     }
 
+    public void preview(Transformation activeTransformation) {
+        previewImageView.setWritableImage(activeTransformation.transform(previewImageView.getWritableImage()));
+    }
+
+    public void setInitialImage(Image initialImage){
+        linkedImageView.setImage(initialImage);
+        transformationManager.setInitialImage(initialImage);
+    }
 }
