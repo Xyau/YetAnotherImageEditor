@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import repositories.ImagesRepository;
 import backend.TransformationManager;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import transformations.Transformation;
