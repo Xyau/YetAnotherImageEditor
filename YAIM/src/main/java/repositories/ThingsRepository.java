@@ -59,7 +59,7 @@ public class ThingsRepository {
 
 
     public static Button getDarkenButton(TransformationManagerView transformationManagerView){
-        javafx.scene.control.Button button = new Button();
+        Button button = new Button();
         button.setText("Darken");
         button.setOnMouseClicked( buttonClickEvent -> {
             Transformation transformation = new DarkenTransformation();
@@ -78,18 +78,6 @@ public class ThingsRepository {
         return button;
     }
 
-    public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
-        Menu imageMenu = new Menu("Image");
-        MenuItem menuItem = new MenuItem("Image Operations");
-        ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
-
-        menuItem.setOnAction( event -> {
-            StagesRepository.getImageOperationsStage(imageOperationsControl).show();
-        });
-
-        imageMenu.getItems().add(menuItem);
-        return imageMenu;
-    }
 
 
 }

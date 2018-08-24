@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
@@ -15,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import repositories.ImagesRepository;
+import repositories.MenusRepository;
 import repositories.StagesRepository;
 import repositories.ThingsRepository;
 import transformations.*;
@@ -35,8 +37,6 @@ public class HelloWorld extends Application {
 
     private EventManageableImageView setupCurrentImageView(){
         EventManageableImageView iv1 = new EventManageableImageView();
-        iv1.setLayoutX(40);
-        iv1.setLayoutY(100);
         iv1.setWritableImage(ImageUtils.copyImage(ImagesRepository.NO_IMAGE));
         iv1.addPasiveEvent(event -> {
             System.out.println("Click event at: (" + event.getX() +
@@ -49,40 +49,6 @@ public class HelloWorld extends Application {
             rgbChooserView.updateAreasWith(c);
         });
         return iv1;
-    }
-
-    private Button getSaveButton(final Stage stage){
-        Button btn = new Button();
-        btn.setLayoutX(20);
-        btn.setLayoutY(50);
-        btn.setText("Save Image");
-        btn.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
-            fileChooser.setSelectedExtensionFilter(ThingsRepository.EXTENSION_FILTER);
-            File file = fileChooser.showSaveDialog(stage);
-            ImageUtils.writeImage(SwingFXUtils.fromFXImage(transformationManagerView.getImage(),null),file);
-        });
-        return btn;
-    }
-
-    private void reloadImage(WritableImageView writableImageView, Image image){
-        writableImageView.setWritableImage(ImageUtils.copyImage(image));
-    }
-
-    private Button getLoadButton(final Stage stage, int imgIdx){
-        Button btn = new Button();
-        btn.setText("Load Image " + (imgIdx + 1));
-        btn.setOnMouseClicked(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
-            File file = fileChooser.showOpenDialog(stage);
-            WritableImage image = ImageUtils.readImage(file);
-
-            transformationManagerView.setInitialImage(image);
-            currentImage.setImage(image);
-        });
-        return btn;
     }
 
     public Button getDrawCircleAtButton(){
@@ -167,25 +133,36 @@ public class HelloWorld extends Application {
         root.setHgap(3.0);
         root.setVgap(3.0);
         currentImage = setupCurrentImageView();
+        ScrollPane currentScrollPane = new ScrollPane();
+        currentScrollPane.setContent(currentImage);
+//        currentScrollPane.setPrefSize(400,400);
+
         previewImage = setupCurrentImageView();
+        ScrollPane previewScrollPane = new ScrollPane();
+        previewScrollPane.setContent(previewImage);
+//        previewScrollPane.setPrefSize(400,400);
+
         rgbChooserView = new RGBChooserView(currentImage);
         TransformationManager transformationManager = new TransformationManager(currentImage.getWritableImage());
         transformationManagerView = new TransformationManagerView(transformationManager,currentImage,previewImage);
 
         currentImage.setImage(transformationManager.getImage());
+        Scene scene = new Scene(root, 1200, 700);
+
+        // Row 0: MenuBar
+        menuBar = new MenuBar();
+        menuBar.getMenus().addAll(MenusRepository.getFileMenu(primaryStage,transformationManagerView),
+                                MenusRepository.getImageMenu(scene,transformationManagerView));
+        root.add(menuBar,0,0);
+
 
         // Row 1: History
-        root.add(transformationManagerView,0,1);
+        root.add(transformationManagerView,0,1,10,1);
         root.setColumnSpan(transformationManagerView, 10);
-
-        // Row 2: Load
-        root.add(getLoadButton(primaryStage,0),0,2);
-        root.add(getLoadButton(primaryStage, 1),1,2);
 
         // Row 3: Filters
         root.add(getDrawCircleAtButton(),0,3);
         root.add(getGradientMenu(),1,3);
-        root.add(getSaveButton(primaryStage),3,3);
         root.add(getNegativeButton(),4,3);
         root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,3);
         root.add(getDrawLineAtButton(),6,3);
@@ -193,21 +170,18 @@ public class HelloWorld extends Application {
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
         root.add(rgbChooser,0,4);
-        root.setColumnSpan(rgbChooser, 5);
+        root.setColumnSpan(rgbChooser, 10);
 
         // Row 5: Images
-        root.add(currentImage,0,5, 5,5);
-        root.add(previewImage,5,5,5,5);
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(currentScrollPane,previewScrollPane);
+        root.add(hBox,0,5,15,5);
+//        root.add(currentScrollPane,0,5, 5,5);
+//        root.add(previewScrollPane,5,5,5,5);
 
-        Scene scene = new Scene(root, 1000, 1000);
-        menuBar = new MenuBar();
-        menuBar.getMenus().add(ThingsRepository.getImageMenu(scene,transformationManagerView));
-        root.add(menuBar,0,0);
-//        ((VBox)     scene.getRoot()).getChildren().addAll(menuBar);
         primaryStage.setTitle("Yet Another Image Editor");
         primaryStage.setScene(scene);
         primaryStage.show();
-//        getPopup().show(primaryStage);
     }
     public static void main(String[] args) {
         launch(args);

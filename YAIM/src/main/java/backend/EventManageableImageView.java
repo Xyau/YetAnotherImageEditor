@@ -1,6 +1,7 @@
 package backend;
 
 import frontend.WritableImageView;
+import javafx.event.EventType;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 

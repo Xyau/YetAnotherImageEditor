@@ -39,9 +39,9 @@ public class TransformationManager {
     public Integer addTransformation(Transformation transformation){
         if(transformation == null) throw new IllegalStateException("Null transformation");
         ToggableTransformation toggableTransformation = new ToggableTransformation(transformation);
-        transformations.add(toggableTransformation);
-        imageResult =  transformation.transform(imageResult);
+        imageResult = transformation.transform(imageResult);
         toggableTransformation.setLastProcesedImage(ImageUtils.copyImage(imageResult));
+        transformations.add(toggableTransformation);
 
         return transformations.size()-1;
     }
@@ -66,9 +66,10 @@ public class TransformationManager {
         return transformations.get(index).isEnabled();
     }
 
-    public void setInitialImage(Image initialImage) {
+    public WritableImage setInitialImage(Image initialImage) {
         this.initialImage = initialImage;
-        recalculateImage();
+        imageResult = ImageUtils.copyImage(initialImage);
+        return imageResult = recalculateImage();
     }
 
     private class ToggableTransformation{

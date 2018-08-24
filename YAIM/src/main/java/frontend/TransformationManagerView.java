@@ -2,6 +2,7 @@ package frontend;
 
 import backend.ImageUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import repositories.ImagesRepository;
 import backend.TransformationManager;
 import javafx.scene.image.ImageView;
@@ -19,9 +20,9 @@ public class TransformationManagerView extends GridPane {
     private TransformationManager transformationManager;
     private List<ImageView> transformationImageViews;
     private ImageView linkedImageView;
-    private WritableImageView previewImageView;
+    private ImageView previewImageView;
 
-    public TransformationManagerView(TransformationManager transformationManager, ImageView linkedImageView, WritableImageView previewImageView) {
+    public TransformationManagerView(TransformationManager transformationManager, ImageView linkedImageView, ImageView previewImageView) {
         this.transformationManager = transformationManager;
         this.linkedImageView = linkedImageView;
         this.previewImageView = previewImageView;
@@ -62,11 +63,15 @@ public class TransformationManagerView extends GridPane {
     }
 
     public void preview(Transformation activeTransformation) {
-        previewImageView.setWritableImage(activeTransformation.transform(previewImageView.getWritableImage()));
+        previewImageView.setImage(activeTransformation.transform(ImageUtils.copyImage(getImage())));
     }
 
     public void setInitialImage(Image initialImage){
-        linkedImageView.setImage(initialImage);
         transformationManager.setInitialImage(initialImage);
+        linkedImageView.setImage(transformationManager.getImage());
+        previewImageView.setImage(ImagesRepository.NO_IMAGE);
+        for (int i = 0; i < transformationImageViews.size(); i++) {
+            transformationImageViews.get(i).setImage(transformationManager.getImageAt(i));
+        }
     }
 }

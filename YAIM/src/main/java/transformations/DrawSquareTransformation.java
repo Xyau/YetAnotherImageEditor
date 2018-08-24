@@ -1,5 +1,7 @@
 package transformations;
 
+import backend.ImageUtils;
+import backend.Pixel;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
@@ -20,7 +22,9 @@ public class DrawSquareTransformation implements Transformation {
     public WritableImage transform(WritableImage writableImage) {
         for (int i = x; i < x+width; i++) {
             for (int j = y; j < y+width; j++) {
-                writableImage.getPixelWriter().setColor(i,j,color);
+                if(ImageUtils.isPixelInImage(writableImage,new Pixel(i,j))){
+                    writableImage.getPixelWriter().setColor(i,j,color);
+                }
             }
         }
         return writableImage;

@@ -41,7 +41,6 @@ public class ImageOperationsControl extends GridPane {
 
         applyButton.setOnMouseClicked((x) -> {
             transformationManagerView.addTransformation(activeTransformation);
-            transformationManagerView.preview(activeTransformation);
         });
 
         add(addButton,0,0);
