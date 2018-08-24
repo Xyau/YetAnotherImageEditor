@@ -153,7 +153,8 @@ public class HelloWorld extends Application {
         // Row 0: MenuBar
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(MenusRepository.getFileMenu(primaryStage,transformationManagerView),
-                                MenusRepository.getImageMenu(scene,transformationManagerView));
+                                MenusRepository.getImageMenu(scene,transformationManagerView),
+                                MenusRepository.getFilterMenu(transformationManagerView));
         root.add(menuBar,0,0);
 
 

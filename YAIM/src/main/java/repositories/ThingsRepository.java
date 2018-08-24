@@ -63,7 +63,6 @@ public class ThingsRepository {
         return button;
     }
 
-
     public static Button getBinaryButton(TransformationManagerView transformationManagerView){
         Button button = new Button();
         button.setText("Binary");

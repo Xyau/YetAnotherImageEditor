@@ -62,9 +62,24 @@ public class ImageUtils {
     }
 
 
+    public static WritableImage transferImageTo(WritableImage writableImage, Image image){
+        for (int y = 0; y < writableImage.getHeight(); y++){
+            for (int x = 0; x < writableImage.getWidth(); x++){
+                Color color = image.getPixelReader().getColor(x, y);
+                writableImage.getPixelWriter().setColor(x, y, color);
+            }
+        }
+        return writableImage;
+    }
+
     public static Boolean isPixelInImage(Image image, Pixel pixel){
         return pixel.getX() > 0 && pixel.getX() < image.getWidth() &&
                 pixel.getY() > 0 && pixel.getY() < image.getHeight();
+    }
+
+    public static Boolean isPixelInImage(Image image, Integer x, Integer y){
+        return x > 0 && x < image.getWidth() &&
+                y > 0 && y < image.getHeight();
     }
 
     public static WritableImage readImage(String path){

@@ -11,6 +11,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.MedianFilterTransformation;
 
 import java.io.File;
 
@@ -59,5 +60,19 @@ public class MenusRepository {
 
         imageMenu.getItems().add(menuItem);
         return imageMenu;
+    }
+
+    public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Filter");
+        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView));
+        return fileMenu;
+    }
+
+    private static MenuItem getMedianFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Median Filter 3x3");
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new MedianFilterTransformation());
+        });
+        return item;
     }
 }
