@@ -24,6 +24,7 @@ import transformations.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 
 public class HelloWorld extends Application {
 
@@ -97,6 +98,16 @@ public class HelloWorld extends Application {
     }
 
 
+    public Button getBinaryButton(){
+        Button button = new Button();
+        button.setText("Binary");
+        button.setOnMouseClicked( buttonClickEvent -> {
+            Transformation transformation = new BinaryTransformation(0.5);
+            transformationManagerView.addTransformation(transformation);
+        });
+        return button;
+    }
+
     public Button getGradientMenu(){
         Button button = new Button();
         button.setLayoutX(600);
@@ -166,6 +177,8 @@ public class HelloWorld extends Application {
         root.add(getNegativeButton(),4,3);
         root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,3);
         root.add(getDrawLineAtButton(),6,3);
+        root.add(getNegativeButton(),7,3);
+        root.add(getBinaryButton(),9,3);
 
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
