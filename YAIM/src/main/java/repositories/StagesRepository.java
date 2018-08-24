@@ -6,29 +6,22 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StagesRepository {
-    private static Stage drawLineStage;
-    private static Stage imageOperationsStage;
+    private static Map<String, Stage> stages = new HashMap<>();
 
-    public static Stage getDrawLineStage(GridPane gridPane){
-        if(drawLineStage == null){
-            drawLineStage = new Stage();
-            drawLineStage.setTitle("Draw Line");
-            drawLineStage.setAlwaysOnTop(true);
-            drawLineStage.setScene(new Scene(gridPane));
-            drawLineStage.setX(Screen.getPrimary().getBounds().getMaxX() - 450);
+    public static Stage getStage(String title, GridPane gridPane) {
+        if (stages.containsKey(title)) {
+            return stages.get(title);
+        } else {
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(gridPane));
+            stage.setX(Screen.getPrimary().getBounds().getMaxX() - 500);
+            stages.put(title, stage);
+            return stage;
         }
-        return drawLineStage;
-    }
-
-    public static Stage getImageOperationsStage(GridPane gridPane){
-        if(imageOperationsStage == null){
-            imageOperationsStage = new Stage();
-            imageOperationsStage.setTitle("Choose operation");
-            imageOperationsStage.setAlwaysOnTop(true);
-            imageOperationsStage.setScene(new Scene(gridPane,500,500));
-            imageOperationsStage.setX(Screen.getPrimary().getBounds().getMaxX() - 450);
-        }
-        return imageOperationsStage;
     }
 }

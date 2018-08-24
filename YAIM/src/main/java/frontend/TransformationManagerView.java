@@ -57,6 +57,7 @@ public class TransformationManagerView extends GridPane {
         Integer index = transformationManager.addTransformation(transformation);
         Pane pane = getNewTransPane(index, transformationManager);
         add(pane,index,0);
+        previewImageView.setImage(ImagesRepository.NO_IMAGE);
     }
 
     public Image getImage(){

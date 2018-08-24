@@ -54,7 +54,7 @@ public class MenusRepository {
         ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
 
         menuItem.setOnAction( event -> {
-            StagesRepository.getImageOperationsStage(imageOperationsControl).show();
+            StagesRepository.getStage("Image Operations",imageOperationsControl).show();
         });
 
         imageMenu.getItems().add(menuItem);

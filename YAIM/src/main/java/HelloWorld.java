@@ -78,7 +78,8 @@ public class HelloWorld extends Application {
         //When the button is clicked, a new window appears with the auxiliary controls
         button.setOnMouseClicked( buttonClickEvent -> {
             //Get the window where the auxiliary panel will be put
-            Stage stage = StagesRepository.getDrawLineStage(focusablePane);
+            Stage stage = StagesRepository.getStage("Draw line",focusablePane);
+
             //Show the window
             stage.show();
             //Trigger the focus checks, so it captures the mouse input events
@@ -98,15 +99,6 @@ public class HelloWorld extends Application {
     }
 
 
-    public Button getBinaryButton(){
-        Button button = new Button();
-        button.setText("Binary");
-        button.setOnMouseClicked( buttonClickEvent -> {
-            Transformation transformation = new BinaryTransformation(0.5);
-            transformationManagerView.addTransformation(transformation);
-        });
-        return button;
-    }
 
     public Button getGradientMenu(){
         Button button = new Button();
@@ -146,12 +138,10 @@ public class HelloWorld extends Application {
         currentImage = setupCurrentImageView();
         ScrollPane currentScrollPane = new ScrollPane();
         currentScrollPane.setContent(currentImage);
-//        currentScrollPane.setPrefSize(400,400);
 
         previewImage = setupCurrentImageView();
         ScrollPane previewScrollPane = new ScrollPane();
         previewScrollPane.setContent(previewImage);
-//        previewScrollPane.setPrefSize(400,400);
 
         rgbChooserView = new RGBChooserView(currentImage);
         TransformationManager transformationManager = new TransformationManager(currentImage.getWritableImage());
@@ -178,7 +168,7 @@ public class HelloWorld extends Application {
         root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,3);
         root.add(getDrawLineAtButton(),6,3);
         root.add(getNegativeButton(),7,3);
-        root.add(getBinaryButton(),9,3);
+        root.add(ThingsRepository.getBinaryButton(transformationManagerView),9,3);
 
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
@@ -189,8 +179,6 @@ public class HelloWorld extends Application {
         HBox hBox = new HBox();
         hBox.getChildren().addAll(currentScrollPane,previewScrollPane);
         root.add(hBox,0,5,15,5);
-//        root.add(currentScrollPane,0,5, 5,5);
-//        root.add(previewScrollPane,5,5,5,5);
 
         primaryStage.setTitle("Yet Another Image Editor");
         primaryStage.setScene(scene);

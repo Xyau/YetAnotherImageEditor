@@ -4,20 +4,15 @@ import backend.EventManageableImageView;
 import backend.FocusablePane;
 import backend.Pixel;
 import backend.Utils;
-import frontend.ImageLoadControl;
-import frontend.ImageOperationsControl;
-import frontend.PixelPickerControlPane;
-import frontend.TransformationManagerView;
+import frontend.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import transformations.DarkenTransformation;
-import transformations.DrawLineTransformation;
-import transformations.DrawSquareTransformation;
-import transformations.Transformation;
+import transformations.*;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -68,16 +63,25 @@ public class ThingsRepository {
         return button;
     }
 
-    public Button getDrawCircleAtButton(TransformationManagerView transformationManagerView){
+
+    public static Button getBinaryButton(TransformationManagerView transformationManagerView){
         Button button = new Button();
-        button.setText("Draw circle");
-        button.setOnMouseClicked( buttonClickEvent -> {
-//                Transformation transformation = new ;
-//                transformationManagerView.addTransformation(transformation);
+        button.setText("Binary");
+
+        GridPane gridPane = new GridPane();
+        SliderControl sliderControl = new SliderControl("Threshold",0.0,255.0,1.0,(x,y)->{
+            transformationManagerView.preview(new BinaryTransformation(y.doubleValue()/255.0));
         });
+        Button apply = new Button("Apply");
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new BinaryTransformation(sliderControl.getSelectedValue().get()/255));
+        });
+        gridPane.add(sliderControl,0,0);
+        gridPane.add(apply,0,1);
+        button.setOnMouseClicked( buttonClickEvent -> {
+            StagesRepository.getStage("Threshold", gridPane).show();
+        });
+
         return button;
     }
-
-
-
 }
