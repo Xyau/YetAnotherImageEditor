@@ -11,6 +11,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.DrawHistogramTransformation;
+import transformations.DynamicRangeCompressionTransformation;
 import transformations.MedianFilterTransformation;
 
 import java.io.File;
@@ -51,20 +53,26 @@ public class MenusRepository {
 
     public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
         Menu imageMenu = new Menu("Image");
-        MenuItem menuItem = new MenuItem("Image Operations");
+        MenuItem imageOperations = new MenuItem("Image Operations");
         ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
 
-        menuItem.setOnAction( event -> {
+        imageOperations.setOnAction( event -> {
             StagesRepository.getStage("Image Operations",imageOperationsControl).show();
         });
 
-        imageMenu.getItems().add(menuItem);
+        MenuItem histogram = new MenuItem("Histogram");
+        histogram.setOnAction( event -> {
+            transformationManagerView.preview(new DrawHistogramTransformation());
+        });
+
+        imageMenu.getItems().add(histogram);
+        imageMenu.getItems().add(imageOperations);
         return imageMenu;
     }
 
     public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Filter");
-        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView));
+        fileMenu.getItems().addAll(getDynamicRangeCompressionMenuItem(transformationManagerView), getMedianFilterMenuItem(transformationManagerView));
         return fileMenu;
     }
 
@@ -72,6 +80,14 @@ public class MenusRepository {
         MenuItem item = new MenuItem("Median Filter 3x3");
         item.setOnAction(event -> {
             transformationManagerView.addTransformation(new MedianFilterTransformation());
+        });
+        return item;
+    }
+
+    private static MenuItem getDynamicRangeCompressionMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Dynamic Range Compression");
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new DynamicRangeCompressionTransformation());
         });
         return item;
     }

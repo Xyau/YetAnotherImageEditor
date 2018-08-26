@@ -12,6 +12,14 @@ public class ColorUtils {
         return new Color(red,blue,green,alpha);
     }
 
+    public static Color substractColors(Color c1, Color c2){
+        Double red = (c1.getRed() - c2.getRed());
+        Double blue = (c1.getBlue() - c2.getBlue());
+        Double green = (c1.getGreen() - c2.getGreen());
+        Double alpha = (c1.getOpacity() - c2.getOpacity());
+        return new Color(red,blue,green,alpha);
+    }
+
     public static Color multiplyColors(Color c1, Color c2){
         Double red = (c1.getRed() * c2.getRed());
         Double blue = (c1.getBlue() * c2.getBlue());
