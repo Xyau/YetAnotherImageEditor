@@ -170,6 +170,7 @@ public class HelloWorld extends Application {
         root.add(getDrawLineAtButton(),6,3);
         root.add(getNegativeButton(),7,3);
         root.add(ThingsRepository.getBinaryButton(transformationManagerView),8,3);
+        root.add(ThingsRepository.getGammaButton(transformationManagerView),9,3);
 
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();

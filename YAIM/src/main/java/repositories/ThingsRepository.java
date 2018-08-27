@@ -92,4 +92,25 @@ public class ThingsRepository {
 
         return button;
     }
+
+    public static Button getGammaButton(TransformationManagerView transformationManagerView){
+        Button button = new Button();
+        button.setText("Gamma Function");
+
+        GridPane gridPane = new GridPane();
+        SliderControl sliderControl = new SliderControl("Gamma",0.0,1.0,0.05,(x,y)->{
+            transformationManagerView.preview(new GammaTransformation(y.doubleValue()));
+        });
+        Button apply = new Button("Apply");
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new GammaTransformation(sliderControl.getSelectedValue().get()));
+        });
+        gridPane.add(sliderControl,0,0);
+        gridPane.add(apply,0,1);
+        button.setOnMouseClicked( buttonClickEvent -> {
+            StagesRepository.getStage("Threshold", gridPane).show();
+        });
+
+        return button;
+    }
 }
