@@ -33,13 +33,13 @@ public class RGBChooserView {
         this.writableImageView = writableImageView;
 
         redArea = initTextField(0);
-        blueArea = initTextField(1);
-        greenArea = initTextField(2);
+        greenArea = initTextField(1);
+        blueArea = initTextField(2);
         alphaArea = initTextField(3);
 
         redText = initText(new Text(),0,"R:");
-        blueText = initText(new Text(),1,"B:");
-        greenText = initText(new Text(),2,"G:");
+        greenText = initText(new Text(),1,"G:");
+        blueText = initText(new Text(),2,"B:");
         alphaText = initText(new Text(),3,"A:");
 
         setColorButton = new Button();
