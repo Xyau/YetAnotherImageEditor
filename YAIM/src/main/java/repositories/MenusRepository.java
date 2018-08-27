@@ -1,6 +1,7 @@
 package repositories;
 
 import backend.ImageUtils;
+import backend.SyntheticGenerator;
 import frontend.ImageOperationsControl;
 import frontend.SliderControl;
 import frontend.TextAreaControlPane;
@@ -68,6 +69,41 @@ public class MenusRepository {
         return item;
     }
 
+    public static Menu getShapesMenu(TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Shapes");
+        fileMenu.getItems().addAll(getGenerateSquare(transformationManagerView),
+                                   getGenerateCircle(transformationManagerView),
+                                   getGenerateStripes(transformationManagerView));
+        return fileMenu;
+    }
+
+    private static MenuItem getGenerateSquare(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Create Square");
+        item.setOnAction(event -> {
+            WritableImage image = SyntheticGenerator.squareGenerator();
+            transformationManagerView.setInitialImage(image);
+        });
+        return item;
+    }
+
+    private static MenuItem getGenerateCircle(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Create Circle");
+        item.setOnAction(event -> {
+            WritableImage image = SyntheticGenerator.circleGenerator();
+            transformationManagerView.setInitialImage(image);
+        });
+        return item;
+    }
+
+    private static MenuItem getGenerateStripes(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Create Stripes");
+        item.setOnAction(event -> {
+            WritableImage image = SyntheticGenerator.stripesGenerator();
+            transformationManagerView.setInitialImage(image);
+        });
+        return item;
+    }
+
     public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
         Menu imageMenu = new Menu("Image");
         MenuItem imageOperations = new MenuItem("Image Operations");
@@ -89,8 +125,18 @@ public class MenusRepository {
 
         imageMenu.getItems().add(histogram);
         imageMenu.getItems().add(equalization);
+        imageMenu.getItems().add(getDynamicRangeCompressionMenuItem(transformationManagerView));
         imageMenu.getItems().add(imageOperations);
         return imageMenu;
+    }
+
+
+    private static MenuItem getDynamicRangeCompressionMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Dynamic Range Compression");
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new DynamicRangeCompressionTransformation());
+        });
+        return item;
     }
 
     public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
@@ -98,8 +144,7 @@ public class MenusRepository {
         fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
                                     getMeanFilterMenuItem(transformationManagerView),
                                     getWeighedMedianFilterMenuItem(transformationManagerView),
-                                    getGaussianFilterMenuItem(transformationManagerView),
-                                    getDynamicRangeCompressionMenuItem(transformationManagerView));
+                                    getGaussianFilterMenuItem(transformationManagerView));
         return fileMenu;
     }
 
@@ -192,12 +237,5 @@ public class MenusRepository {
         });
 
         return menuItem;
-    }
-    private static MenuItem getDynamicRangeCompressionMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Dynamic Range Compression");
-        item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new DynamicRangeCompressionTransformation());
-        });
-        return item;
     }
 }
