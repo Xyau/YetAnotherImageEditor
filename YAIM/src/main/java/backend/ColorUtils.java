@@ -3,6 +3,8 @@ package backend;
 
 import javafx.scene.paint.Color;
 
+import java.util.List;
+
 public class ColorUtils {
     public static Color addColors(Color c1, Color c2){
         Double red = (c1.getRed() + c2.getRed())/2;
@@ -19,4 +21,5 @@ public class ColorUtils {
         Double alpha = (c1.getOpacity() * c2.getOpacity());
         return new Color(red,blue,green,alpha);
     }
+
 }

@@ -152,7 +152,8 @@ public class HelloWorld extends Application {
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(MenusRepository.getFileMenu(primaryStage,transformationManagerView),
                                 MenusRepository.getImageMenu(scene,transformationManagerView),
-                                MenusRepository.getFilterMenu(transformationManagerView));
+                                MenusRepository.getFilterMenu(transformationManagerView),
+                                MenusRepository.getNoiseMenu(transformationManagerView));
         root.add(menuBar,0,0);
 
 
@@ -172,6 +173,7 @@ public class HelloWorld extends Application {
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
         root.add(rgbChooser,0,4);
+        root.add(ThingsRepository.getPreviewButton(transformationManagerView),1,4);
         root.setColumnSpan(rgbChooser, 10);
 
         // Row 5: Images
