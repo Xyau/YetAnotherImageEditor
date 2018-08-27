@@ -63,12 +63,21 @@ public class ThingsRepository {
         return button;
     }
 
+    public static Button getPreviewButton(TransformationManagerView transformationManagerView){
+        Button button = new Button();
+        button.setText("Preview");
+        button.setOnMouseClicked( buttonClickEvent -> {
+            transformationManagerView.preview(new NoChangeTransformation());
+        });
+        return button;
+    }
+
     public static Button getBinaryButton(TransformationManagerView transformationManagerView){
         Button button = new Button();
         button.setText("Binary");
 
         GridPane gridPane = new GridPane();
-        SliderControl sliderControl = new SliderControl("Threshold",0.0,255.0,1.0,(x,y)->{
+        SliderControl sliderControl = new SliderControl("Threshold",0.0,255.0,25.5,(x,y)->{
             transformationManagerView.preview(new BinaryTransformation(y.doubleValue()/255.0));
         });
         Button apply = new Button("Apply");

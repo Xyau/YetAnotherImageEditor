@@ -2,6 +2,8 @@ package repositories;
 
 import backend.ImageUtils;
 import frontend.ImageOperationsControl;
+import frontend.SliderControl;
+import frontend.TextAreaControlPane;
 import frontend.TransformationManagerView;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
@@ -9,9 +11,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import transformations.MedianFilterTransformation;
+import transformations.*;
 
 import java.io.File;
 
@@ -64,15 +68,102 @@ public class MenusRepository {
 
     public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Filter");
-        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView));
+        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
+                                    getMeanFilterMenuItem(transformationManagerView),
+                                    getWeighedMedianFilterMenuItem(transformationManagerView),
+                                    getGaussianFilterMenuItem(transformationManagerView));
         return fileMenu;
     }
 
     private static MenuItem getMedianFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Median Filter 3x3");
+        MenuItem item = new MenuItem("Median Filter");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
+        SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
+            result.setText(String.valueOf(y.intValue()));
+            transformationManagerView.preview(new MedianFilterTransformation(y.intValue()));
+        });
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new MedianFilterTransformation(sliderControl.getSelectedValue().get().intValue()));
+        });
+        gridPane.add(sliderControl,0,0);
+        gridPane.add(apply,0,1);
+        gridPane.add(result,1,1 );
         item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new MedianFilterTransformation());
+            StagesRepository.getStage("Median Filter", gridPane).show();
         });
         return item;
     }
+
+    private static MenuItem getWeighedMedianFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Weighed Median Filter");
+
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new WeighedMedianFilterTransformation());
+        });
+        return item;
+    }
+
+    private static MenuItem getMeanFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Mean Filter");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
+        SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
+            result.setText(String.valueOf(y.intValue()));
+            transformationManagerView.preview(new MeanFilterTransformation(y.intValue()));
+        });
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new MeanFilterTransformation(sliderControl.getSelectedValue().get().intValue()));
+        });
+        gridPane.add(sliderControl,0,0);
+        gridPane.add(apply,0,1);
+        gridPane.add(result,1,1 );
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Mean Filter", gridPane).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getGaussianFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Gaussian Filter");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
+        SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
+            result.setText(String.valueOf(y.intValue()));
+            transformationManagerView.preview(new MeanFilterTransformation(y.intValue()));
+        });
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new MeanFilterTransformation(sliderControl.getSelectedValue().get().intValue()));
+        });
+        gridPane.add(sliderControl,0,0);
+        gridPane.add(apply,0,1);
+        gridPane.add(result,1,1 );
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Gaussian Filter", gridPane).show();
+        });
+        return item;
+    }
+
+    public static Menu getNoiseMenu(TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Noise");
+        fileMenu.getItems().addAll(getSaltAndPepperNoiseTransformation(transformationManagerView));
+        return fileMenu;
+    }
+
+    private static MenuItem getSaltAndPepperNoiseTransformation(TransformationManagerView transformationManagerView) {
+        MenuItem menuItem = new MenuItem("Salt and pepper");
+
+        menuItem.setOnAction( event -> {
+            transformationManagerView.addTransformation(new SaltAndPeperTransformation(0L,0.2,0.2));
+        });
+
+        return menuItem;
+    }
+
 }
