@@ -27,7 +27,7 @@ public class MenusRepository {
     public static Menu getFileMenu(Stage stage, TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().addAll(getSaveMenuItem(stage,transformationManagerView),
-                getLoadMenuItem(stage,transformationManagerView));
+                getSavePreviewMenuItem(stage, transformationManagerView), getLoadMenuItem(stage,transformationManagerView));
         return fileMenu;
     }
 
@@ -39,6 +39,18 @@ public class MenusRepository {
             fileChooser.setSelectedExtensionFilter(ThingsRepository.EXTENSION_FILTER);
             File file = fileChooser.showSaveDialog(stage);
             ImageUtils.writeImage(SwingFXUtils.fromFXImage(transformationManagerView.getImage(),null),file);
+        });
+        return item;
+    }
+
+    private static MenuItem getSavePreviewMenuItem(final Stage stage, TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Save Preview");
+        item.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Resource File");
+            fileChooser.setSelectedExtensionFilter(ThingsRepository.EXTENSION_FILTER);
+            File file = fileChooser.showSaveDialog(stage);
+            ImageUtils.writeImage(SwingFXUtils.fromFXImage(transformationManagerView.getPreview(),null),file);
         });
         return item;
     }
@@ -70,7 +82,13 @@ public class MenusRepository {
             transformationManagerView.preview(new DrawHistogramTransformation());
         });
 
+        MenuItem equalization = new MenuItem("Equalization");
+        equalization.setOnAction( event -> {
+            transformationManagerView.addTransformation(new HistogramEqualizationTransformation());
+        });
+
         imageMenu.getItems().add(histogram);
+        imageMenu.getItems().add(equalization);
         imageMenu.getItems().add(imageOperations);
         return imageMenu;
     }

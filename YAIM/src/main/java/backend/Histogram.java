@@ -16,6 +16,12 @@ public class Histogram {
                 histogramBlue[new Double(writableImage.getPixelReader().getColor(i,j).getBlue() * 255).intValue()] += 1;
             }
         }
+
+        for (int i = 0; i < histogramBlue.length; i++) {
+            histogramRed[i] /= pixelCount;
+            histogramGreen[i] /= pixelCount;
+            histogramBlue[i] /= pixelCount;
+        }
     }
 
     public double[] getHistogramRed() {

@@ -13,8 +13,8 @@ public class DrawHistogramTransformation implements Transformation {
 
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
-//        final BarChart<String,Number> chart = new BarChart<>(xAxis,yAxis);
-        final LineChart<String,Number> chart = new LineChart<>(xAxis,yAxis);
+        final BarChart<String,Number> chart = new BarChart<>(xAxis,yAxis);
+//        final LineChart<String,Number> chart = new LineChart<>(xAxis,yAxis);
         chart.setTitle("Histogram");
         chart.setStyle("-fx-background-color: rgba(0,168,355,0.05);-fx-background-radius: 10;");
 

@@ -173,7 +173,7 @@ public class HelloWorld extends Application {
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
         root.add(rgbChooser,0,4);
-        root.add(ThingsRepository.getPreviewButton(transformationManagerView),1,4);
+        root.add(ThingsRepository.getPreviewButton(transformationManagerView),8,4);
         root.setColumnSpan(rgbChooser, 10);
 
         // Row 5: Images
