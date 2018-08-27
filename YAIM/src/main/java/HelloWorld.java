@@ -88,16 +88,6 @@ public class HelloWorld extends Application {
         return button;
     }
 
-    public Button getNegativeButton(){
-        Button button = new Button();
-        button.setText("Negative");
-        button.setOnMouseClicked( buttonClickEvent -> {
-            Transformation transformation = new NegativeTransformation();
-            transformationManagerView.addTransformation(transformation);
-        });
-        return button;
-    }
-
     public Button getGradientMenu(){
         Button button = new Button();
         button.setLayoutX(600);
@@ -165,12 +155,8 @@ public class HelloWorld extends Application {
         // Row 3: Filters
         root.add(getDrawCircleAtButton(),0,3);
         root.add(getGradientMenu(),1,3);
-        root.add(getNegativeButton(),4,3);
-        root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,3);
-        root.add(getDrawLineAtButton(),6,3);
-        root.add(getNegativeButton(),7,3);
-        root.add(ThingsRepository.getBinaryButton(transformationManagerView),8,3);
-        root.add(ThingsRepository.getGammaButton(transformationManagerView),9,3);
+        root.add(ThingsRepository.getDarkenButton(transformationManagerView),2,3);
+        root.add(getDrawLineAtButton(),3,3);
 
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
