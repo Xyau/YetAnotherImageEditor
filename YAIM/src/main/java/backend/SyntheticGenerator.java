@@ -5,8 +5,10 @@ import javafx.scene.paint.Color;
 
 public class SyntheticGenerator {
 
+    private static int imageWidth = 100, imageHeight = 100;
+
     public static WritableImage squareGenerator() {
-        WritableImage wr = new WritableImage(600, 600);
+        WritableImage wr = new WritableImage(imageWidth, imageHeight);
         int width = new Double(wr.getWidth()).intValue();
         int height = new Double(wr.getHeight()).intValue();
         for (int i = 0; i < width; i++) {
@@ -24,7 +26,7 @@ public class SyntheticGenerator {
     }
 
     public static WritableImage circleGenerator() {
-        WritableImage wr = new WritableImage(600, 600);
+        WritableImage wr = new WritableImage(imageWidth, imageHeight);
         int width = new Double(wr.getWidth()).intValue();
         int height = new Double(wr.getHeight()).intValue();
         for (int i = 0; i < width; i++) {
@@ -42,7 +44,7 @@ public class SyntheticGenerator {
     }
 
     public static WritableImage stripesGenerator() {
-        WritableImage wr = new WritableImage(600, 600);
+        WritableImage wr = new WritableImage(imageWidth, imageHeight);
         int width = new Double(wr.getWidth()).intValue();
         int height = new Double(wr.getHeight()).intValue();
         for (int i = 0; i < width; i++) {
