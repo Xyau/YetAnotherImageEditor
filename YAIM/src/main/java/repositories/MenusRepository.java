@@ -15,6 +15,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.DrawHistogramTransformation;
+import transformations.DynamicRangeCompressionTransformation;
+import transformations.MedianFilterTransformation;
 import transformations.*;
 
 import java.io.File;
@@ -55,14 +58,20 @@ public class MenusRepository {
 
     public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
         Menu imageMenu = new Menu("Image");
-        MenuItem menuItem = new MenuItem("Image Operations");
+        MenuItem imageOperations = new MenuItem("Image Operations");
         ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
 
-        menuItem.setOnAction( event -> {
+        imageOperations.setOnAction( event -> {
             StagesRepository.getStage("Image Operations",imageOperationsControl).show();
         });
 
-        imageMenu.getItems().add(menuItem);
+        MenuItem histogram = new MenuItem("Histogram");
+        histogram.setOnAction( event -> {
+            transformationManagerView.preview(new DrawHistogramTransformation());
+        });
+
+        imageMenu.getItems().add(histogram);
+        imageMenu.getItems().add(imageOperations);
         return imageMenu;
     }
 
@@ -71,7 +80,8 @@ public class MenusRepository {
         fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
                                     getMeanFilterMenuItem(transformationManagerView),
                                     getWeighedMedianFilterMenuItem(transformationManagerView),
-                                    getGaussianFilterMenuItem(transformationManagerView));
+                                    getGaussianFilterMenuItem(transformationManagerView),
+                                    getDynamicRangeCompressionMenuItem(transformationManagerView));
         return fileMenu;
     }
 
@@ -165,5 +175,11 @@ public class MenusRepository {
 
         return menuItem;
     }
-
+    private static MenuItem getDynamicRangeCompressionMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Dynamic Range Compression");
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new DynamicRangeCompressionTransformation());
+        });
+        return item;
+    }
 }

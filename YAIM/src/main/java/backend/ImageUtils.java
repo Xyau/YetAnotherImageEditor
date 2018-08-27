@@ -61,7 +61,6 @@ public class ImageUtils {
         return imageToWriteIn;
     }
 
-
     public static WritableImage transferImageTo(WritableImage writableImage, Image image){
         for (int y = 0; y < writableImage.getHeight(); y++){
             for (int x = 0; x < writableImage.getWidth(); x++){
@@ -123,5 +122,21 @@ public class ImageUtils {
 
     public static WritableImage getImageFromGraphicsContext(GraphicsContext gc, WritableImage writableImage){
         return gc.getCanvas().snapshot(null,writableImage);
+    }
+
+    public static double[] getHistogram(Image image) {
+        double[] histogram = new double[256];
+        Long pixelCount = new Double(image.getHeight()).longValue() * new Double(image.getWidth()).longValue();
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
+                histogram[new Double(image.getPixelReader().getColor(i,j).getRed() * 255).intValue()] += 1;
+            }
+        }
+
+        for (int i = 0; i < histogram.length; i++) {
+            histogram[i] /= pixelCount;
+        }
+
+        return histogram;
     }
 }

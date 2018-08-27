@@ -98,8 +98,6 @@ public class HelloWorld extends Application {
         return button;
     }
 
-
-
     public Button getGradientMenu(){
         Button button = new Button();
         button.setLayoutX(600);
@@ -170,7 +168,7 @@ public class HelloWorld extends Application {
         root.add(ThingsRepository.getDarkenButton(transformationManagerView),5,3);
         root.add(getDrawLineAtButton(),6,3);
         root.add(getNegativeButton(),7,3);
-        root.add(ThingsRepository.getBinaryButton(transformationManagerView),9,3);
+        root.add(ThingsRepository.getBinaryButton(transformationManagerView),8,3);
 
         // Row 4: Color pane
         Node rgbChooser = rgbChooserView.getPane();
