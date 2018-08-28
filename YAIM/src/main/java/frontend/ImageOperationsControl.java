@@ -1,5 +1,7 @@
 package frontend;
 
+import backend.ImageUtils;
+import backend.Utils;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
@@ -13,6 +15,7 @@ public class ImageOperationsControl extends GridPane {
     private Button addButton;
     private Button multiplyButton;
     private Button substractButton;
+    private Button getFromPreview;
 
     private Button applyButton;
 
@@ -25,6 +28,7 @@ public class ImageOperationsControl extends GridPane {
         multiplyButton = new Button("Multiply");
         substractButton = new Button("Substract");
         applyButton = new Button("Apply");
+        getFromPreview = new Button("Get from preview");
 
         addButton.setOnMouseClicked((x) -> {
             if(imageLoadControl.getImage().isPresent()){
@@ -47,6 +51,10 @@ public class ImageOperationsControl extends GridPane {
             }
         });
 
+        getFromPreview.setOnMouseClicked((x)->{
+            imageLoadControl.setImage(ImageUtils.copyImage(transformationManagerView.getPreview()));
+        });
+
         applyButton.setOnMouseClicked((x) -> {
             transformationManagerView.addTransformation(activeTransformation);
         });
@@ -55,6 +63,7 @@ public class ImageOperationsControl extends GridPane {
         add(addButton,1,0);
         add(multiplyButton,2,0);
         add(applyButton,3,0);
+        add(getFromPreview,4,0);
         add(imageLoadControl,0,1,5,1);
     }
 }

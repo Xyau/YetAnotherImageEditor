@@ -71,9 +71,9 @@ public class ImageUtils {
                 if(isPixelInImage(image,new Pixel(i,j))){
                     Color writableColor = imageToWriteIn.getPixelReader().getColor(i,j);
                     Color color = image.getPixelReader().getColor(i,j);
-                    DenormalizedColor resultColor = function.apply(writableColor,color);
-                    min = Utils.getMin(min,resultColor);
-                    max = Utils.getMax(max,resultColor);
+                    denormalizedColors[j][i] = function.apply(writableColor,color);
+                    min = Utils.getMin(min,denormalizedColors[j][i]);
+                    max = Utils.getMax(max,denormalizedColors[j][i]);
                 }
             }
         }
@@ -108,13 +108,13 @@ public class ImageUtils {
     }
 
     public static Boolean isPixelInImage(Image image, Pixel pixel){
-        return pixel.getX() > 0 && pixel.getX() < image.getWidth() &&
-                pixel.getY() > 0 && pixel.getY() < image.getHeight();
+        return pixel.getX() >= 0 && pixel.getX() < image.getWidth() &&
+                pixel.getY() >= 0 && pixel.getY() < image.getHeight();
     }
 
     public static Boolean isPixelInImage(Image image, Integer x, Integer y){
-        return x > 0 && x < image.getWidth() &&
-                y > 0 && y < image.getHeight();
+        return x >= 0 && x < image.getWidth() &&
+                y >= 0 && y < image.getHeight();
     }
 
     public static WritableImage readImage(String path){

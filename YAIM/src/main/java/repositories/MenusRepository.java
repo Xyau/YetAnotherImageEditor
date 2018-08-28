@@ -21,6 +21,7 @@ import transformations.MedianFilterTransformation;
 import transformations.*;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MenusRepository {
 
@@ -281,21 +282,26 @@ public class MenusRepository {
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
         TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
+        AtomicReference<Double> sigma = new AtomicReference<>(1.0);
+        AtomicReference<Integer> filterSize = new AtomicReference<>(1);
         SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
             result.setText(String.valueOf(y.intValue()));
-            transformationManagerView.preview(new GaussianFilterTransformation(y.intValue(),1.0));
+            filterSize.set(y.intValue());
+            transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
 
-        SliderControl sliderControl = new SliderControl("Sigma",1.0,5.0,1.0,(x, y)->{
+        SliderControl stdSlider = new SliderControl("Sigma",1.0,5.0,1.0,(x, y)->{
             result.setText(String.valueOf(y.intValue()));
-            transformationManagerView.preview(new GaussianFilterTransformation(y.intValue(),1.0));
+            sigma.set(y.doubleValue());
+            transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
         apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new GaussianFilterTransformation(sliderControl.getSelectedValue().get().intValue(),1.0));
+            transformationManagerView.addTransformation(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
-        gridPane.add(sliderControl,0,0);
-        gridPane.add(apply,0,1);
-        gridPane.add(result,1,1 );
+        gridPane.add(filterSizeSlider,0,0);
+        gridPane.add(stdSlider,0,1);
+        gridPane.add(apply,0,2);
+        gridPane.add(result,1,2 );
         item.setOnAction(event -> {
             StagesRepository.getStage("Gaussian Filter", gridPane).show();
         });

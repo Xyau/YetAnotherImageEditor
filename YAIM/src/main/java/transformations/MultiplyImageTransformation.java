@@ -14,7 +14,7 @@ public class MultiplyImageTransformation implements Transformation {
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
-        return ImageUtils.transformImages(writableImage,image, ColorUtils::multiplyColors);
+        return ImageUtils.transformImagesNormalized(writableImage,image, ColorUtils::multiplyColors);
     }
 
     @Override
