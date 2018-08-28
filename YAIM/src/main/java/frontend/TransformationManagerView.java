@@ -1,6 +1,8 @@
 package frontend;
 
 import backend.ImageUtils;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import repositories.ImagesRepository;
@@ -13,6 +15,8 @@ import transformations.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 public class TransformationManagerView extends GridPane {
 
@@ -22,6 +26,9 @@ public class TransformationManagerView extends GridPane {
     private List<ImageView> transformationImageViews;
     private ImageView linkedImageView;
     private ImageView previewImageView;
+    private Cache<Transformation, Image> cache = CacheBuilder.newBuilder()
+            .maximumSize(30)
+            .build();
 
     public TransformationManagerView(TransformationManager transformationManager, ImageView linkedImageView, ImageView previewImageView) {
         this.transformationManager = transformationManager;
@@ -57,6 +64,8 @@ public class TransformationManagerView extends GridPane {
         Integer index = transformationManager.addTransformation(transformation);
         Pane pane = getNewTransPane(index, transformationManager);
         add(pane,index,0);
+        setHgap(1.5);
+        cache.invalidateAll();
 //        previewImageView.setImage(ImagesRepository.NO_IMAGE);
     }
 
@@ -69,13 +78,25 @@ public class TransformationManagerView extends GridPane {
     }
 
     public void preview(Transformation activeTransformation) {
-        previewImageView.setImage(activeTransformation.transform(ImageUtils.copyImage(getImage())));
+        Image image = null;
+        try {
+            image =   cache.get(activeTransformation, () ->
+                    activeTransformation.transform(ImageUtils.copyImage(getImage())));
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        if(image == null){
+            image =activeTransformation.transform(ImageUtils.copyImage(getImage()));
+            System.out.println("ERROR, CACHE FAILED");
+        }
+        previewImageView.setImage(image);
     }
 
     public void setInitialImage(Image initialImage){
         transformationManager.setInitialImage(initialImage);
         linkedImageView.setImage(transformationManager.getImage());
         previewImageView.setImage(ImagesRepository.NO_IMAGE);
+        cache.invalidateAll();
         for (int i = 0; i < transformationImageViews.size(); i++) {
             transformationImageViews.get(i).setImage(transformationManager.getImageAt(i));
         }

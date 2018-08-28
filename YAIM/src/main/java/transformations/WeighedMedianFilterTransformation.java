@@ -10,6 +10,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,6 +50,19 @@ public class WeighedMedianFilterTransformation extends FilterTransformation{
     @Override
     DenormalizedColor processNeighborsDenormalized(List<ColorPixel> neighbors) {
         throw new IllegalStateException("Median not normalized");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WeighedMedianFilterTransformation that = (WeighedMedianFilterTransformation) o;
+        return Arrays.equals(filter, that.filter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(filter);
     }
 
     //Public for testing

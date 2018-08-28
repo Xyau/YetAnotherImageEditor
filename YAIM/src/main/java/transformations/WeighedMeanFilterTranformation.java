@@ -4,6 +4,7 @@ import backend.ColorPixel;
 import backend.DenormalizedColor;
 import javafx.scene.paint.Color;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class WeighedMeanFilterTranformation extends FilterTransformation {
@@ -50,5 +51,18 @@ public class WeighedMeanFilterTranformation extends FilterTransformation {
                 green/(neighbors.size()*totalWeight),
                 blue/(neighbors.size()*totalWeight),
                 alpha);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WeighedMeanFilterTranformation that = (WeighedMeanFilterTranformation) o;
+        return Arrays.equals(filter, that.filter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(filter);
     }
 }

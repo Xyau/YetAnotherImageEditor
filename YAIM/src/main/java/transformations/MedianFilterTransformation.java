@@ -9,13 +9,15 @@ import java.util.List;
 
 public class MedianFilterTransformation extends FilterTransformation {
     public MedianFilterTransformation(Integer filterSize) {
-        super(filterSize,false);
+        super(filterSize, false);
     }
 
     //Public for testing
     @Override
     public Color processNeighbors(List<ColorPixel> neighbors) {
         neighbors.sort(Comparator.comparingDouble(c -> c.getColor().getBrightness()));
-        return neighbors.get(Utils.toInteger(neighbors.size()/2)).getColor();
+        return neighbors.get(Utils.toInteger(neighbors.size() / 2)).getColor();
     }
+
+
 }

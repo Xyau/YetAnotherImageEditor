@@ -3,14 +3,12 @@ package transformations;
 import backend.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.DeflaterOutputStream;
+import java.util.Objects;
 
 public abstract class FilterTransformation implements Transformation {
     Integer filterSize;
@@ -55,7 +53,20 @@ public abstract class FilterTransformation implements Transformation {
         return writableImage;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FilterTransformation that = (FilterTransformation) o;
+        return Objects.equals(filterSize, that.filterSize) &&
+                Objects.equals(normalize, that.normalize);
+    }
 
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(filterSize, normalize);
+    }
 
     DenormalizedColor processNeighborsDenormalized(List<ColorPixel> neighbors){
         throw new IllegalStateException("Not normalized");
@@ -87,4 +98,6 @@ public abstract class FilterTransformation implements Transformation {
     public String getDescription() {
         return "Filters the image";
     }
+
+
 }

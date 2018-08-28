@@ -8,10 +8,26 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 
+import java.util.Objects;
+
 
 public class BinaryTransformation implements Transformation {
 
     double threashold;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryTransformation that = (BinaryTransformation) o;
+        return Double.compare(that.threashold, threashold) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(threashold);
+    }
 
     public BinaryTransformation(double threashold) {
         this.threashold = threashold;

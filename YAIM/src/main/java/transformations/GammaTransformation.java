@@ -3,10 +3,26 @@ package transformations;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
+
 
 public class GammaTransformation implements Transformation {
 
     double gamma;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GammaTransformation that = (GammaTransformation) o;
+        return Double.compare(that.gamma, gamma) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(gamma);
+    }
 
     public GammaTransformation(double gamma) {
         this.gamma = gamma;

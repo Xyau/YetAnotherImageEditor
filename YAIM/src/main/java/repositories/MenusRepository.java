@@ -2,6 +2,7 @@ package repositories;
 
 import backend.ImageUtils;
 import backend.SyntheticGenerator;
+import backend.Utils;
 import frontend.ImageOperationsControl;
 import frontend.SliderControl;
 import frontend.TextAreaControlPane;
@@ -11,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
@@ -210,9 +212,7 @@ public class MenusRepository {
 
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
-        TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
         SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            result.setText(String.valueOf(y.intValue()));
             transformationManagerView.preview(new MedianFilterTransformation(y.intValue()));
         });
         apply.setOnMouseClicked( event -> {
@@ -220,7 +220,6 @@ public class MenusRepository {
         });
         gridPane.add(sliderControl,0,0);
         gridPane.add(apply,0,1);
-        gridPane.add(result,1,1 );
         item.setOnAction(event -> {
             StagesRepository.getStage("Median Filter", gridPane).show();
         });
@@ -259,9 +258,7 @@ public class MenusRepository {
 
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
-        TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
         SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            result.setText(String.valueOf(y.intValue()));
             transformationManagerView.preview(new MeanFilterTransformation(y.intValue()));
         });
         apply.setOnMouseClicked( event -> {
@@ -269,7 +266,6 @@ public class MenusRepository {
         });
         gridPane.add(sliderControl,0,0);
         gridPane.add(apply,0,1);
-        gridPane.add(result,1,1 );
         item.setOnAction(event -> {
             StagesRepository.getStage("Mean Filter", gridPane).show();
         });
@@ -281,27 +277,24 @@ public class MenusRepository {
 
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
-        TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
         AtomicReference<Double> sigma = new AtomicReference<>(1.0);
         AtomicReference<Integer> filterSize = new AtomicReference<>(1);
         SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            result.setText(String.valueOf(y.intValue()));
             filterSize.set(y.intValue());
             transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
 
-        SliderControl stdSlider = new SliderControl("Sigma",1.0,5.0,1.0,(x, y)->{
-            result.setText(String.valueOf(y.intValue()));
+        SliderControl stdSlider = new SliderControl("Sigma",0.5,5.0,1.0,(x, y)->{
             sigma.set(y.doubleValue());
             transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
+        stdSlider.setSliderValue(1.0);
         apply.setOnMouseClicked( event -> {
             transformationManagerView.addTransformation(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
         gridPane.add(filterSizeSlider,0,0);
         gridPane.add(stdSlider,0,1);
         gridPane.add(apply,0,2);
-        gridPane.add(result,1,2 );
         item.setOnAction(event -> {
             StagesRepository.getStage("Gaussian Filter", gridPane).show();
         });
@@ -315,12 +308,35 @@ public class MenusRepository {
     }
 
     private static MenuItem getSaltAndPepperNoiseTransformation(TransformationManagerView transformationManagerView) {
-        MenuItem menuItem = new MenuItem("Salt and pepper");
+        MenuItem item = new MenuItem("Salt and pepper");
 
-        menuItem.setOnAction( event -> {
-            transformationManagerView.addTransformation(new SaltAndPeperTransformation(0L,0.2,0.2));
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        AtomicReference<Double> salt = new AtomicReference<>(0.1);
+        AtomicReference<Double> pepper = new AtomicReference<>(0.1);
+        TextAreaControlPane seed = new TextAreaControlPane("Seed",2);
+        seed.setText("42");
+        SliderControl saltSlider = new SliderControl("Salt",0.0,1.0,0.05,(x, y)->{
+            salt.set(y.doubleValue());
+            transformationManagerView.preview(new SaltAndPeperTransformation(seed.getText(),salt.get(),pepper.get()));
         });
+        saltSlider.setSliderValue(0.0);
 
-        return menuItem;
+        SliderControl pepperSlider = new SliderControl("Pepper",0.0,1.0,0.05,(x, y)->{
+            pepper.set(y.doubleValue());
+            transformationManagerView.preview(new SaltAndPeperTransformation(seed.getText(),salt.get(),pepper.get()));
+        });
+        pepperSlider.setSliderValue(0.0);
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new SaltAndPeperTransformation(seed.getText(),salt.get(),pepper.get()));
+        });
+        gridPane.add(saltSlider,0,0);
+        gridPane.add(pepperSlider,0,1);
+        gridPane.add(seed,0,2);
+        gridPane.add(apply,1,2);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Gaussian Filter", gridPane).show();
+        });
+        return item;
     }
 }

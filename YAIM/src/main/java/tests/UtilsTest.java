@@ -1,6 +1,8 @@
 package tests;
 
 import backend.Utils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class UtilsTest {
@@ -15,5 +17,15 @@ public class UtilsTest {
             sb.append("\n");
         }
         System.out.println(sb.toString());
+    }
+
+    @Test
+    public void testRound(){
+        System.out.println(Utils.roundToRearestFraction(0.1412,0.05));
+        System.out.println(Utils.roundToRearestFraction(0.14122,0.05));
+        System.out.println(Utils.roundToRearestFraction(0.141212114,0.05));
+        System.out.println(Utils.roundToRearestFraction(0.1312,0.05));
+        System.out.println(Utils.roundToRearestFraction(0.1812,0.05));
+        Assert.assertThat(Utils.roundToRearestFraction(0.141212114,0.05), CoreMatchers.equalTo(Utils.roundToRearestFraction(0.1312,0.05)));
     }
 }

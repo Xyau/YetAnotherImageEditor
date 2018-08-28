@@ -1,12 +1,17 @@
 package backend;
 
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import javafx.util.Pair;
+import org.omg.CORBA.MARSHAL;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.zip.DeflaterOutputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 public class Utils {
     public static int toInteger(double d){
@@ -25,19 +30,39 @@ public class Utils {
         return mult*Math.exp(exponent);
     }
 
+    public static Double roundToRearestFraction(Double num, Double fraction){
+        return Math.round(num/fraction)*(fraction);
+    }
+
+    private static Cache<Pair<Double,Integer>,Integer[][]> gaussianCache =  CacheBuilder.newBuilder()
+            .maximumSize(30)
+            .build();
+
     public static Integer[][] getGaussianMatrixWeight(Double std, Integer filterSize){
-        Integer[][] wMatrix = new Integer[2*filterSize+1][2*filterSize+1];
-        Double mult = null;
-        for (int i = -filterSize; i <= filterSize; i++) {
-            for (int j = -filterSize; j <= filterSize; j++) {
-                Double temp = getGaussianFilterWeight(std,i,j);
-                if(mult == null){
-                    mult = 1/temp;
+        Integer[][] weights = null;
+        Double roundedStd = roundToRearestFraction(std,0.05);
+
+        try {
+            weights = gaussianCache.get(new Pair<>(std,filterSize), () -> {
+                Integer[][] wMatrix = new Integer[2*filterSize+1][2*filterSize+1];
+                Double mult = null;
+                for (int i = -filterSize; i <= filterSize; i++) {
+                    for (int j = -filterSize; j <= filterSize; j++) {
+                        Double temp = getGaussianFilterWeight(roundedStd,i,j);
+                        if(mult == null){
+                            mult = 1/temp;
+                        }
+                        wMatrix[i+filterSize][j+filterSize]= new Double(mult*temp).intValue();
+                    }
                 }
-                wMatrix[i+filterSize][j+filterSize]= new Double(mult*temp).intValue();
-            }
+                return wMatrix;                });
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
-        return wMatrix;
+        if(weights == null){
+            throw new IllegalStateException("Gaussian Cache failed!");
+        }
+        return weights;
     }
 
     public static Double getMax(Double prevMax, DenormalizedColor color){

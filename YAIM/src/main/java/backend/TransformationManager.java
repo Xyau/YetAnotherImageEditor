@@ -1,5 +1,7 @@
 package backend;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import javafx.collections.FXCollections;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -7,11 +9,14 @@ import transformations.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TransformationManager {
     private List<ToggableTransformation> transformations;
     private Image initialImage;
     private WritableImage imageResult;
+
+
 
     public Integer size(){
         return transformations.size();

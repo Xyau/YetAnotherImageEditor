@@ -19,6 +19,10 @@ public class SaltAndPeperTransformation implements Transformation {
         if(saltRatio+pepperRatio>1)throw new IllegalStateException("Illegal salt and pepper percentages");
     }
 
+    public SaltAndPeperTransformation(String seed, Double saltRatio, Double pepperRatio) {
+        this(new Long(seed.hashCode()),saltRatio,pepperRatio);
+    }
+
     @Override
     public WritableImage transform(WritableImage writableImage) {
         Random random = new Random(seed);
