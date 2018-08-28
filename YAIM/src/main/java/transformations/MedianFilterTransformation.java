@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MedianFilterTransformation extends FilterTransformation {
     public MedianFilterTransformation(Integer filterSize) {
-        super(filterSize);
+        super(filterSize,false);
     }
 
     //Public for testing

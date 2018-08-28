@@ -30,4 +30,15 @@ public class ColorUtils {
         return new Color(red,blue,green,alpha);
     }
 
+    public static Double normalize(Double x, Double min, Double max){
+        return (x-min)/(max-min);
+    }
+
+    public static Color normalize(DenormalizedColor color, Double min, Double max){
+        Double red = normalize(color.getRed(),min,max);
+        Double blue = normalize(color.getRed(),min,max);
+        Double green = normalize(color.getRed(),min,max);
+        Double alpha = normalize(color.getRed(),min,max);
+        return new Color(red,blue,green,alpha);
+    }
 }

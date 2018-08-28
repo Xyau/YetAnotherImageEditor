@@ -1,6 +1,7 @@
 package transformations;
 
 import backend.ColorPixel;
+import backend.DenormalizedColor;
 import backend.ImageUtils;
 import backend.Utils;
 import javafx.scene.image.Image;
@@ -13,12 +14,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public class WeighedMedianFilterTransformation extends FilterTransformation{
-    public Integer[][] WEIGHTED_3x3 = new Integer[][]{  {1,2,1},
-                                                        {2,4,2},
-                                                        {1,2,1},};
+    public static Integer[][] WEIGHTED_3x3 = new Integer[][]{{1,2,1},
+                                                             {2,4,2},
+                                                             {1,2,1}};
 
-    public WeighedMedianFilterTransformation() {
-        super(1);
+    Integer[][] filter;
+    public WeighedMedianFilterTransformation(Integer[][] filter){
+        super(1,false);
+        this.filter = filter;
     }
 
     @Override
@@ -29,11 +32,11 @@ public class WeighedMedianFilterTransformation extends FilterTransformation{
         for (int i = x-filterSize; i < x+filterSize+1; i++) {
             Integer yIndex = 0;
             for (int j = y-filterSize; j < y+filterSize+1; j++) {
-                for (int k = 0; k < WEIGHTED_3x3[xIndex][yIndex]; k++) {
+                for (int k = 0; k < filter[xIndex][yIndex]; k++) {
                     if(ImageUtils.isPixelInImage(image,i,j)){
-                        neighbors.add(new ColorPixel(i,j,pixelReader.getColor(i,j)));
+                        neighbors.add(new ColorPixel(xIndex,yIndex,pixelReader.getColor(i,j)));
                     } else {
-                        neighbors.add(new ColorPixel(i,j,Color.BLACK));
+                        neighbors.add(new ColorPixel(xIndex,yIndex,Color.BLACK));
                     }
                 }
                 yIndex++;
@@ -41,6 +44,11 @@ public class WeighedMedianFilterTransformation extends FilterTransformation{
             xIndex++;
         }
         return neighbors;
+    }
+
+    @Override
+    DenormalizedColor processNeighborsDenormalized(List<ColorPixel> neighbors) {
+        throw new IllegalStateException("Median not normalized");
     }
 
     //Public for testing

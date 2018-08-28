@@ -81,7 +81,9 @@ public class MenusRepository {
                                     getMeanFilterMenuItem(transformationManagerView),
                                     getWeighedMedianFilterMenuItem(transformationManagerView),
                                     getGaussianFilterMenuItem(transformationManagerView),
-                                    getDynamicRangeCompressionMenuItem(transformationManagerView));
+                                    getDynamicRangeCompressionMenuItem(transformationManagerView),
+                                    getLowpassFilterMenuItem(transformationManagerView),
+                                    getHighpassFilterMenuItem(transformationManagerView));
         return fileMenu;
     }
 
@@ -111,7 +113,25 @@ public class MenusRepository {
         MenuItem item = new MenuItem("Weighed Median Filter");
 
         item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new WeighedMedianFilterTransformation());
+            transformationManagerView.addTransformation(new StandardWeighedMedianFilterTransformation());
+        });
+        return item;
+    }
+
+    private static MenuItem getLowpassFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Lowpass Filter");
+
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new LowpassFilterTransformation());
+        });
+        return item;
+    }
+
+    private static MenuItem getHighpassFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Highpass Filter");
+
+        item.setOnAction(event -> {
+            transformationManagerView.addTransformation(new HighpassFilterTransformation());
         });
         return item;
     }
@@ -144,12 +164,17 @@ public class MenusRepository {
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
         TextAreaControlPane result = new TextAreaControlPane("Filter Size",2);
-        SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
+        SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
             result.setText(String.valueOf(y.intValue()));
-            transformationManagerView.preview(new MeanFilterTransformation(y.intValue()));
+            transformationManagerView.preview(new GaussianFilterTransformation(y.intValue(),1.0));
+        });
+
+        SliderControl sliderControl = new SliderControl("Sigma",1.0,5.0,1.0,(x, y)->{
+            result.setText(String.valueOf(y.intValue()));
+            transformationManagerView.preview(new GaussianFilterTransformation(y.intValue(),1.0));
         });
         apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new MeanFilterTransformation(sliderControl.getSelectedValue().get().intValue()));
+            transformationManagerView.addTransformation(new GaussianFilterTransformation(sliderControl.getSelectedValue().get().intValue(),1.0));
         });
         gridPane.add(sliderControl,0,0);
         gridPane.add(apply,0,1);

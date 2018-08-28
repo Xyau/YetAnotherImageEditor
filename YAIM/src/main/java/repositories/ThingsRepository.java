@@ -3,18 +3,12 @@ package repositories;
 import backend.EventManageableImageView;
 import backend.FocusablePane;
 import backend.Pixel;
-import backend.Utils;
 import frontend.*;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import transformations.*;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ThingsRepository {
 

@@ -61,11 +61,47 @@ public class ImageUtils {
         return imageToWriteIn;
     }
 
+   public static WritableImage transformImagesNormalized(WritableImage imageToWriteIn, Image image, BiFunction<Color,Color,DenormalizedColor> function){
+        DenormalizedColor[][] denormalizedColors = new DenormalizedColor[Utils.toInteger(imageToWriteIn.getHeight())]
+                [Utils.toInteger(imageToWriteIn.getWidth())];
+        Double min = Double.MAX_VALUE;
+        Double max = Double.MIN_VALUE;
+        for (int i = 0; i < imageToWriteIn.getWidth(); i++) {
+            for (int j = 0; j < imageToWriteIn.getHeight(); j++) {
+                if(isPixelInImage(image,new Pixel(i,j))){
+                    Color writableColor = imageToWriteIn.getPixelReader().getColor(i,j);
+                    Color color = image.getPixelReader().getColor(i,j);
+                    DenormalizedColor resultColor = function.apply(writableColor,color);
+                    min = Utils.getMin(min,resultColor);
+                    max = Utils.getMax(max,resultColor);
+                }
+            }
+        }
+        ImageUtils.transferImageTo(imageToWriteIn,denormalizedColors,min,max);
+        return imageToWriteIn;
+    }
+
     public static WritableImage transferImageTo(WritableImage writableImage, Image image){
         for (int y = 0; y < writableImage.getHeight(); y++){
             for (int x = 0; x < writableImage.getWidth(); x++){
                 Color color = image.getPixelReader().getColor(x, y);
                 writableImage.getPixelWriter().setColor(x, y, color);
+            }
+        }
+        return writableImage;
+    }
+
+    public static WritableImage transferImageTo(WritableImage writableImage, DenormalizedColor[][] denormalizedColors,
+                                                Double min, Double max){
+        PixelWriter px = writableImage.getPixelWriter();
+        for (int y = 0; y < writableImage.getHeight(); y++){
+            for (int x = 0; x < writableImage.getWidth(); x++){
+                Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),min,max);
+                Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),min,max);
+                Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),min,max);
+                Double alpha = denormalizedColors[y][x].getAlpha();
+
+                px.setColor(x,y,new Color(red,green,blue,alpha));
             }
         }
         return writableImage;

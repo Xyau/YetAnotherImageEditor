@@ -26,11 +26,10 @@ public class TextAreaControlPane extends GridPane {
         textArea = new TextArea();
         textArea.setPrefColumnCount(width);
         textArea.setPrefRowCount(1);
-
         textArea.setOnKeyPressed(event -> onUpdate.accept(event.getText()));
 
         add(this.label,0,0);
-        add(textArea,1,0);
+        add(textArea,1,0,2,1);
     }
 
     public String getText() {

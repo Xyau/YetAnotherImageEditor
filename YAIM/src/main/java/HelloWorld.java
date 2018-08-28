@@ -21,10 +21,7 @@ import repositories.StagesRepository;
 import repositories.ThingsRepository;
 import transformations.*;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
 
 public class HelloWorld extends Application {
 
@@ -121,7 +118,6 @@ public class HelloWorld extends Application {
             currentImage.setWhenQueueFinished( () ->{
                 Transformation transformation = new GradientTransformation(first.get().getX()
                         ,first.get().getY(),second.get().getX(),second.get().getY(),Color.OLIVE, Color.BLUE);
-//                    Transformation transformation = new DrawLineTransformation(x1,y1,x2,y2,Color.RED);
                 transformationManagerView.addTransformation(transformation);
             });
         });
@@ -154,7 +150,7 @@ public class HelloWorld extends Application {
                                 MenusRepository.getImageMenu(scene,transformationManagerView),
                                 MenusRepository.getFilterMenu(transformationManagerView),
                                 MenusRepository.getNoiseMenu(transformationManagerView));
-        root.add(menuBar,0,0);
+        root.add(menuBar,0,0,10,1);
 
 
         // Row 1: History
@@ -171,10 +167,8 @@ public class HelloWorld extends Application {
         root.add(ThingsRepository.getBinaryButton(transformationManagerView),8,3);
 
         // Row 4: Color pane
-        Node rgbChooser = rgbChooserView.getPane();
-        root.add(rgbChooser,0,4);
-        root.add(ThingsRepository.getPreviewButton(transformationManagerView),1,4);
-        root.setColumnSpan(rgbChooser, 10);
+        root.add(rgbChooserView,0,4,2,1);
+        root.add(ThingsRepository.getPreviewButton(transformationManagerView),4,4);
 
         // Row 5: Images
         HBox hBox = new HBox();
