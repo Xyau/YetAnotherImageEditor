@@ -64,6 +64,10 @@ public class TransformationManagerView extends GridPane {
         return transformationManager.getImage();
     }
 
+    public Image getPreview() {
+        return previewImageView.getImage();
+    }
+
     public void preview(Transformation activeTransformation) {
         previewImageView.setImage(activeTransformation.transform(ImageUtils.copyImage(getImage())));
     }

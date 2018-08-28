@@ -65,25 +65,4 @@ public class ThingsRepository {
         });
         return button;
     }
-
-    public static Button getBinaryButton(TransformationManagerView transformationManagerView){
-        Button button = new Button();
-        button.setText("Binary");
-
-        GridPane gridPane = new GridPane();
-        SliderControl sliderControl = new SliderControl("Threshold",0.0,255.0,25.5,(x,y)->{
-            transformationManagerView.preview(new BinaryTransformation(y.doubleValue()/255.0));
-        });
-        Button apply = new Button("Apply");
-        apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new BinaryTransformation(sliderControl.getSelectedValue().get()/255));
-        });
-        gridPane.add(sliderControl,0,0);
-        gridPane.add(apply,0,1);
-        button.setOnMouseClicked( buttonClickEvent -> {
-            StagesRepository.getStage("Threshold", gridPane).show();
-        });
-
-        return button;
-    }
 }

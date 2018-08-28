@@ -160,19 +160,16 @@ public class ImageUtils {
         return gc.getCanvas().snapshot(null,writableImage);
     }
 
-    public static double[] getHistogram(Image image) {
-        double[] histogram = new double[256];
-        Long pixelCount = new Double(image.getHeight()).longValue() * new Double(image.getWidth()).longValue();
-        for (int i = 0; i < image.getWidth(); i++) {
-            for (int j = 0; j < image.getHeight(); j++) {
-                histogram[new Double(image.getPixelReader().getColor(i,j).getRed() * 255).intValue()] += 1;
-            }
-        }
-
-        for (int i = 0; i < histogram.length; i++) {
-            histogram[i] /= pixelCount;
-        }
-
-        return histogram;
+    public static Color reescalateColorLinearly(double min, double max, double newMin, double newMax, double r, double g, double b, double a) {
+        double red = r;
+        double green = g;
+        double blue = b;
+        red = Math.max(0, Math.min(newMax, (red - min) / (max - min) * (newMax + newMin) + newMin));
+        green = Math.max(0, Math.min(newMax, (green - min) / (max - min) * (newMax + newMin) + newMin));
+        blue = Math.max(0, Math.min(newMax, (blue - min) / (max - min) * (newMax + newMin) + newMin));
+        if (red < 0 || green < 0 || blue < 0)
+            System.out.println(red + " " + green + " " + blue);
+        return new Color(red, green, blue, a);
     }
+
 }
