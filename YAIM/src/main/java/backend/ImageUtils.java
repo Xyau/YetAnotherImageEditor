@@ -68,7 +68,7 @@ public class ImageUtils {
         Double max = Double.MIN_VALUE;
         for (int i = 0; i < imageToWriteIn.getWidth(); i++) {
             for (int j = 0; j < imageToWriteIn.getHeight(); j++) {
-                if(isPixelInImage(image,new Pixel(i,j))){
+                if(isPixelInImage(imageToWriteIn,i,j) && isPixelInImage(image,i,j)){
                     Color writableColor = imageToWriteIn.getPixelReader().getColor(i,j);
                     Color color = image.getPixelReader().getColor(i,j);
                     denormalizedColors[j][i] = function.apply(writableColor,color);
@@ -96,12 +96,14 @@ public class ImageUtils {
         PixelWriter px = writableImage.getPixelWriter();
         for (int y = 0; y < writableImage.getHeight(); y++){
             for (int x = 0; x < writableImage.getWidth(); x++){
-                Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),min,max);
-                Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),min,max);
-                Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),min,max);
-                Double alpha = denormalizedColors[y][x].getAlpha();
+                if(denormalizedColors[y][x] != null){
+                    Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),min,max);
+                    Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),min,max);
+                    Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),min,max);
+                    Double alpha = denormalizedColors[y][x].getAlpha();
 
-                px.setColor(x,y,new Color(red,green,blue,alpha));
+                    px.setColor(x,y,new Color(red,green,blue,alpha));
+                }
             }
         }
         return writableImage;

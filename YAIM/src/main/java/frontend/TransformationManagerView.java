@@ -66,7 +66,7 @@ public class TransformationManagerView extends GridPane {
         add(pane,index,0);
         setHgap(1.5);
         cache.invalidateAll();
-//        previewImageView.setImage(ImagesRepository.NO_IMAGE);
+
     }
 
     public Image getImage(){
@@ -80,7 +80,7 @@ public class TransformationManagerView extends GridPane {
     public void preview(Transformation activeTransformation) {
         Image image = null;
         try {
-            image =   cache.get(activeTransformation, () ->
+            image = cache.get(activeTransformation, () ->
                     activeTransformation.transform(ImageUtils.copyImage(getImage())));
         } catch (ExecutionException e) {
             e.printStackTrace();
