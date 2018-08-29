@@ -13,10 +13,16 @@ import java.util.Random;
 public class AdditiveGaussianNoiseTransformation implements Transformation {
     double mean;
     double sigma;
+    Long seed;
 
-    public AdditiveGaussianNoiseTransformation() {
-        this.mean = 0;
-        this.sigma = 0.05;
+    public AdditiveGaussianNoiseTransformation(Long seed, double mean, double sigma) {
+        this.mean = mean;
+        this.sigma = sigma;
+        this.seed = seed;
+    }
+
+    public AdditiveGaussianNoiseTransformation(String seed, Double saltRatio, Double pepperRatio) {
+        this(new Long(seed.hashCode()),saltRatio,pepperRatio);
     }
 
 
