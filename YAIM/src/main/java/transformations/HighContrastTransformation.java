@@ -24,9 +24,9 @@ public class HighContrastTransformation implements Transformation {
                 double blue = c.getBlue();
                 double opacity = c.getOpacity();
 
-                red = Math.max(0.0, Math.min(1.0, red * (2 * red - 1) * (2 * red - 1)));
-                green = Math.max(0.0, Math.min(1.0, green * (2 * green - 1) * (2 * green - 1)));
-                blue = Math.max(0.0, Math.min(1.0, blue * (2 * blue - 1) * (2 * blue - 1)));
+                red = Math.max(0.0, Math.min(1.0, (2 * red - 1) * (2 * red - 1)));
+                green = Math.max(0.0, Math.min(1.0, (2 * green - 1) * (2 * green - 1)));
+                blue = Math.max(0.0, Math.min(1.0, (2 * blue - 1) * (2 * blue - 1)));
 
                 writableImage.getPixelWriter().setColor(i, j, new Color(red, green, blue, opacity));
             }

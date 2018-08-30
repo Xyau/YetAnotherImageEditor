@@ -362,7 +362,7 @@ public class MenusRepository {
             sigma.set(y.doubleValue());
             transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });
-        stdSlider.setSliderValue(1.0);
+//        stdSlider.setSliderValue(1.0);
         apply.setOnMouseClicked( event -> {
             transformationManagerView.addTransformation(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
         });

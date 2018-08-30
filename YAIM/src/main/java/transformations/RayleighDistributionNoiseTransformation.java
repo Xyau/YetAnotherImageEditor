@@ -39,9 +39,11 @@ public class RayleighDistributionNoiseTransformation implements Transformation{
                     x = r.nextDouble();
 
                 }
-//                double rayleigh = this.phi * (Math.sqrt(-2 * Math.log(x)));
+                double rayleigh = this.phi * (Math.sqrt(-2 * Math.log(x)));
+                rayleigh = rayleigh > 1 ? 1 : rayleigh;
+                rayleigh = rayleigh < 0 ? 0 : rayleigh;
                 // (F(x) - F(0)) / (F(1) - F(0))
-                double rayleigh = (1 - Math.exp(-x*x/2.0/phi/phi)) / (1 - Math.exp(-1.0/2.0/phi/phi));
+//                double rayleigh = (1 - Math.exp(-(x*x)/(2.0*phi*phi))) / (1 - Math.exp(-1.0/(2.0*phi*phi)));
 
                 if (r.nextDouble() < noiseLevel) {
                     red = red * rayleigh;
