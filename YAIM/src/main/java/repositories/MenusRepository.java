@@ -194,6 +194,12 @@ public class MenusRepository {
             transformationManagerView.addTransformation(transformation);
         });
 
+        MenuItem highContrast = new MenuItem("High Contrast");
+        highContrast.setOnAction( event -> {
+            Transformation transformation = new HighContrastTransformation();
+            transformationManagerView.addTransformation(transformation);
+        });
+
         MenuItem binary = new MenuItem("Binary...");
         binary.setOnAction( event -> {
             StagesRepository.getStage("Binary", getBinaryGridPane(transformationManagerView)).show();
@@ -204,7 +210,7 @@ public class MenusRepository {
             StagesRepository.getStage("Gamma function", getGammaGridPane(transformationManagerView)).show();
         });
 
-        imageMenu.getItems().addAll(negative,binary,gamma,histogram,equalization,
+        imageMenu.getItems().addAll(negative,highContrast,binary,gamma,histogram,equalization,
                                     getDynamicRangeCompressionMenuItem(transformationManagerView),
                                     imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
         return imageMenu;
