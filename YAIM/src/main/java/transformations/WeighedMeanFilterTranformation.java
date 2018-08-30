@@ -8,15 +8,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WeighedMeanFilterTranformation extends FilterTransformation {
-    public static Integer[][] HIGHPASS = new Integer[][]{{-1,-1,-1},
-            {-1, 8,-1},
-            {-1,-1,-1}};
-    public static Integer[][] LOWPASS = new Integer[][]{{1,1,1},
-            {1,1,1},
-            {1,1,1}};
+    public static Double[][] HIGHPASS = new Double[][]{{-1.0,-1.0,-1.0},
+            {-1.0, 8.0,-1.0},
+            {-1.0,-1.0,-1.0}};
+    public static Double[][] LOWPASS = new Double[][]{{1.0,1.0,1.0},
+            {1.0,1.0,1.0},
+            {1.0,1.0,1.0}};
 
-    Integer[][] filter;
-    public WeighedMeanFilterTranformation(Integer[][] filter) {
+    Double[][] filter;
+    public WeighedMeanFilterTranformation(Double[][] filter) {
         super((filter.length - 1) / 2,true);
         this.filter = filter;
     }
@@ -33,9 +33,9 @@ public class WeighedMeanFilterTranformation extends FilterTransformation {
         double green = 0;
         Double alpha = null;
 
-        Integer totalWeight=0;
+        Double totalWeight=0.0;
         for (ColorPixel cp: neighbors) {
-            Integer weight = filter[cp.getPixel().getX()][cp.getPixel().getY()];
+            Double weight = filter[cp.getPixel().getX()][cp.getPixel().getY()];
             totalWeight += weight;
 
             Color color = cp.getColor();
@@ -44,8 +44,8 @@ public class WeighedMeanFilterTranformation extends FilterTransformation {
             green += color.getGreen()*weight;
             alpha = alpha==null?color.getOpacity():alpha;
         }
-        if(totalWeight == 0){
-            totalWeight = 1;
+        if(totalWeight.equals(0.0)){
+            totalWeight = 1.0;
         }
         return new DenormalizedColor(red/(neighbors.size()*totalWeight),
                 green/(neighbors.size()*totalWeight),

@@ -35,25 +35,20 @@ public class Utils {
         return Math.round(num / fraction) * (fraction);
     }
 
-    private static Cache<Pair<Double, Integer>, Integer[][]> gaussianCache = CacheBuilder.newBuilder()
+    private static Cache<Pair<Double, Integer>, Double[][]> gaussianCache = CacheBuilder.newBuilder()
             .maximumSize(30)
             .build();
 
-    public static Integer[][] getGaussianMatrixWeight(Double std, Integer filterSize) {
-        Integer[][] weights = null;
+    public static Double[][] getGaussianMatrixWeight(Double std, Integer filterSize) {
+        Double[][] weights = null;
         Double roundedStd = roundToRearestFraction(std, 0.05);
         System.out.println("getting gauss cache");
         try {
             weights = gaussianCache.get(new Pair<>(std, filterSize), () -> {
-                Integer[][] wMatrix = new Integer[2 * filterSize + 1][2 * filterSize + 1];
-                Double mult = null;
+                Double[][] wMatrix = new Double[2 * filterSize + 1][2 * filterSize + 1];
                 for (int i = -filterSize; i <= filterSize; i++) {
                     for (int j = -filterSize; j <= filterSize; j++) {
-                        Double temp = getGaussianFilterWeight(roundedStd, i, j);
-                        if (mult == null) {
-                            mult = 1 / temp;
-                        }
-                        wMatrix[i + filterSize][j + filterSize] = new Double(mult * temp).intValue();
+                        wMatrix[i + filterSize][j + filterSize] = getGaussianFilterWeight(roundedStd, i, j);
                     }
                 }
                 return wMatrix;
