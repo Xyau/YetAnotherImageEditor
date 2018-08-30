@@ -1,6 +1,7 @@
 package transformations;
 
 import backend.*;
+import com.google.common.collect.Lists;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
@@ -12,15 +13,17 @@ import java.util.Objects;
 
 public abstract class FilterTransformation implements Transformation {
     Integer filterSize;
+    Double minRed = Double.MAX_VALUE, maxRed = Double.MIN_VALUE;
+    Double minGreen = Double.MAX_VALUE, maxGreen = Double.MIN_VALUE;
+    Double minBlue = Double.MAX_VALUE, maxBlue = Double.MIN_VALUE;
 
-    Double min= Double.MAX_VALUE;
-    Double max=Double.MIN_VALUE;
     Boolean normalize;
 
     public FilterTransformation(Integer filterSize, Boolean normalize){
         if(filterSize < 0) throw new IllegalStateException("Illegal filter size");
         this.normalize = normalize;
         this.filterSize = filterSize;
+
     }
 
 
@@ -36,8 +39,12 @@ public abstract class FilterTransformation implements Transformation {
                 if(normalize){
                     DenormalizedColor denormalizedColor = processNeighborsDenormalized(neighbors);
                     denormalizedColors[j][i] = denormalizedColor;
-                    max = Utils.getMax(max,denormalizedColor);
-                    min = Utils.getMin(min,denormalizedColor);
+                    maxRed = Utils.getMax(maxRed,denormalizedColor.getRed());
+                    minRed = Utils.getMin(minRed,denormalizedColor.getRed());
+                    maxGreen = Utils.getMax(maxGreen,denormalizedColor.getGreen());
+                    minGreen = Utils.getMin(minGreen,denormalizedColor.getGreen());
+                    maxBlue = Utils.getMax(maxBlue,denormalizedColor.getBlue());
+                    minBlue = Utils.getMin(minBlue,denormalizedColor.getBlue());
                 } else {
                     Color selectedColor = processNeighbors(neighbors);
                     tempImage.getPixelWriter().setColor(i,j,selectedColor);
@@ -46,7 +53,7 @@ public abstract class FilterTransformation implements Transformation {
         }
 
         if(normalize){
-            ImageUtils.transferImageTo(writableImage,denormalizedColors,min,max);
+            ImageUtils.transferImageTo(writableImage,denormalizedColors,minRed,maxRed,minGreen,maxGreen,minBlue,maxBlue);
         } else {
             ImageUtils.transferImageTo(writableImage,tempImage);
         }

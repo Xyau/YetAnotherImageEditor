@@ -16,13 +16,13 @@ public class SubstractImageTransformation implements Transformation {
     @Override
     public WritableImage transform(WritableImage writableImage) {
         double[][] tmpRed = new double[new Double(writableImage.getWidth()).intValue()][new Double(writableImage.getHeight()).intValue()];
-        double minRed = 1.0, maxRed = -1.0;
 
         double[][] tmpGreen = new double[new Double(writableImage.getWidth()).intValue()][new Double(writableImage.getHeight()).intValue()];
+        double minRed = 1.0, maxRed = -1.0;
         double minGreen = 1.0, maxGreen = -1.0;
+        double minBlue = 1.0, maxBlue = -1.0;
 
         double[][] tmpBlue = new double[new Double(writableImage.getWidth()).intValue()][new Double(writableImage.getHeight()).intValue()];
-        double minBlue = 1.0, maxBlue = -1.0;
 
         for (int i = 0; i < writableImage.getWidth(); i++) {
             for (int j = 0; j < writableImage.getHeight(); j++) {

@@ -14,7 +14,7 @@ public class MinusImageTransformation implements Transformation {
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
-        return ImageUtils.transformImagesNormalized(writableImage,image,ColorUtils::substractColors);
+        return ImageUtils.transformImagesNormalizedMultiChannel(writableImage,image,ColorUtils::substractColors);
     }
 
     @Override

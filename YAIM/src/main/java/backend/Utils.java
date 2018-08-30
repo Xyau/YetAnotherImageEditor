@@ -68,6 +68,14 @@ public class Utils {
         return weights;
     }
 
+    public static Double getMax(Double prevMax, Double value){
+        return prevMax < value? value:prevMax;
+    }
+
+    public static Double getMin(Double prevMin, Double value){
+        return prevMin > value? value:prevMin;
+    }
+
     public static Double getMax(Double prevMax, DenormalizedColor color) {
         prevMax = color.getRed() > prevMax ? color.getRed() : prevMax;
         prevMax = color.getGreen() > prevMax ? color.getGreen() : prevMax;

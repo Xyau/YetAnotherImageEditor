@@ -28,4 +28,5 @@ public class UtilsTest {
         System.out.println(Utils.roundToRearestFraction(0.1812,0.05));
         Assert.assertThat(Utils.roundToRearestFraction(0.141212114,0.05), CoreMatchers.equalTo(Utils.roundToRearestFraction(0.1312,0.05)));
     }
+
 }

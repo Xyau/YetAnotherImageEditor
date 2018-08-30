@@ -61,23 +61,30 @@ public class ImageUtils {
         return imageToWriteIn;
     }
 
-   public static WritableImage transformImagesNormalized(WritableImage imageToWriteIn, Image image, BiFunction<Color,Color,DenormalizedColor> function){
+   public static WritableImage transformImagesNormalizedMultiChannel(WritableImage imageToWriteIn, Image image, BiFunction<Color,Color,DenormalizedColor> function){
         DenormalizedColor[][] denormalizedColors = new DenormalizedColor[Utils.toInteger(imageToWriteIn.getHeight())]
                 [Utils.toInteger(imageToWriteIn.getWidth())];
-        Double min = Double.MAX_VALUE;
-        Double max = Double.MIN_VALUE;
-        for (int i = 0; i < imageToWriteIn.getWidth(); i++) {
+       Double minRed = Double.MAX_VALUE, maxRed = Double.MIN_VALUE;
+       Double minGreen = Double.MAX_VALUE, maxGreen = Double.MIN_VALUE;
+       Double minBlue = Double.MAX_VALUE, maxBlue = Double.MIN_VALUE;
+
+       for (int i = 0; i < imageToWriteIn.getWidth(); i++) {
             for (int j = 0; j < imageToWriteIn.getHeight(); j++) {
                 if(isPixelInImage(imageToWriteIn,i,j) && isPixelInImage(image,i,j)){
                     Color writableColor = imageToWriteIn.getPixelReader().getColor(i,j);
                     Color color = image.getPixelReader().getColor(i,j);
                     denormalizedColors[j][i] = function.apply(writableColor,color);
-                    min = Utils.getMin(min,denormalizedColors[j][i]);
-                    max = Utils.getMax(max,denormalizedColors[j][i]);
+
+                    maxRed = Utils.getMax(maxRed,denormalizedColors[j][i].getRed());
+                    minRed = Utils.getMin(minRed,denormalizedColors[j][i].getRed());
+                    maxGreen = Utils.getMax(maxGreen,denormalizedColors[j][i].getGreen());
+                    minGreen = Utils.getMin(minGreen,denormalizedColors[j][i].getGreen());
+                    maxBlue = Utils.getMax(maxBlue,denormalizedColors[j][i].getBlue());
+                    minBlue = Utils.getMin(minBlue,denormalizedColors[j][i].getBlue());
                 }
             }
         }
-        ImageUtils.transferImageTo(imageToWriteIn,denormalizedColors,min,max);
+        ImageUtils.transferImageTo(imageToWriteIn,denormalizedColors,minRed,maxRed,minGreen,maxGreen,minBlue,maxBlue);
         return imageToWriteIn;
     }
 
@@ -91,15 +98,19 @@ public class ImageUtils {
         return writableImage;
     }
 
+    public static WritableImage transferImageTo(WritableImage writableImage, DenormalizedColor[][] denormalizedColors,Double min, Double max) {
+        return transferImageTo(writableImage,denormalizedColors,min,max,min,max,min,max);
+    }
     public static WritableImage transferImageTo(WritableImage writableImage, DenormalizedColor[][] denormalizedColors,
-                                                Double min, Double max){
+                                            Double minRed, Double maxRed,Double minGreen, Double maxGreen,
+                                            Double minBlue, Double maxBlue){
         PixelWriter px = writableImage.getPixelWriter();
         for (int y = 0; y < writableImage.getHeight(); y++){
             for (int x = 0; x < writableImage.getWidth(); x++){
                 if(denormalizedColors[y][x] != null){
-                    Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),min,max);
-                    Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),min,max);
-                    Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),min,max);
+                    Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),minRed,maxRed);
+                    Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),minGreen,maxGreen);
+                    Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),minBlue,maxBlue);
                     Double alpha = denormalizedColors[y][x].getAlpha();
 
                     px.setColor(x,y,new Color(red,green,blue,alpha));

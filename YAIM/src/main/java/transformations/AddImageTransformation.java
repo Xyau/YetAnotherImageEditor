@@ -15,7 +15,7 @@ public class AddImageTransformation implements Transformation {
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
-        return ImageUtils.transformImagesNormalized(writableImage,image, ColorUtils::addColors);
+        return ImageUtils.transformImagesNormalizedMultiChannel(writableImage,image, ColorUtils::addColors);
     }
 
     @Override
