@@ -61,14 +61,13 @@ public class SyntheticGenerator {
         return wr;
     }
 
-    public static WritableImage blankGenerator() {
+    public static WritableImage blankGenerator(Color c) {
         WritableImage wr = new WritableImage(imageWidth, imageHeight);
         int width = new Double(wr.getWidth()).intValue();
         int height = new Double(wr.getHeight()).intValue();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                Color color = new Color(1, 1, 1, 1);
-                wr.getPixelWriter().setColor(i, j, color);
+                wr.getPixelWriter().setColor(i, j, c);
             }
         }
         return wr;

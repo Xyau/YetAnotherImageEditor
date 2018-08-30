@@ -16,6 +16,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import transformations.DrawHistogramTransformation;
@@ -93,7 +94,8 @@ public class MenusRepository {
 
     public static Menu getShapesMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Shapes");
-        fileMenu.getItems().addAll(getGenerateBlank(transformationManagerView),
+        fileMenu.getItems().addAll(getGenerateWhiteBlank(transformationManagerView),
+                                   getGenerateGrayBlank(transformationManagerView),
                                    getGenerateSquare(transformationManagerView),
                                    getGenerateCircle(transformationManagerView),
                                    getGenerateStripes(transformationManagerView));
@@ -127,10 +129,19 @@ public class MenusRepository {
         return item;
     }
 
-    private static MenuItem getGenerateBlank(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Create Blank");
+    private static MenuItem getGenerateWhiteBlank(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Create White");
         item.setOnAction(event -> {
-            WritableImage image = SyntheticGenerator.blankGenerator();
+            WritableImage image = SyntheticGenerator.blankGenerator(new Color(1,1,1,1));
+            transformationManagerView.setInitialImage(image);
+        });
+        return item;
+    }
+
+    private static MenuItem getGenerateGrayBlank(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Create Gray");
+        item.setOnAction(event -> {
+            WritableImage image = SyntheticGenerator.blankGenerator(new Color(.5,.5,.5,1));
             transformationManagerView.setInitialImage(image);
         });
         return item;
@@ -194,6 +205,12 @@ public class MenusRepository {
             transformationManagerView.addTransformation(transformation);
         });
 
+        MenuItem highContrast = new MenuItem("High Contrast");
+        highContrast.setOnAction( event -> {
+            Transformation transformation = new HighContrastTransformation();
+            transformationManagerView.addTransformation(transformation);
+        });
+
         MenuItem binary = new MenuItem("Binary...");
         binary.setOnAction( event -> {
             StagesRepository.getStage("Binary", getBinaryGridPane(transformationManagerView)).show();
@@ -204,7 +221,7 @@ public class MenusRepository {
             StagesRepository.getStage("Gamma function", getGammaGridPane(transformationManagerView)).show();
         });
 
-        imageMenu.getItems().addAll(negative,binary,gamma,histogram,equalization,
+        imageMenu.getItems().addAll(negative,highContrast,binary,gamma,histogram,equalization,
                                     getDynamicRangeCompressionMenuItem(transformationManagerView),
                                     imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
         return imageMenu;
