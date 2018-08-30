@@ -7,6 +7,8 @@ import javafx.scene.image.WritableImage;
 
 public class DrawHistogramTransformation implements Transformation {
 
+    private int width = 500, height = 500;
+
     @Override
     public WritableImage transform(WritableImage writableImage) {
         Histogram histogram = new Histogram(writableImage);
@@ -32,9 +34,9 @@ public class DrawHistogramTransformation implements Transformation {
         }
 
         chart.getData().addAll(redSeries, blueSeries, greenSeries);
-        Scene scene  = new Scene(chart,writableImage.getWidth(),writableImage.getHeight());
+        Scene scene  = new Scene(chart,width,height);
 
-        return scene.snapshot(writableImage);
+        return scene.snapshot(new WritableImage(width, height));
 //        return null;
     }
 

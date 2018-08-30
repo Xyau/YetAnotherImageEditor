@@ -12,9 +12,11 @@ import java.util.Random;
  */
 public class ExponentialDistributionNoiseTransformation implements Transformation{
     double lambda;
+    double noiseLevel;
 
-    public ExponentialDistributionNoiseTransformation() {
-        this.lambda = 0.05;
+    public ExponentialDistributionNoiseTransformation(double lambda, double noiseLevel) {
+        this.lambda = lambda;
+        this.noiseLevel = noiseLevel;
     }
 
     @Override
@@ -33,14 +35,15 @@ public class ExponentialDistributionNoiseTransformation implements Transformatio
 
                 while (x == 0.0) {
                     x = r.nextDouble();
-
                 }
-                double exponential = -1 * (Math.log(x) / this.lambda);
+//                double exponential = Math.log(x) / -this.lambda;
+                double exponential = -Math.log(1 - (1 - Math.exp(-lambda)) * x) / lambda;
 
-                red = red * exponential;
-                green = green * exponential;
-                blue = blue * exponential;
-                opacity = opacity * exponential;
+                if (r.nextDouble() < this.noiseLevel) {
+                    red = red * exponential;
+                    green = green * exponential;
+                    blue = blue * exponential;
+                }
 
                 writableImage.getPixelWriter().setColor(i, j, new Color(red, green, blue, opacity));
             }
