@@ -322,7 +322,8 @@ public class MenusRepository {
 
     public static Menu getNoiseMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Noise");
-        fileMenu.getItems().addAll(getSaltAndPepperNoiseTransformation(transformationManagerView));
+        fileMenu.getItems().addAll(getSaltAndPepperNoiseTransformation(transformationManagerView),
+                getAditiveGaussianNoiseTransformation(transformationManagerView));
         return fileMenu;
     }
 
@@ -351,6 +352,39 @@ public class MenusRepository {
         });
         gridPane.add(saltSlider,0,0);
         gridPane.add(pepperSlider,0,1);
+        gridPane.add(seed,0,2);
+        gridPane.add(apply,1,2);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Gaussian Filter", gridPane).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getAditiveGaussianNoiseTransformation(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Additive Gaussian Noise");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        AtomicReference<Double> mean = new AtomicReference<>(0.1);
+        AtomicReference<Double> sigma = new AtomicReference<>(0.1);
+        TextAreaControlPane seed = new TextAreaControlPane("Seed",2);
+        seed.setText("42");
+        SliderControl meanSlider = new SliderControl("Mean",0.0,1.0,0.05,(x, y)->{
+            mean.set(y.doubleValue());
+            transformationManagerView.preview(new AdditiveGaussianNoiseTransformation(seed.getText(),mean.get(),sigma.get()));
+        });
+        meanSlider.setSliderValue(0.0);
+
+        SliderControl sigmaSlider = new SliderControl("Sigma",0.0,1.0,0.05,(x, y)->{
+            sigma.set(y.doubleValue());
+            transformationManagerView.preview(new AdditiveGaussianNoiseTransformation(seed.getText(),mean.get(),sigma.get()));
+        });
+        sigmaSlider.setSliderValue(0.0);
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new AdditiveGaussianNoiseTransformation(seed.getText(),mean.get(),sigma.get()));
+        });
+        gridPane.add(meanSlider,0,0);
+        gridPane.add(sigmaSlider,0,1);
         gridPane.add(seed,0,2);
         gridPane.add(apply,1,2);
         item.setOnAction(event -> {
