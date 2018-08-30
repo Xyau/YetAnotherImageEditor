@@ -93,7 +93,8 @@ public class MenusRepository {
 
     public static Menu getShapesMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Shapes");
-        fileMenu.getItems().addAll(getGenerateSquare(transformationManagerView),
+        fileMenu.getItems().addAll(getGenerateBlank(transformationManagerView),
+                                   getGenerateSquare(transformationManagerView),
                                    getGenerateCircle(transformationManagerView),
                                    getGenerateStripes(transformationManagerView));
         return fileMenu;
@@ -126,6 +127,15 @@ public class MenusRepository {
         return item;
     }
 
+    private static MenuItem getGenerateBlank(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Create Blank");
+        item.setOnAction(event -> {
+            WritableImage image = SyntheticGenerator.blankGenerator();
+            transformationManagerView.setInitialImage(image);
+        });
+        return item;
+    }
+
     public static GridPane getBinaryGridPane(TransformationManagerView transformationManagerView) {
         GridPane gridPane = new GridPane();
 
@@ -146,7 +156,7 @@ public class MenusRepository {
 
     public static GridPane getGammaGridPane(TransformationManagerView transformationManagerView) {
         GridPane gridPane = new GridPane();
-        SliderControl sliderControl = new SliderControl("Gamma",0.0,1.0,0.05,(x,y)->{
+        SliderControl sliderControl = new SliderControl("Gamma",0.0,10.0,0.05,(x,y)->{
             transformationManagerView.preview(new GammaTransformation(y.doubleValue()));
         });
         Button apply = new Button("Apply");
@@ -351,12 +361,14 @@ public class MenusRepository {
     public static Menu getNoiseMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Noise");
         fileMenu.getItems().addAll(getSaltAndPepperNoiseTransformation(transformationManagerView),
-                getAditiveGaussianNoiseTransformation(transformationManagerView));
+                getAditiveGaussianNoiseTransformation(transformationManagerView),
+                getRayleighDistributionNoiseTransformation(transformationManagerView),
+                getExponentialDistributionNoiseTransformation(transformationManagerView));
         return fileMenu;
     }
 
     private static MenuItem getSaltAndPepperNoiseTransformation(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Salt and pepper");
+        MenuItem item = new MenuItem("Salt and pepper...");
 
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
@@ -389,7 +401,7 @@ public class MenusRepository {
     }
 
     private static MenuItem getAditiveGaussianNoiseTransformation(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Additive Gaussian Noise");
+        MenuItem item = new MenuItem("Additive Gaussian Noise...");
 
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
@@ -416,7 +428,63 @@ public class MenusRepository {
         gridPane.add(seed,0,2);
         gridPane.add(apply,1,2);
         item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Filter", gridPane).show();
+            StagesRepository.getStage("Gaussian Noise", gridPane).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getRayleighDistributionNoiseTransformation(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Rayleigh Distribution Noise...");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        AtomicReference<Double> phi = new AtomicReference<>(0.1);
+        AtomicReference<Double> noiseLevel = new AtomicReference<>(0.1);
+        SliderControl phiSlider = new SliderControl("Phi",0.0,5.0,0.2,(x, y)->{
+            phi.set(y.doubleValue());
+            transformationManagerView.preview(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get()));
+        });
+        SliderControl noiseLevelSlider = new SliderControl("Noise Level",0.0,1.0,0.05,(x, y)->{
+            noiseLevel.set(y.doubleValue());
+            transformationManagerView.preview(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get()));
+        });
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get()));
+        });
+        phiSlider.setSliderValue(0.0);
+        gridPane.add(phiSlider,0,0);
+        gridPane.add(noiseLevelSlider,1,0);
+        gridPane.add(apply,1,2);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Rayleigh Noise", gridPane).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getExponentialDistributionNoiseTransformation(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Exponential Distribution Noise...");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        AtomicReference<Double> lambda = new AtomicReference<>(0.1);
+        AtomicReference<Double> noiseLevel = new AtomicReference<>(0.1);
+        SliderControl phiSlider = new SliderControl("Lambda",0.0,5.0,0.2,(x, y)->{
+            lambda.set(y.doubleValue());
+            transformationManagerView.preview(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get()));
+        });
+        SliderControl noiseLevelSlider = new SliderControl("Noise Level",0.0,1.0,0.05,(x, y)->{
+            noiseLevel.set(y.doubleValue());
+            transformationManagerView.preview(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get()));
+        });
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get()));
+        });
+        phiSlider.setSliderValue(0.0);
+        gridPane.add(phiSlider,0,0);
+        gridPane.add(noiseLevelSlider,1,0);
+        gridPane.add(apply,1,2);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Exponential Noise", gridPane).show();
         });
         return item;
     }

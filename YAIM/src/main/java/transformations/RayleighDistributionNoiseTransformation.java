@@ -12,9 +12,11 @@ import java.util.Random;
  */
 public class RayleighDistributionNoiseTransformation implements Transformation{
     double phi;
+    double noiseLevel;
 
-    public RayleighDistributionNoiseTransformation() {
-        this.phi = 0.05;
+    public RayleighDistributionNoiseTransformation(double phi, double noiseLevel) {
+        this.phi = phi;
+        this.noiseLevel = noiseLevel;
     }
 
     @Override
@@ -35,12 +37,15 @@ public class RayleighDistributionNoiseTransformation implements Transformation{
                     x = r.nextDouble();
 
                 }
-                double rayleigh = this.phi * (Math.sqrt(-2 * Math.log(1 - x)));
+//                double rayleigh = this.phi * (Math.sqrt(-2 * Math.log(x)));
+                // (F(x) - F(0)) / (F(1) - F(0))
+                double rayleigh = (1 - Math.exp(-x*x/2.0/phi/phi)) / (1 - Math.exp(-1.0/2.0/phi/phi));
 
-                red = red * rayleigh;
-                green = green * rayleigh;
-                blue = blue * rayleigh;
-                opacity = opacity * rayleigh;
+                if (r.nextDouble() < noiseLevel) {
+                    red = red * rayleigh;
+                    green = green * rayleigh;
+                    blue = blue * rayleigh;
+                }
 
                 writableImage.getPixelWriter().setColor(i, j, new Color(red, green, blue, opacity));
             }
