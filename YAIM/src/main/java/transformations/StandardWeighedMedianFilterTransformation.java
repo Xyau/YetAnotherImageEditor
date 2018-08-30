@@ -1,7 +1,9 @@
 package transformations;
 
+import repositories.FiltersRepository;
+
 public class StandardWeighedMedianFilterTransformation extends WeighedMedianFilterTransformation {
     public StandardWeighedMedianFilterTransformation() {
-        super(WEIGHTED_3x3);
+        super(FiltersRepository.WEIGHTED_3x3);
     }
 }

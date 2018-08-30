@@ -8,12 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WeighedMeanFilterTranformation extends FilterTransformation {
-    public static Double[][] HIGHPASS = new Double[][]{{-1.0,-1.0,-1.0},
-            {-1.0, 8.0,-1.0},
-            {-1.0,-1.0,-1.0}};
-    public static Double[][] LOWPASS = new Double[][]{{1.0,1.0,1.0},
-            {1.0,1.0,1.0},
-            {1.0,1.0,1.0}};
 
     Double[][] filter;
     public WeighedMeanFilterTranformation(Double[][] filter) {

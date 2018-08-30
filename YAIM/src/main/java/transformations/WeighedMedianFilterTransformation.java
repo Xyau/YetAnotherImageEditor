@@ -15,10 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class WeighedMedianFilterTransformation extends FilterTransformation{
-    public static Double[][] WEIGHTED_3x3 = new Double[][]{{1.0,2.0,1.0},
-                                                             {2.0,4.0,2.0},
-                                                             {1.0,2.0,1.0}};
-
     Double[][] filter;
     public WeighedMedianFilterTransformation(Double[][] filter){
         super((filter.length - 1) / 2,false);

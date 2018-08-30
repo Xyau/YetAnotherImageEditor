@@ -3,17 +3,12 @@ package repositories;
 import backend.ImageUtils;
 import backend.SyntheticGenerator;
 import backend.Utils;
-import com.sun.javafx.scene.SceneUtils;
-import frontend.ImageOperationsControl;
-import frontend.SliderControl;
-import frontend.TextAreaControlPane;
-import frontend.TransformationManagerView;
+import frontend.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -275,9 +270,13 @@ public class MenusRepository {
         fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
                                     getMeanFilterMenuItem(transformationManagerView),
                                     getWeighedMedianFilterMenuItem(transformationManagerView),
-                                    getGaussianFilterMenuItem(transformationManagerView),
+                                    getGaussianMedianFilterMenuItem(transformationManagerView),
+                                    getGaussianMeanFilterMenuItem(transformationManagerView),
                                     getLowpassFilterMenuItem(transformationManagerView),
-                                    getHighpassFilterMenuItem(transformationManagerView));
+                                    getHighpassFilterMenuItem(transformationManagerView),
+                FrontendUtils.getMenuItemByTranformation("Vertical",new VerticalBordersTransformation(),transformationManagerView),
+                FrontendUtils.getMenuItemByTranformation("Horizontal",new HorizontalBordersTransformation(),transformationManagerView)
+        );
         return fileMenu;
     }
 
@@ -346,8 +345,8 @@ public class MenusRepository {
         return item;
     }
 
-    private static MenuItem getGaussianFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Gaussian Filter...");
+    private static MenuItem getGaussianMeanFilterMenuItem(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Gaussian Mean Filter...");
 
         GridPane gridPane = new GridPane();
         Button apply = new Button("Apply");
@@ -355,22 +354,49 @@ public class MenusRepository {
         AtomicReference<Integer> filterSize = new AtomicReference<>(1);
         SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
             filterSize.set(y.intValue());
-            transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
+            transformationManagerView.preview(new GaussianMeanFilterTransformation(filterSize.get(),sigma.get()));
         });
 
-        SliderControl stdSlider = new SliderControl("Sigma",0.5,5.0,1.0,(x, y)->{
+        SliderControl stdSlider = new SliderControl("Sigma",0.5,5.0,0.5,(x, y)->{
             sigma.set(y.doubleValue());
-            transformationManagerView.preview(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
+            transformationManagerView.preview(new GaussianMeanFilterTransformation(filterSize.get(),sigma.get()));
         });
-//        stdSlider.setSliderValue(1.0);
         apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new GaussianFilterTransformation(filterSize.get(),sigma.get()));
+            transformationManagerView.addTransformation(new GaussianMeanFilterTransformation(filterSize.get(),sigma.get()));
         });
         gridPane.add(filterSizeSlider,0,0);
         gridPane.add(stdSlider,0,1);
         gridPane.add(apply,0,2);
         item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Filter", gridPane).show();
+            StagesRepository.getStage("Gaussian Mean Filter", gridPane).show();
+        });
+        return item;
+
+    }
+    private static MenuItem getGaussianMedianFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Gaussian Median Filter...");
+
+        GridPane gridPane = new GridPane();
+        Button apply = new Button("Apply");
+        AtomicReference<Double> sigma = new AtomicReference<>(1.0);
+        AtomicReference<Integer> filterSize = new AtomicReference<>(1);
+        SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
+            filterSize.set(y.intValue());
+            transformationManagerView.preview(new GaussianMedianFilterTransformation(filterSize.get(),sigma.get()));
+        });
+
+        SliderControl stdSlider = new SliderControl("Sigma",0.5,5.0,1.0,(x, y)->{
+            sigma.set(y.doubleValue());
+            transformationManagerView.preview(new GaussianMedianFilterTransformation(filterSize.get(),sigma.get()));
+        });
+        apply.setOnMouseClicked( event -> {
+            transformationManagerView.addTransformation(new GaussianMedianFilterTransformation(filterSize.get(),sigma.get()));
+        });
+        gridPane.add(filterSizeSlider,0,0);
+        gridPane.add(stdSlider,0,1);
+        gridPane.add(apply,0,2);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Gaussian Median Filter", gridPane).show();
         });
         return item;
     }

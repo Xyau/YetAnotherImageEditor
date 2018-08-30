@@ -1,7 +1,9 @@
 package transformations;
 
+import repositories.FiltersRepository;
+
 public class LowpassFilterTransformation extends WeighedMeanFilterTranformation {
     public LowpassFilterTransformation() {
-        super(LOWPASS);
+        super(FiltersRepository.LOWPASS);
     }
 }
