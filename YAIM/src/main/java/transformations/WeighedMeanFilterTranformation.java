@@ -17,7 +17,7 @@ public class WeighedMeanFilterTranformation extends FilterTransformation {
 
     Integer[][] filter;
     public WeighedMeanFilterTranformation(Integer[][] filter) {
-        super(1,true);
+        super((filter.length - 1) / 2,true);
         this.filter = filter;
     }
 
