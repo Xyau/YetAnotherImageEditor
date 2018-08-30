@@ -22,6 +22,14 @@ public class ColorUtils {
         return new DenormalizedColor(red,blue,green,alpha);
     }
 
+    public static DenormalizedColor substractColors(Color c1, Color c2){
+        Double red = (c1.getRed() - c2.getRed());
+        Double blue = (c1.getBlue() - c2.getBlue());
+        Double green = (c1.getGreen() - c2.getGreen());
+        Double alpha = (c1.getOpacity());
+        return new DenormalizedColor(red,blue,green,alpha);
+    }
+
     public static Double normalize(Double x, Double min, Double max){
         return (x-min)/(max-min);
     }

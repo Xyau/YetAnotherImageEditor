@@ -13,8 +13,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
 import java.util.function.BiFunction;
 
 public class ImageUtils {
@@ -68,7 +68,7 @@ public class ImageUtils {
         Double max = Double.MIN_VALUE;
         for (int i = 0; i < imageToWriteIn.getWidth(); i++) {
             for (int j = 0; j < imageToWriteIn.getHeight(); j++) {
-                if(isPixelInImage(image,new Pixel(i,j))){
+                if(isPixelInImage(imageToWriteIn,i,j) && isPixelInImage(image,i,j)){
                     Color writableColor = imageToWriteIn.getPixelReader().getColor(i,j);
                     Color color = image.getPixelReader().getColor(i,j);
                     denormalizedColors[j][i] = function.apply(writableColor,color);
@@ -96,12 +96,14 @@ public class ImageUtils {
         PixelWriter px = writableImage.getPixelWriter();
         for (int y = 0; y < writableImage.getHeight(); y++){
             for (int x = 0; x < writableImage.getWidth(); x++){
-                Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),min,max);
-                Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),min,max);
-                Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),min,max);
-                Double alpha = denormalizedColors[y][x].getAlpha();
+                if(denormalizedColors[y][x] != null){
+                    Double red = ColorUtils.normalize(denormalizedColors[y][x].getRed(),min,max);
+                    Double green = ColorUtils.normalize(denormalizedColors[y][x].getGreen(),min,max);
+                    Double blue = ColorUtils.normalize(denormalizedColors[y][x].getBlue(),min,max);
+                    Double alpha = denormalizedColors[y][x].getAlpha();
 
-                px.setColor(x,y,new Color(red,green,blue,alpha));
+                    px.setColor(x,y,new Color(red,green,blue,alpha));
+                }
             }
         }
         return writableImage;
@@ -118,7 +120,7 @@ public class ImageUtils {
     }
 
     public static WritableImage readImage(String path){
-        return copyImage(new Image(new File(path).toURI().toString()));
+        return readImage(new File(path).toURI().toString());
     }
 
     public static WritableImage readImage(File file){
@@ -172,4 +174,32 @@ public class ImageUtils {
         return new Color(red, green, blue, a);
     }
 
+    public static Image readImage(File file, Integer height, Integer width) {
+        DataInputStream dis = null;
+        WritableImage writableImage = new WritableImage(width,height);
+        try {
+            dis = new DataInputStream(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                try {
+                    Double red = Utils.byteToInt(dis.readByte())/255.0;
+                    Double green = red;
+                    Double blue = red;
+                    if(file.length()>width*height){
+                        blue = Utils.byteToInt(dis.readByte())/255.0;
+                        green = Utils.byteToInt(dis.readByte())/255.0;
+                    }
+                    writableImage.getPixelWriter().setColor(i,j,new Color(red,green,blue,1));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return writableImage;
+    }
 }

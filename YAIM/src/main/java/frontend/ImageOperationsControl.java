@@ -5,10 +5,7 @@ import backend.Utils;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import transformations.AddImageTransformation;
-import transformations.MultiplyImageTransformation;
-import transformations.SubstractImageTransformation;
-import transformations.Transformation;
+import transformations.*;
 
 public class ImageOperationsControl extends GridPane {
     private ImageLoadControl imageLoadControl;
@@ -39,7 +36,7 @@ public class ImageOperationsControl extends GridPane {
 
         substractButton.setOnMouseClicked((x) -> {
             if(imageLoadControl.getImage().isPresent()){
-                activeTransformation = new SubstractImageTransformation(imageLoadControl.getImage().get());
+                activeTransformation = new MinusImageTransformation(imageLoadControl.getImage().get());
                 transformationManagerView.preview(activeTransformation);
             }
         });

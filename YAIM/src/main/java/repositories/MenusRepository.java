@@ -3,6 +3,7 @@ package repositories;
 import backend.ImageUtils;
 import backend.SyntheticGenerator;
 import backend.Utils;
+import com.sun.javafx.scene.SceneUtils;
 import frontend.ImageOperationsControl;
 import frontend.SliderControl;
 import frontend.TextAreaControlPane;
@@ -61,6 +62,24 @@ public class MenusRepository {
 
     private static MenuItem getLoadMenuItem(final Stage stage, TransformationManagerView transformationManagerView){
         MenuItem item = new MenuItem("Load...");
+        item.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Resource File");
+            File file = fileChooser.showOpenDialog(stage);
+            WritableImage image;
+            if(Utils.fileIsRaw(file)){
+                GridPane gridPane = ThingsRepository.getRawImageLoadPane(file,transformationManagerView);
+                StagesRepository.getStage("Read raw",gridPane).show();
+            } else {
+                image = ImageUtils.readImage(file);
+                transformationManagerView.setInitialImage(image);
+            }
+        });
+        return item;
+    }
+
+    private static MenuItem getLoadRawMenuItem(final Stage stage, TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Load RAW...");
         item.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
