@@ -194,15 +194,9 @@ public class MenusRepository {
             StagesRepository.getStage("Gamma function", getGammaGridPane(transformationManagerView)).show();
         });
 
-
-
-        imageMenu.getItems().add(negative);
-        imageMenu.getItems().add(binary);
-        imageMenu.getItems().add(gamma);
-        imageMenu.getItems().add(histogram);
-        imageMenu.getItems().add(equalization);
-        imageMenu.getItems().add(getDynamicRangeCompressionMenuItem(transformationManagerView));
-        imageMenu.getItems().add(imageOperations);
+        imageMenu.getItems().addAll(negative,binary,gamma,histogram,equalization,
+                                    getDynamicRangeCompressionMenuItem(transformationManagerView),
+                                    imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
         return imageMenu;
     }
 
@@ -211,6 +205,40 @@ public class MenusRepository {
         MenuItem item = new MenuItem("Dynamic Range Compression");
         item.setOnAction(event -> {
             transformationManagerView.addTransformation(new DynamicRangeCompressionTransformation());
+        });
+        return item;
+    }
+
+    private static MenuItem getMultiplyByScalarMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Multiply by scalar");
+        GridPane gridPane = new GridPane();
+        AtomicReference<Double> red = new AtomicReference<>(1.0);
+        AtomicReference<Double> green = new AtomicReference<>(1.0);
+        AtomicReference<Double> blue = new AtomicReference<>(1.0);
+
+        SliderControl redSlider = new SliderControl("Red",0.0,1.0,0.05,(x,y)->{
+            red.set(y.doubleValue());
+            transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
+        });
+        SliderControl greenSlider = new SliderControl("Green",0.0,1.0,0.05,(x,y)->{
+            green.set(y.doubleValue());
+            transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
+        });
+        SliderControl blueSlider = new SliderControl("Blue",0.0,1.0,0.05,(x,y)->{
+            blue.set(y.doubleValue());
+            transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
+        });
+        Button button = new Button("Apply");
+        button.setOnAction(event -> {
+            transformationManagerView.addTransformation(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
+        });
+        gridPane.add(redSlider,0,0);
+        gridPane.add(greenSlider,0,1);
+        gridPane.add(blueSlider,0,2);
+        gridPane.add(button,0,3);
+
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Multiply by scalar",gridPane).show();
         });
         return item;
     }
