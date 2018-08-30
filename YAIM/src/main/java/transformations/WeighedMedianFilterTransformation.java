@@ -21,7 +21,7 @@ public class WeighedMedianFilterTransformation extends FilterTransformation{
 
     Integer[][] filter;
     public WeighedMedianFilterTransformation(Integer[][] filter){
-        super(1,false);
+        super((filter.length - 1) / 2,false);
         this.filter = filter;
     }
 
