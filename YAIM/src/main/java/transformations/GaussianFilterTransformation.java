@@ -5,7 +5,7 @@ import backend.Utils;
 
 import java.util.Objects;
 
-public class GaussianFilterTransformation extends WeighedMedianFilterTransformation {
+public class GaussianFilterTransformation extends WeighedMeanFilterTranformation {
     private Double std;
 
     public GaussianFilterTransformation(Integer filterSize, Double std) {

@@ -5,6 +5,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -13,17 +14,19 @@ import java.util.Random;
 public class ExponentialDistributionNoiseTransformation implements Transformation{
     double lambda;
     double noiseLevel;
+    long seed;
 
-    public ExponentialDistributionNoiseTransformation(double lambda, double noiseLevel) {
+    public ExponentialDistributionNoiseTransformation(double lambda, double noiseLevel, String seed) {
         this.lambda = lambda;
         this.noiseLevel = noiseLevel;
+        this.seed = seed.trim().hashCode();
     }
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
         PixelReader pixelReader = writableImage.getPixelReader();
         PixelWriter pixelWriter = writableImage.getPixelWriter();
-        Random r = new Random();
+        Random r = new Random(seed);
         for (int i = 0; i < writableImage.getWidth(); i++) {
             for (int j = 0; j < writableImage.getHeight(); j++) {
                 Color c = pixelReader.getColor(i, j);
@@ -49,6 +52,22 @@ public class ExponentialDistributionNoiseTransformation implements Transformatio
             }
         }
         return writableImage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExponentialDistributionNoiseTransformation that = (ExponentialDistributionNoiseTransformation) o;
+        return Double.compare(that.lambda, lambda) == 0 &&
+                Double.compare(that.noiseLevel, noiseLevel) == 0 &&
+                seed == that.seed;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(lambda, noiseLevel, seed);
     }
 
     @Override

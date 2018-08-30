@@ -395,7 +395,7 @@ public class MenusRepository {
         gridPane.add(seed,0,2);
         gridPane.add(apply,1,2);
         item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Filter", gridPane).show();
+            StagesRepository.getStage("Salt and pepper noise", gridPane).show();
         });
         return item;
     }
@@ -440,20 +440,23 @@ public class MenusRepository {
         Button apply = new Button("Apply");
         AtomicReference<Double> phi = new AtomicReference<>(0.1);
         AtomicReference<Double> noiseLevel = new AtomicReference<>(0.1);
+        TextAreaControlPane seed = new TextAreaControlPane("Seed:");
+        seed.setText("42");
         SliderControl phiSlider = new SliderControl("Phi",0.0,5.0,0.2,(x, y)->{
             phi.set(y.doubleValue());
-            transformationManagerView.preview(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get()));
+            transformationManagerView.preview(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get(),seed.getText()));
         });
         SliderControl noiseLevelSlider = new SliderControl("Noise Level",0.0,1.0,0.05,(x, y)->{
             noiseLevel.set(y.doubleValue());
-            transformationManagerView.preview(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get()));
+            transformationManagerView.preview(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get(),seed.getText()));
         });
         apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get()));
+            transformationManagerView.addTransformation(new RayleighDistributionNoiseTransformation(phi.get(), noiseLevel.get(), seed.getText()));
         });
         phiSlider.setSliderValue(0.0);
         gridPane.add(phiSlider,0,0);
         gridPane.add(noiseLevelSlider,1,0);
+        gridPane.add(seed,0,2);
         gridPane.add(apply,1,2);
         item.setOnAction(event -> {
             StagesRepository.getStage("Rayleigh Noise", gridPane).show();
@@ -468,16 +471,17 @@ public class MenusRepository {
         Button apply = new Button("Apply");
         AtomicReference<Double> lambda = new AtomicReference<>(0.1);
         AtomicReference<Double> noiseLevel = new AtomicReference<>(0.1);
+        TextAreaControlPane seed = new TextAreaControlPane("Seed");
         SliderControl phiSlider = new SliderControl("Lambda",0.0,5.0,0.2,(x, y)->{
             lambda.set(y.doubleValue());
-            transformationManagerView.preview(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get()));
+            transformationManagerView.preview(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get(),seed.getText()));
         });
         SliderControl noiseLevelSlider = new SliderControl("Noise Level",0.0,1.0,0.05,(x, y)->{
             noiseLevel.set(y.doubleValue());
-            transformationManagerView.preview(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get()));
+            transformationManagerView.preview(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get(),seed.getText()));
         });
         apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get()));
+            transformationManagerView.addTransformation(new ExponentialDistributionNoiseTransformation(lambda.get(), noiseLevel.get(),seed.getText()));
         });
         phiSlider.setSliderValue(0.0);
         gridPane.add(phiSlider,0,0);

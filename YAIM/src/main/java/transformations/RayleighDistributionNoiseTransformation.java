@@ -13,17 +13,19 @@ import java.util.Random;
 public class RayleighDistributionNoiseTransformation implements Transformation{
     double phi;
     double noiseLevel;
+    long seed;
 
-    public RayleighDistributionNoiseTransformation(double phi, double noiseLevel) {
+    public RayleighDistributionNoiseTransformation(double phi, double noiseLevel, String seed) {
         this.phi = phi;
         this.noiseLevel = noiseLevel;
+        this.seed = seed.trim().hashCode();
     }
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
         PixelReader pixelReader = writableImage.getPixelReader();
         PixelWriter pixelWriter = writableImage.getPixelWriter();
-        Random r = new Random();
+        Random r = new Random(seed);
         for (int i = 0; i < writableImage.getWidth(); i++) {
             for (int j = 0; j < writableImage.getHeight(); j++) {
                 Color c = pixelReader.getColor(i, j);
