@@ -10,6 +10,7 @@ import transformations.Transformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TransformationManager {
     private List<ToggableTransformation> transformations;
@@ -75,6 +76,13 @@ public class TransformationManager {
         this.initialImage = initialImage;
         imageResult = ImageUtils.copyImage(initialImage);
         return imageResult = recalculateImage();
+    }
+
+    public void deleteUnusedTransformations(){
+        transformations = transformations.stream()
+                .filter(ToggableTransformation::isEnabled)
+                .collect(Collectors.toList());
+        imageResult = recalculateImage();
     }
 
     private class ToggableTransformation{

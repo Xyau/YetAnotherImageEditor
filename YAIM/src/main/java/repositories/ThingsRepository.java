@@ -56,21 +56,20 @@ public class ThingsRepository {
 
 
     public static Button getDarkenButton(TransformationManagerView transformationManagerView){
-        Button button = new Button();
-        button.setText("Darken");
-        button.setOnMouseClicked( buttonClickEvent -> {
-            Transformation transformation = new DarkenTransformation();
-            transformationManagerView.addTransformation(transformation);
-        });
+        Button button = new Button("Darken");
+        button.setOnMouseClicked( buttonClickEvent -> transformationManagerView.addTransformation(new DarkenTransformation()));
         return button;
     }
 
     public static Button getPreviewButton(TransformationManagerView transformationManagerView){
-        Button button = new Button();
-        button.setText("Preview");
-        button.setOnMouseClicked( buttonClickEvent -> {
-            transformationManagerView.preview(new NoChangeTransformation());
-        });
+        Button button = new Button("Preview");
+        button.setOnMouseClicked( buttonClickEvent -> transformationManagerView.preview(new NoChangeTransformation()));
+        return button;
+    }
+
+    public static Button getDeleteButton(TransformationManagerView transformationManagerView){
+        Button button = new Button("Delete");
+        button.setOnMouseClicked( buttonClickEvent -> transformationManagerView.deleteUnusedTransformations());
         return button;
     }
 

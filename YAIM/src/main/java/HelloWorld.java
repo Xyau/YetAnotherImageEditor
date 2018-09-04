@@ -145,7 +145,8 @@ public class HelloWorld extends Application {
 
 
         // Row 1: History
-        root.add(transformationManagerView,0,1,10,1);
+        root.add(transformationManagerView,1,1,10,1);
+        root.add(ThingsRepository.getDeleteButton(transformationManagerView),0,1);
         root.setColumnSpan(transformationManagerView, 10);
 
         // Row 3: Filters

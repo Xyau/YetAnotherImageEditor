@@ -35,6 +35,7 @@ public class TransformationManagerView extends GridPane {
         this.linkedImageView = linkedImageView;
         this.previewImageView = previewImageView;
         transformationImageViews = new ArrayList<>();
+        setHgap(1.5);
     }
 
     private Pane getNewTransPane(Integer index, TransformationManager transformationManager) {
@@ -64,10 +65,9 @@ public class TransformationManagerView extends GridPane {
         Integer index = transformationManager.addTransformation(transformation);
         Pane pane = getNewTransPane(index, transformationManager);
         add(pane,index,0);
-        setHgap(1.5);
         cache.invalidateAll();
-
     }
+
 
     public Image getImage(){
         return transformationManager.getImage();
@@ -100,5 +100,15 @@ public class TransformationManagerView extends GridPane {
         for (int i = 0; i < transformationImageViews.size(); i++) {
             transformationImageViews.get(i).setImage(transformationManager.getImageAt(i));
         }
+    }
+
+    public void deleteUnusedTransformations(){
+        transformationManager.deleteUnusedTransformations();
+        getChildren().clear();
+        for (int i = 0; i < transformationManager.size(); i++) {
+            Pane pane = getNewTransPane(i,transformationManager);
+            add(pane,i,0);
+        }
+        linkedImageView.setImage(transformationManager.getImage());
     }
 }
