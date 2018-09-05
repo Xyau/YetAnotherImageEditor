@@ -1,7 +1,6 @@
 package frontend;
 
 import javafx.scene.control.MenuItem;
-import transformations.LowpassFilterTransformation;
 import transformations.Transformation;
 
 public class FrontendUtils {

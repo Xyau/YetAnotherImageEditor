@@ -1,9 +1,10 @@
-package transformations;
+package transformations.colors;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import transformations.Transformation;
 
 import java.util.Objects;
 

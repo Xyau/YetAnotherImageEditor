@@ -38,7 +38,7 @@ public class TransformationManager {
 
     public boolean toggleTransformation(Integer index){
         Boolean result = transformations.get(index).toggle();
-        imageResult = recalculateImage();
+        imageResult = recalculateImage(index);
         return result;
     }
 
@@ -52,9 +52,36 @@ public class TransformationManager {
         return transformations.size()-1;
     }
 
-    private WritableImage recalculateImage(){
-        WritableImage result = ImageUtils.copyImage(initialImage);
-        for (int i = 0; i < transformations.size(); i++) {
+    private WritableImage recalculateImage() {
+        return recalculateImage(0);
+    }
+
+    //We have to find a precalculated image from a previous transformation that is enabled
+    //And return a copy of that image
+    private WritableImage getCopyOfLastCorrectImage(Integer startIndex){
+        if(startIndex > transformations.size() || startIndex < 0 ) {
+            throw new IllegalStateException("illegal index" + startIndex + " max index: " + transformations.size());
+        }
+
+        //If we need to recalculate 0, we have to use initial image
+        if(startIndex == 0 ){
+            return ImageUtils.copyImage(initialImage);
+        }
+        //Start looking for a enabled transformation that is before the startIndex
+        startIndex -= 1;
+        //Try to find an enabled transformation
+        for (int i = startIndex; i >= 0 ; i--) {
+            if(transformations.get(i).isEnabled()){
+                return ImageUtils.copyImage(transformations.get(i).getLastProcesedImage());
+            }
+        }
+        //If no transformation was enabled, return the initial image, as there is no valid lastProcecedImage
+        return ImageUtils.copyImage(initialImage);
+    }
+
+    private WritableImage recalculateImage(Integer startIndex){
+        WritableImage result = getCopyOfLastCorrectImage(startIndex);
+        for (int i = startIndex; i < transformations.size(); i++) {
             ToggableTransformation transformation = transformations.get(i);
             if(transformation.isEnabled()){
                 result = transformation.getTransformation().transform(result);

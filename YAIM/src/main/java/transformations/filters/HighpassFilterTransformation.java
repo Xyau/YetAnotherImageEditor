@@ -1,8 +1,7 @@
-package transformations;
+package transformations.filters;
 
 import repositories.FiltersRepository;
-
-import java.io.FilterReader;
+import transformations.filters.WeighedMeanFilterTranformation;
 
 public class HighpassFilterTransformation extends WeighedMeanFilterTranformation {
     public HighpassFilterTransformation() {

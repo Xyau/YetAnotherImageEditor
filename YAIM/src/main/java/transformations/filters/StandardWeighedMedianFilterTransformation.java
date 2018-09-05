@@ -1,4 +1,4 @@
-package transformations;
+package transformations.filters;
 
 import repositories.FiltersRepository;
 

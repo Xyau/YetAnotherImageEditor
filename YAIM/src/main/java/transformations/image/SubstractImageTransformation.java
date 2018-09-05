@@ -1,10 +1,11 @@
-package transformations;
+package transformations.image;
 
 import backend.ColorUtils;
 import backend.ImageUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import transformations.Transformation;
 
 public class SubstractImageTransformation implements Transformation {
     private Image image;

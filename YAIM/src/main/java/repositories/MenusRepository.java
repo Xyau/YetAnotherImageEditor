@@ -16,19 +16,86 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import transformations.DrawHistogramTransformation;
 import transformations.DynamicRangeCompressionTransformation;
-import transformations.MedianFilterTransformation;
+import transformations.borders.*;
+import transformations.colors.BrightenTransformation;
+import transformations.colors.DarkenTransformation;
+import transformations.colors.GrayscaleTransformation;
+import transformations.colors.ScalarMultiplyTransformation;
+import transformations.filters.MedianFilterTransformation;
 import transformations.*;
+import transformations.filters.*;
+import transformations.noise.AdditiveGaussianNoiseTransformation;
+import transformations.noise.ExponentialDistributionNoiseTransformation;
+import transformations.noise.SaltAndPeperNoiseTransformation;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class MenusRepository {
+import static frontend.FrontendUtils.getMenuItemByTranformation;
 
+public class MenusRepository {
     public static Menu getFileMenu(Stage stage, TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("File");
-        fileMenu.getItems().addAll(getSaveMenuItem(stage,transformationManagerView),
+        fileMenu.getItems().addAll(
+                getSaveMenuItem(stage,transformationManagerView),
                 getSavePreviewMenuItem(stage, transformationManagerView),
-                getLoadMenuItem(stage,transformationManagerView));
+                getLoadMenuItem(stage,transformationManagerView)
+        );
+        return fileMenu;
+    }
+
+    public static Menu getShapesMenu(TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Shapes");
+        fileMenu.getItems().addAll(
+                getGenerateWhiteBlank(transformationManagerView),
+                getGenerateGrayBlank(transformationManagerView),
+                getGenerateSquare(transformationManagerView),
+                getGenerateCircle(transformationManagerView),
+                getGenerateStripes(transformationManagerView)
+        );
+        return fileMenu;
+    }
+
+    public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Filter");
+        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
+                getMeanFilterMenuItem(transformationManagerView),
+                getWeighedMedianFilterMenuItem(transformationManagerView),
+                getGaussianMedianFilterMenuItem(transformationManagerView),
+                getGaussianMeanFilterMenuItem(transformationManagerView),
+                getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Highpass",new HighpassFilterTransformation(),transformationManagerView)
+            );
+        return fileMenu;
+    }
+
+    public static Menu getColorsMenu(TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Colors");
+        fileMenu.getItems().addAll(
+                getMenuItemByTranformation("Grayscale",new GrayscaleTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Brighten",new BrightenTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Darken",new DarkenTransformation(),transformationManagerView));
+        return fileMenu;
+    }
+
+    public static Menu getBordersMenu(TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Borders");
+        fileMenu.getItems().addAll(
+                getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Sobel Horizontal",new HorizontalSobelBordersTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Sobel Vertical",new VerticalSobelBordersTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Prewitt Horizontal",new HorizontalPrewittBordersTransformation(),transformationManagerView),
+                getMenuItemByTranformation("Prewitt Vertical",new VerticalPrewittBordersTransformation(),transformationManagerView));
+        return fileMenu;
+    }
+
+    public static Menu getNoiseMenu(TransformationManagerView transformationManagerView){
+        Menu fileMenu = new Menu("Noise");
+        fileMenu.getItems().addAll(getSaltAndPepperNoiseTransformation(transformationManagerView),
+                getAditiveGaussianNoiseTransformation(transformationManagerView),
+                getRayleighDistributionNoiseTransformation(transformationManagerView),
+                getExponentialDistributionNoiseTransformation(transformationManagerView));
         return fileMenu;
     }
 
@@ -85,16 +152,6 @@ public class MenusRepository {
             transformationManagerView.setInitialImage(image);
         });
         return item;
-    }
-
-    public static Menu getShapesMenu(TransformationManagerView transformationManagerView){
-        Menu fileMenu = new Menu("Shapes");
-        fileMenu.getItems().addAll(getGenerateWhiteBlank(transformationManagerView),
-                                   getGenerateGrayBlank(transformationManagerView),
-                                   getGenerateSquare(transformationManagerView),
-                                   getGenerateCircle(transformationManagerView),
-                                   getGenerateStripes(transformationManagerView));
-        return fileMenu;
     }
 
     private static MenuItem getGenerateSquare(TransformationManagerView transformationManagerView){
@@ -194,18 +251,6 @@ public class MenusRepository {
             transformationManagerView.addTransformation(new HistogramEqualizationTransformation());
         });
 
-        MenuItem negative = new MenuItem("Negative");
-        negative.setOnAction( event -> {
-            Transformation transformation = new NegativeTransformation();
-            transformationManagerView.addTransformation(transformation);
-        });
-
-        MenuItem highContrast = new MenuItem("High Contrast");
-        highContrast.setOnAction( event -> {
-            Transformation transformation = new HighContrastTransformation();
-            transformationManagerView.addTransformation(transformation);
-        });
-
         MenuItem binary = new MenuItem("Binary...");
         binary.setOnAction( event -> {
             StagesRepository.getStage("Binary", getBinaryGridPane(transformationManagerView)).show();
@@ -216,9 +261,12 @@ public class MenusRepository {
             StagesRepository.getStage("Gamma function", getGammaGridPane(transformationManagerView)).show();
         });
 
-        imageMenu.getItems().addAll(negative,highContrast,binary,gamma,histogram,equalization,
-                                    getDynamicRangeCompressionMenuItem(transformationManagerView),
-                                    imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
+        imageMenu.getItems().addAll(
+                getMenuItemByTranformation("Negative",new NegativeTransformation(),transformationManagerView),
+                getMenuItemByTranformation("High contrast",new HighContrastTransformation(),transformationManagerView),
+                binary,gamma,histogram,equalization,
+                getDynamicRangeCompressionMenuItem(transformationManagerView),
+                imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
         return imageMenu;
     }
 
@@ -265,20 +313,7 @@ public class MenusRepository {
         return item;
     }
 
-    public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
-        Menu fileMenu = new Menu("Filter");
-        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
-                                    getMeanFilterMenuItem(transformationManagerView),
-                                    getWeighedMedianFilterMenuItem(transformationManagerView),
-                                    getGaussianMedianFilterMenuItem(transformationManagerView),
-                                    getGaussianMeanFilterMenuItem(transformationManagerView),
-                                    getLowpassFilterMenuItem(transformationManagerView),
-                                    getHighpassFilterMenuItem(transformationManagerView),
-                FrontendUtils.getMenuItemByTranformation("Vertical",new VerticalBordersTransformation(),transformationManagerView),
-                FrontendUtils.getMenuItemByTranformation("Horizontal",new HorizontalBordersTransformation(),transformationManagerView)
-        );
-        return fileMenu;
-    }
+
 
     private static MenuItem getMedianFilterMenuItem(TransformationManagerView transformationManagerView){
         MenuItem item = new MenuItem("Median Filter...");
@@ -304,24 +339,6 @@ public class MenusRepository {
 
         item.setOnAction(event -> {
             transformationManagerView.addTransformation(new StandardWeighedMedianFilterTransformation());
-        });
-        return item;
-    }
-
-    private static MenuItem getLowpassFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Lowpass Filter");
-
-        item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new LowpassFilterTransformation());
-        });
-        return item;
-    }
-
-    private static MenuItem getHighpassFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Highpass Filter");
-
-        item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new HighpassFilterTransformation());
         });
         return item;
     }
@@ -401,14 +418,7 @@ public class MenusRepository {
         return item;
     }
 
-    public static Menu getNoiseMenu(TransformationManagerView transformationManagerView){
-        Menu fileMenu = new Menu("Noise");
-        fileMenu.getItems().addAll(getSaltAndPepperNoiseTransformation(transformationManagerView),
-                getAditiveGaussianNoiseTransformation(transformationManagerView),
-                getRayleighDistributionNoiseTransformation(transformationManagerView),
-                getExponentialDistributionNoiseTransformation(transformationManagerView));
-        return fileMenu;
-    }
+
 
     private static MenuItem getSaltAndPepperNoiseTransformation(TransformationManagerView transformationManagerView) {
         MenuItem item = new MenuItem("Salt and pepper...");
@@ -421,17 +431,17 @@ public class MenusRepository {
         seed.setText("42");
         SliderControl saltSlider = new SliderControl("Salt",0.0,1.0,0.05,(x, y)->{
             salt.set(y.doubleValue());
-            transformationManagerView.preview(new SaltAndPeperTransformation(seed.getText(),salt.get(),pepper.get()));
+            transformationManagerView.preview(new SaltAndPeperNoiseTransformation(seed.getText(),salt.get(),pepper.get()));
         });
         saltSlider.setSliderValue(0.0);
 
         SliderControl pepperSlider = new SliderControl("Pepper",0.0,1.0,0.05,(x, y)->{
             pepper.set(y.doubleValue());
-            transformationManagerView.preview(new SaltAndPeperTransformation(seed.getText(),salt.get(),pepper.get()));
+            transformationManagerView.preview(new SaltAndPeperNoiseTransformation(seed.getText(),salt.get(),pepper.get()));
         });
         pepperSlider.setSliderValue(0.0);
         apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new SaltAndPeperTransformation(seed.getText(),salt.get(),pepper.get()));
+            transformationManagerView.addTransformation(new SaltAndPeperNoiseTransformation(seed.getText(),salt.get(),pepper.get()));
         });
         gridPane.add(saltSlider,0,0);
         gridPane.add(pepperSlider,0,1);
@@ -535,4 +545,5 @@ public class MenusRepository {
         });
         return item;
     }
+
 }

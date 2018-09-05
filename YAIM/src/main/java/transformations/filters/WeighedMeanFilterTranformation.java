@@ -1,4 +1,4 @@
-package transformations;
+package transformations.filters;
 
 import backend.ColorPixel;
 import backend.DenormalizedColor;

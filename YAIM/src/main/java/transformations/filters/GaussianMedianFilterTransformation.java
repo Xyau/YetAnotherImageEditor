@@ -1,14 +1,14 @@
-package transformations;
+package transformations.filters;
 
 
 import backend.Utils;
 
 import java.util.Objects;
 
-public class GaussianMeanFilterTransformation extends WeighedMeanFilterTranformation {
+public class GaussianMedianFilterTransformation extends WeighedMedianFilterTransformation {
     private Double std;
 
-    public GaussianMeanFilterTransformation(Integer filterSize, Double std) {
+    public GaussianMedianFilterTransformation(Integer filterSize, Double std) {
         super(Utils.getGaussianMatrixWeight(std,filterSize));
         this.std = std;
     }
@@ -18,12 +18,13 @@ public class GaussianMeanFilterTransformation extends WeighedMeanFilterTranforma
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        GaussianMeanFilterTransformation that = (GaussianMeanFilterTransformation) o;
+        GaussianMedianFilterTransformation that = (GaussianMedianFilterTransformation) o;
         return Objects.equals(std, that.std) && Objects.equals(filterSize,that.filterSize);
     }
 
     @Override
     public int hashCode() {
+
         return Objects.hash(super.hashCode(), std, filterSize);
     }
 

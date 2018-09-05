@@ -1,10 +1,11 @@
-package transformations;
+package transformations.filters;
 
 import backend.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import transformations.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;

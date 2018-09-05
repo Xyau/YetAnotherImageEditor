@@ -1,6 +1,7 @@
-package transformations;
+package transformations.common;
 
 import javafx.scene.image.WritableImage;
+import transformations.Transformation;
 
 public class NoChangeTransformation implements Transformation {
     @Override

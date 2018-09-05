@@ -95,20 +95,22 @@ public class TransformationManagerView extends GridPane {
     public void setInitialImage(Image initialImage){
         transformationManager.setInitialImage(initialImage);
         linkedImageView.setImage(transformationManager.getImage());
-        previewImageView.setImage(ImagesRepository.NO_IMAGE);
         cache.invalidateAll();
-        for (int i = 0; i < transformationImageViews.size(); i++) {
-            transformationImageViews.get(i).setImage(transformationManager.getImageAt(i));
+        repopulateTransformationsView();
+    }
+
+    private void repopulateTransformationsView(){
+        getChildren().clear();
+        transformationImageViews = new ArrayList<>();
+        for (int i = 0; i < transformationManager.size(); i++) {
+            Pane pane = getNewTransPane(i,transformationManager);
+            add(pane,i,0);
         }
     }
 
     public void deleteUnusedTransformations(){
         transformationManager.deleteUnusedTransformations();
-        getChildren().clear();
-        for (int i = 0; i < transformationManager.size(); i++) {
-            Pane pane = getNewTransPane(i,transformationManager);
-            add(pane,i,0);
-        }
+        repopulateTransformationsView();
         linkedImageView.setImage(transformationManager.getImage());
     }
 }

@@ -4,7 +4,6 @@ import backend.EventManageableImageView;
 import backend.FocusablePane;
 import backend.ImageUtils;
 import backend.Pixel;
-import com.sun.javafx.css.Size;
 import frontend.*;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
@@ -12,11 +11,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import transformations.*;
+import transformations.colors.DarkenTransformation;
+import transformations.common.NoChangeTransformation;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ThingsRepository {
 
@@ -52,13 +50,6 @@ public class ThingsRepository {
         drawLinePanel.add(firstPixelPicker,0,0);
         drawLinePanel.add(secondPixelPicker,0,1);
         return drawLinePanel;
-    }
-
-
-    public static Button getDarkenButton(TransformationManagerView transformationManagerView){
-        Button button = new Button("Darken");
-        button.setOnMouseClicked( buttonClickEvent -> transformationManagerView.addTransformation(new DarkenTransformation()));
-        return button;
     }
 
     public static Button getPreviewButton(TransformationManagerView transformationManagerView){

@@ -138,8 +138,10 @@ public class HelloWorld extends Application {
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(MenusRepository.getFileMenu(primaryStage,transformationManagerView),
                                 MenusRepository.getShapesMenu(transformationManagerView),
+                                MenusRepository.getColorsMenu(transformationManagerView),
                                 MenusRepository.getImageMenu(scene,transformationManagerView),
                                 MenusRepository.getFilterMenu(transformationManagerView),
+                                MenusRepository.getBordersMenu(transformationManagerView),
                                 MenusRepository.getNoiseMenu(transformationManagerView));
         root.add(menuBar,0,0,10,1);
 
@@ -152,8 +154,7 @@ public class HelloWorld extends Application {
         // Row 3: Filters
         root.add(getDrawCircleAtButton(),0,3);
         root.add(getGradientMenu(),1,3);
-        root.add(ThingsRepository.getDarkenButton(transformationManagerView),2,3);
-        root.add(getDrawLineAtButton(),3,3);
+        root.add(getDrawLineAtButton(),2,3);
 
         // Row 4: Color pane
         root.add(rgbChooserView,0,4,2,1);

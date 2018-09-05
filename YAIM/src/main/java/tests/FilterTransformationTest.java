@@ -1,13 +1,9 @@
 package tests;
 
 import backend.ColorPixel;
-import backend.ImageUtils;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Test;
-import transformations.FilterTransformation;
-import transformations.MedianFilterTransformation;
+import transformations.filters.MedianFilterTransformation;
 
 import java.util.ArrayList;
 import java.util.List;

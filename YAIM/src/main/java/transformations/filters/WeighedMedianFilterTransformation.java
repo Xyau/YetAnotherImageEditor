@@ -1,4 +1,4 @@
-package transformations;
+package transformations.filters;
 
 import backend.ColorPixel;
 import backend.DenormalizedColor;
@@ -6,7 +6,6 @@ import backend.ImageUtils;
 import backend.Utils;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class WeighedMedianFilterTransformation extends FilterTransformation{
+public class WeighedMedianFilterTransformation extends FilterTransformation {
     Double[][] filter;
     public WeighedMedianFilterTransformation(Double[][] filter){
         super((filter.length - 1) / 2,false);

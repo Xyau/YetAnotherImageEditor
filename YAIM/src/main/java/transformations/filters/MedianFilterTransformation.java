@@ -1,8 +1,9 @@
-package transformations;
+package transformations.filters;
 
 import backend.ColorPixel;
 import backend.Utils;
 import javafx.scene.paint.Color;
+import transformations.filters.FilterTransformation;
 
 import java.util.Comparator;
 import java.util.List;

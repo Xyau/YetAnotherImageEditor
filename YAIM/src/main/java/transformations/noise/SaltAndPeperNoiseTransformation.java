@@ -1,25 +1,26 @@
-package transformations;
+package transformations.noise;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import transformations.Transformation;
 
 import java.util.Random;
 
-public class SaltAndPeperTransformation implements Transformation {
+public class SaltAndPeperNoiseTransformation implements Transformation {
     private Long seed;
     private Double saltRatio;
     private Double pepperRatio;
 
-    public SaltAndPeperTransformation(Long seed, Double saltRatio, Double pepperRatio) {
+    public SaltAndPeperNoiseTransformation(Long seed, Double saltRatio, Double pepperRatio) {
         this.seed = seed;
         this.saltRatio = saltRatio;
         this.pepperRatio = pepperRatio;
         if(saltRatio+pepperRatio>1)throw new IllegalStateException("Illegal salt and pepper percentages");
     }
 
-    public SaltAndPeperTransformation(String seed, Double saltRatio, Double pepperRatio) {
+    public SaltAndPeperNoiseTransformation(String seed, Double saltRatio, Double pepperRatio) {
         this(new Long(seed.hashCode()),saltRatio,pepperRatio);
     }
 

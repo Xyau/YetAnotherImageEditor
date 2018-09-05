@@ -7,10 +7,10 @@ import java.util.List;
 
 public class ColorUtils {
     public static DenormalizedColor addColors(Color c1, Color c2){
-        Double red = (c1.getRed() + c2.getRed())/2;
-        Double blue = (c1.getBlue() + c2.getBlue())/2;
-        Double green = (c1.getGreen() + c2.getGreen())/2;
-        Double alpha = (c1.getOpacity() + c2.getOpacity())/2;
+        Double red = (c1.getRed() + c2.getRed());
+        Double blue = (c1.getBlue() + c2.getBlue());
+        Double green = (c1.getGreen() + c2.getGreen());
+        Double alpha = (c1.getOpacity());
         return new DenormalizedColor(red,blue,green,alpha);
     }
 
@@ -18,6 +18,14 @@ public class ColorUtils {
         Double red = (c1.getRed() * c2.getRed());
         Double blue = (c1.getBlue() * c2.getBlue());
         Double green = (c1.getGreen() * c2.getGreen());
+        Double alpha = (c1.getOpacity());
+        return new DenormalizedColor(red,blue,green,alpha);
+    }
+
+    public static DenormalizedColor averagingColors(Color c1, Color c2){
+        Double red = (c1.getRed() + c2.getRed())/2;
+        Double blue = (c1.getBlue() + c2.getBlue())/2;
+        Double green = (c1.getGreen() + c2.getGreen())/2;
         Double alpha = (c1.getOpacity());
         return new DenormalizedColor(red,blue,green,alpha);
     }

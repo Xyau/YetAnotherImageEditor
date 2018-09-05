@@ -1,9 +1,10 @@
-package transformations;
+package transformations.noise;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import transformations.Transformation;
 
 import java.util.Objects;
 import java.util.Random;
@@ -11,7 +12,7 @@ import java.util.Random;
 /**
  * Created by zion on 2018-08-29.
  */
-public class ExponentialDistributionNoiseTransformation implements Transformation{
+public class ExponentialDistributionNoiseTransformation implements Transformation {
     double lambda;
     double noiseLevel;
     long seed;
