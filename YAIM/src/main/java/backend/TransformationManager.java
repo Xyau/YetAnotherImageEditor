@@ -17,8 +17,6 @@ public class TransformationManager {
     private Image initialImage;
     private WritableImage imageResult;
 
-
-
     public Integer size(){
         return transformations.size();
     }
@@ -38,7 +36,11 @@ public class TransformationManager {
 
     public boolean toggleTransformation(Integer index){
         Boolean result = transformations.get(index).toggle();
-        imageResult = recalculateImage(index);
+        if(result && index == transformations.size()-1){
+            imageResult = ImageUtils.copyImage(transformations.get(index).getLastProcesedImage());
+        } else {
+            imageResult = recalculateImage(index);
+        }
         return result;
     }
 

@@ -81,12 +81,14 @@ public class MenusRepository {
     public static Menu getBordersMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Borders");
         fileMenu.getItems().addAll(
-                getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView),
-                getMenuItemByTranformation("Sobel Horizontal",new HorizontalSobelBordersTransformation(),transformationManagerView),
-                getMenuItemByTranformation("Sobel Vertical",new VerticalSobelBordersTransformation(),transformationManagerView),
-                getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView),
-                getMenuItemByTranformation("Prewitt Horizontal",new HorizontalPrewittBordersTransformation(),transformationManagerView),
-                getMenuItemByTranformation("Prewitt Vertical",new VerticalPrewittBordersTransformation(),transformationManagerView));
+                getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Sobel Horizontal",new HorizontalSobelBordersTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Sobel Vertical",new VerticalSobelBordersTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Prewitt Horizontal",new HorizontalPrewittBordersTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Prewitt Vertical",new VerticalPrewittBordersTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Laplacian",new LaplacianBordersTransformation(),transformationManagerView)
+        );
         return fileMenu;
     }
 

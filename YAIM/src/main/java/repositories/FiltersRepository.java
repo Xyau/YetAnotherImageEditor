@@ -25,4 +25,8 @@ public class FiltersRepository {
                                                                 {-2.0,0.0,2.0},
                                                                 {-1.0,0.0,1.0}};
 
+    public static Double[][] LAPLACIAN = new Double[][]{        {0.0,-1.0,0.0},
+                                                                {-1.0,4.0,-1.0},
+                                                                {0.0,-1.0,0.0}};
+
 }

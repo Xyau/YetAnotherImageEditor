@@ -6,7 +6,7 @@ import backend.ImageUtils;
 import backend.Pixel;
 import frontend.*;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -23,10 +23,8 @@ public class ThingsRepository {
     public static FileChooser.ExtensionFilter EXTENSION_FILTER = new FileChooser
             .ExtensionFilter("The format so save as","png","raw","jpg");
 
-    public static ThingsRepository getInstance() {
-        return repository;
-    }
-
+    public static Border NO_BORDER = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.EMPTY));
+    public static Border THICK_BORDER = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 
     public static FocusablePane getDrawLineAtPanel(EventManageableImageView imageView, TransformationManagerView transformationManagerView){
         PixelPickerControlPane firstPixelPicker = new PixelPickerControlPane(imageView, "First Pixel");

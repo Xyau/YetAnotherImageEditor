@@ -5,6 +5,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
 import repositories.ImagesRepository;
 import backend.TransformationManager;
 import javafx.scene.image.ImageView;
@@ -17,6 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static repositories.ThingsRepository.NO_BORDER;
+import static repositories.ThingsRepository.THICK_BORDER;
 
 public class TransformationManagerView extends GridPane {
 
@@ -46,7 +53,6 @@ public class TransformationManagerView extends GridPane {
         imageView.setFitHeight(TRANSFORMATION_SIZE);
         imageView.setFitWidth(TRANSFORMATION_SIZE);
         imageView.setImage(transformationManager.getImageAt(index));
-
         imageView.setOnMouseClicked(event ->{
             Boolean result = transformationManager.toggleTransformation(index);
             linkedImageView.setImage(transformationManager.getImage());
