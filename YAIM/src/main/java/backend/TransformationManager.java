@@ -1,15 +1,12 @@
 package backend;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import javafx.collections.FXCollections;
+import backend.utils.ImageUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import transformations.Transformation;
+import backend.transformators.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TransformationManager {
@@ -79,6 +76,14 @@ public class TransformationManager {
         }
         //If no transformation was enabled, return the initial image, as there is no valid lastProcecedImage
         return ImageUtils.copyImage(initialImage);
+    }
+
+    public String getDescription(Integer index){
+        if(index <0 || index>transformations.size()){
+            throw new IllegalStateException("Illegal index for description");
+        }
+        ToggableTransformation transformation = transformations.get(index);
+        return transformation.getTransformation().getDescription() + (transformation.isEnabled()?"(ENABLED)":"(DISABLED)");
     }
 
     private WritableImage recalculateImage(Integer startIndex){

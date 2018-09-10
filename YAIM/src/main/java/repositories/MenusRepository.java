@@ -1,8 +1,8 @@
 package repositories;
 
-import backend.ImageUtils;
+import backend.utils.ImageUtils;
 import backend.SyntheticGenerator;
-import backend.Utils;
+import backend.utils.Utils;
 import frontend.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
@@ -14,19 +14,24 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import transformations.DrawHistogramTransformation;
-import transformations.DynamicRangeCompressionTransformation;
-import transformations.borders.*;
-import transformations.colors.BrightenTransformation;
-import transformations.colors.DarkenTransformation;
-import transformations.colors.GrayscaleTransformation;
-import transformations.colors.ScalarMultiplyTransformation;
-import transformations.filters.MedianFilterTransformation;
-import transformations.*;
-import transformations.filters.*;
-import transformations.noise.AdditiveGaussianNoiseTransformation;
-import transformations.noise.ExponentialDistributionNoiseTransformation;
-import transformations.noise.SaltAndPeperNoiseTransformation;
+import transformations.normal.BinaryTransformation;
+import transformations.normal.DrawHistogramTransformation;
+import transformations.normal.DynamicRangeCompressionTransformation;
+import transformations.normal.GammaTransformation;
+import transformations.normal.HighContrastTransformation;
+import transformations.normal.HistogramEqualizationTransformation;
+import transformations.normal.NegativeTransformation;
+import transformations.normal.RayleighDistributionNoiseTransformation;
+import transformations.normal.borders.*;
+import transformations.normal.colors.BrightenTransformation;
+import transformations.normal.colors.DarkenTransformation;
+import transformations.normal.colors.GrayscaleTransformation;
+import transformations.normal.colors.ScalarMultiplyTransformation;
+import transformations.normal.filters.MedianFilterTransformation;
+import transformations.normal.filters.*;
+import transformations.normal.noise.AdditiveGaussianNoiseTransformation;
+import transformations.normal.noise.ExponentialDistributionNoiseTransformation;
+import transformations.normal.noise.SaltAndPeperNoiseTransformation;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
@@ -61,7 +66,6 @@ public class MenusRepository {
         fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
                 getMeanFilterMenuItem(transformationManagerView),
                 getWeighedMedianFilterMenuItem(transformationManagerView),
-                getGaussianMedianFilterMenuItem(transformationManagerView),
                 getGaussianMeanFilterMenuItem(transformationManagerView),
                 getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView),
                 getMenuItemByTranformation("Highpass",new HighpassFilterTransformation(),transformationManagerView)
@@ -82,11 +86,7 @@ public class MenusRepository {
         Menu fileMenu = new Menu("Borders");
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
-                ,getMenuItemByTranformation("Sobel Horizontal",new HorizontalSobelBordersTransformation(),transformationManagerView)
-                ,getMenuItemByTranformation("Sobel Vertical",new VerticalSobelBordersTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
-                ,getMenuItemByTranformation("Prewitt Horizontal",new HorizontalPrewittBordersTransformation(),transformationManagerView)
-                ,getMenuItemByTranformation("Prewitt Vertical",new VerticalPrewittBordersTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBordersTransformation(),transformationManagerView)
         );
         return fileMenu;
@@ -392,35 +392,6 @@ public class MenusRepository {
         return item;
 
     }
-    private static MenuItem getGaussianMedianFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Gaussian Median Filter...");
-
-        GridPane gridPane = new GridPane();
-        Button apply = new Button("Apply");
-        AtomicReference<Double> sigma = new AtomicReference<>(1.0);
-        AtomicReference<Integer> filterSize = new AtomicReference<>(1);
-        SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            filterSize.set(y.intValue());
-            transformationManagerView.preview(new GaussianMedianFilterTransformation(filterSize.get(),sigma.get()));
-        });
-
-        SliderControl stdSlider = new SliderControl("Sigma",0.5,5.0,1.0,(x, y)->{
-            sigma.set(y.doubleValue());
-            transformationManagerView.preview(new GaussianMedianFilterTransformation(filterSize.get(),sigma.get()));
-        });
-        apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new GaussianMedianFilterTransformation(filterSize.get(),sigma.get()));
-        });
-        gridPane.add(filterSizeSlider,0,0);
-        gridPane.add(stdSlider,0,1);
-        gridPane.add(apply,0,2);
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Median Filter", gridPane).show();
-        });
-        return item;
-    }
-
-
 
     private static MenuItem getSaltAndPepperNoiseTransformation(TransformationManagerView transformationManagerView) {
         MenuItem item = new MenuItem("Salt and pepper...");

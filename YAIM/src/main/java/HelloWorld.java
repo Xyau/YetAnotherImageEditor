@@ -1,25 +1,24 @@
 import backend.*;
+import backend.transformators.Transformation;
+import backend.utils.ImageUtils;
+import backend.utils.Utils;
+import frontend.EventManageableImageView;
 import frontend.RGBChooserView;
 import frontend.TransformationManagerView;
-import frontend.WritableImageView;
 import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import repositories.ImagesRepository;
 import repositories.MenusRepository;
 import repositories.StagesRepository;
 import repositories.ThingsRepository;
-import transformations.*;
+import transformations.normal.DrawSquareTransformation;
+import transformations.normal.GradientTransformation;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,7 +41,7 @@ public class HelloWorld extends Application {
         });
 
         iv1.addPasiveEvent( event -> {
-            Color c = transformationManagerView.getImage().getPixelReader()
+            Color c = iv1.getWritableImage().getPixelReader()
                     .getColor(Utils.toInteger(event.getX()),Utils.toInteger(event.getY()));
             rgbChooserView.updateAreasWith(c);
         });

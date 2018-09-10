@@ -1,6 +1,6 @@
 package backend;
 
-import frontend.TransformationManagerView;
+import frontend.EventManageableImageView;
 import javafx.scene.layout.GridPane;
 
 import java.util.function.Consumer;

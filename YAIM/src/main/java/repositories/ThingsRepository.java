@@ -1,8 +1,8 @@
 package repositories;
 
-import backend.EventManageableImageView;
+import frontend.EventManageableImageView;
 import backend.FocusablePane;
-import backend.ImageUtils;
+import backend.utils.ImageUtils;
 import backend.Pixel;
 import frontend.*;
 import javafx.scene.control.Button;
@@ -10,9 +10,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import transformations.*;
-import transformations.colors.DarkenTransformation;
-import transformations.common.NoChangeTransformation;
+import transformations.normal.DrawLineTransformation;
+import transformations.normal.common.NoChangeTransformation;
 
 import java.io.File;
 

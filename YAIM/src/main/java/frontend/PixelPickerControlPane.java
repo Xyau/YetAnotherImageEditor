@@ -1,9 +1,7 @@
 package frontend;
 
-import backend.EventManageableImageView;
 import backend.Pixel;
-import backend.PropagableMouseEventConsumer;
-import backend.Utils;
+import backend.utils.Utils;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;

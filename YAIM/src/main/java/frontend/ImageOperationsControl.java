@@ -1,12 +1,13 @@
 package frontend;
 
-import backend.ImageUtils;
+import backend.utils.ImageUtils;
+import backend.transformators.Transformation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import transformations.*;
-import transformations.image.AddImageTransformation;
-import transformations.image.MinusImageTransformation;
+import transformations.normal.image.MultiplyImageTransformation;
+import transformations.normal.image.AddImageTransformation;
+import transformations.normal.image.MinusImageTransformation;
 
 public class ImageOperationsControl extends GridPane {
     private ImageLoadControl imageLoadControl;

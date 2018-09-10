@@ -1,6 +1,6 @@
 package frontend;
 
-import backend.Utils;
+import backend.utils.Utils;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;

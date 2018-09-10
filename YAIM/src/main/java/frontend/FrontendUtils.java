@@ -1,7 +1,7 @@
 package frontend;
 
 import javafx.scene.control.MenuItem;
-import transformations.Transformation;
+import backend.transformators.Transformation;
 
 public class FrontendUtils {
     public static MenuItem getMenuItemByTranformation(String name, Transformation transformation, TransformationManagerView transformationManagerView){

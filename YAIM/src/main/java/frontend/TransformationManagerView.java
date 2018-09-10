@@ -1,29 +1,21 @@
 package frontend;
 
-import backend.ImageUtils;
+import backend.utils.ImageUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import repositories.ImagesRepository;
 import backend.TransformationManager;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import transformations.Transformation;
+import backend.transformators.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static repositories.ThingsRepository.NO_BORDER;
-import static repositories.ThingsRepository.THICK_BORDER;
 
 public class TransformationManagerView extends GridPane {
 
@@ -33,6 +25,7 @@ public class TransformationManagerView extends GridPane {
     private List<ImageView> transformationImageViews;
     private ImageView linkedImageView;
     private ImageView previewImageView;
+    private Text description;
     private Cache<Transformation, Image> cache = CacheBuilder.newBuilder()
             .maximumSize(30)
             .build();
@@ -42,6 +35,8 @@ public class TransformationManagerView extends GridPane {
         this.linkedImageView = linkedImageView;
         this.previewImageView = previewImageView;
         transformationImageViews = new ArrayList<>();
+        this.description = new Text("No transformations");
+        add(description,0,1,10,1);
         setHgap(1.5);
     }
 
@@ -62,8 +57,10 @@ public class TransformationManagerView extends GridPane {
                     transformationImageViews.get(i).setImage(transformationManager.getImageAt(i));
                 }
             }
+            description.setText(transformationManager.getDescription(index));
         });
         pane.getChildren().addAll(imageView);
+        imageView.setOnMouseEntered(e -> description.setText(transformationManager.getDescription(index)));
         return pane;
     }
 
@@ -108,6 +105,8 @@ public class TransformationManagerView extends GridPane {
     private void repopulateTransformationsView(){
         getChildren().clear();
         transformationImageViews = new ArrayList<>();
+        add(description,0,1,10,1);
+
         for (int i = 0; i < transformationManager.size(); i++) {
             Pane pane = getNewTransPane(i,transformationManager);
             add(pane,i,0);

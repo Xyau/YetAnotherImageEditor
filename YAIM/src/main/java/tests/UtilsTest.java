@@ -1,6 +1,6 @@
 package tests;
 
-import backend.Utils;
+import backend.utils.Utils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;

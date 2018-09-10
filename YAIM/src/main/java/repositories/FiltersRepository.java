@@ -29,4 +29,13 @@ public class FiltersRepository {
                                                                 {-1.0,4.0,-1.0},
                                                                 {0.0,-1.0,0.0}};
 
+    public static Double[][] getOnesFilter(Integer filterSize){
+        Double[][] ones = new Double[2*filterSize+1][2*filterSize+1];
+        for (int i = 0; i < 2 * filterSize + 1; i++) {
+            for (int j = 0; j < 2 * filterSize + 1; j++) {
+                ones[i][j] = 1.0;
+            }
+        }
+        return ones;
+    }
 }
