@@ -1,14 +1,14 @@
 package transformations.denormalized;
 
 import backend.DenormalizedColor;
+import backend.transformators.DenormalizedTransformation;
 import backend.utils.ImageUtils;
 import backend.image.AnormalizedImage;
 import backend.image.DenormalizedImage;
-import backend.transformators.DenormalizedOperation;
 
 import java.util.function.BiFunction;
 
-public class ImageOperator implements DenormalizedOperation {
+public class ImageOperator implements DenormalizedTransformation {
 	private BiFunction<DenormalizedColor, DenormalizedColor, DenormalizedColor> colorCombinator;
 	private AnormalizedImage extraImage;
 
@@ -18,7 +18,7 @@ public class ImageOperator implements DenormalizedOperation {
 	}
 
 	@Override
-	public DenormalizedImage transformDenormalized(AnormalizedImage anormalizedImage) {
-		return ImageUtils.transformImages(anormalizedImage,extraImage, colorCombinator);
+	public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+		return ImageUtils.transformImages(denormalizedImage,extraImage, colorCombinator);
 	}
 }

@@ -32,7 +32,7 @@ public class MeanCombiner implements Combiner{
 		Double totalWeight=0.0;
 
 		for (DenormalizedColorPixel cp: colorPixels) {
-			Double weight = filter[cp.getPixel().getX()][cp.getPixel().getY()];
+			Double weight = filter[cp.getPixel().getY()][cp.getPixel().getX()];
 			totalWeight += weight;
 
 			DenormalizedColor color = cp.getColor();

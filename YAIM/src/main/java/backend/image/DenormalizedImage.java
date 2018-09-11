@@ -1,11 +1,42 @@
 package backend.image;
 
 import backend.DenormalizedColor;
+import backend.utils.Utils;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 public class DenormalizedImage implements AnormalizedImage{
 	private DenormalizedColor[][] image;
 	private Integer height;
 	private Integer width;
+
+	public DenormalizedImage(AnormalizedImage anormalizedImage){
+		this.width = Utils.toInteger(anormalizedImage.getWidth());
+		this.height = Utils.toInteger(anormalizedImage.getHeight());
+		this.image = new DenormalizedColor[height][width];
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				DenormalizedColor c = anormalizedImage.getColorAt(i,j);
+				this.image[j][i]= new DenormalizedColor(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
+			}
+		}
+	}
+
+	public DenormalizedImage(Image image){
+		this.width = Utils.toInteger(image.getWidth());
+		this.height = Utils.toInteger(image.getHeight());
+		this.image = new DenormalizedColor[height][width];
+		PixelReader px = image.getPixelReader();
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				Color c = px.getColor(i,j);
+				this.image[j][i]= new DenormalizedColor(c.getRed(),c.getGreen(),c.getBlue(),c.getOpacity());
+			}
+		}
+	}
 
 	public DenormalizedImage(DenormalizedColor[][] image){
 		this.image = image;

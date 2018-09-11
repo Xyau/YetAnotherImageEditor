@@ -63,12 +63,13 @@ public class MenusRepository {
 
     public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Filter");
-        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView),
-                getMeanFilterMenuItem(transformationManagerView),
-                getWeighedMedianFilterMenuItem(transformationManagerView),
-                getGaussianMeanFilterMenuItem(transformationManagerView),
-                getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView),
-                getMenuItemByTranformation("Highpass",new HighpassFilterTransformation(),transformationManagerView)
+        fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView)
+                ,getMeanFilterMenuItem(transformationManagerView)
+                ,getWeighedMedianFilterMenuItem(transformationManagerView)
+                ,getGaussianMeanFilterMenuItem(transformationManagerView)
+                ,getMenuItemByTranformation("Laplacian",new LaplacianFilterTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Highpass",new HighpassFilterTransformation(),transformationManagerView)
             );
         return fileMenu;
     }
@@ -87,7 +88,8 @@ public class MenusRepository {
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
-                ,getMenuItemByTranformation("Laplacian",new LaplacianBordersTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
         );
         return fileMenu;
     }

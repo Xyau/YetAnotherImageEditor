@@ -11,5 +11,4 @@ public interface AnormalizedImage {
 	Integer getHeight();
 
 	Integer getWidth();
-
 }

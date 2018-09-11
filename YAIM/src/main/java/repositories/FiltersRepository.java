@@ -28,6 +28,9 @@ public class FiltersRepository {
     public static Double[][] LAPLACIAN = new Double[][]{        {0.0,-1.0,0.0},
                                                                 {-1.0,4.0,-1.0},
                                                                 {0.0,-1.0,0.0}};
+    public static Double[][] HORIZONTAL_ZEROES = new Double[][]{{1.0,-1.0}};
+    public static Double[][] VERTICAL_ZEROES = new Double[][]{{1.0},
+                                                              {-1.0}};
 
     public static Double[][] getOnesFilter(Integer filterSize){
         Double[][] ones = new Double[2*filterSize+1][2*filterSize+1];

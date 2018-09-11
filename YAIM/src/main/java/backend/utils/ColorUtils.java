@@ -2,11 +2,8 @@ package backend.utils;
 
 
 import backend.DenormalizedColor;
-import backend.transformators.DenormalizedOperation;
 import com.sun.javafx.util.Utils;
 import javafx.scene.paint.Color;
-
-import java.util.List;
 
 public class ColorUtils {
     public static DenormalizedColor addColors(DenormalizedColor c1, DenormalizedColor c2){

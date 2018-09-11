@@ -148,7 +148,6 @@ public class ImageUtils {
         Integer height = Utils.toInteger(image.getHeight());
         Integer width = Utils.toInteger(image.getWidth());
 
-
         WritableImage writableImage = new WritableImage(width,height);
         PixelWriter pixelWriter = writableImage.getPixelWriter();
 

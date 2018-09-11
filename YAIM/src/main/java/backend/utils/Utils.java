@@ -95,7 +95,7 @@ public class Utils {
     }    
     
     public static Double getMaxRed(Double prevMaxRed, DenormalizedColor color){
-        return color.getGreen() > prevMaxRed ? color.getGreen() : prevMaxRed;
+        return color.getRed() > prevMaxRed ? color.getRed() : prevMaxRed;
     }
     
     public static Double getMaxBlue(Double prevMaxBlue, DenormalizedColor color){

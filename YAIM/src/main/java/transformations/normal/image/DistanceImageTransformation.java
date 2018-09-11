@@ -14,13 +14,13 @@ public class DistanceImageTransformation implements FullTransformation {
 		this.imageOperator = new ImageOperator(Utils.getAnormalized(extraImage),ColorUtils::distanceColors);
 	}
 
-	public DistanceImageTransformation(AnormalizedImage extraImage) {
+	public DistanceImageTransformation(DenormalizedImage extraImage) {
 		this.imageOperator = new ImageOperator(extraImage,ColorUtils::distanceColors);
 	}
 
 	@Override
-	public DenormalizedImage transformDenormalized(AnormalizedImage anormalizedImage) {
-		return imageOperator.transformDenormalized(anormalizedImage);
+	public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+		return imageOperator.transformDenormalized(denormalizedImage);
 	}
 
 	@Override

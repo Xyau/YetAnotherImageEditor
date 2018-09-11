@@ -11,13 +11,16 @@ import transformations.denormalized.ImageOperator;
 public class AddImageTransformation implements FullTransformation {
 	private ImageOperator imageOperator;
 
+	public AddImageTransformation(DenormalizedImage extraImage) {
+		this.imageOperator = new ImageOperator(extraImage,ColorUtils::addColors);
+	}
 	public AddImageTransformation(Image extraImage) {
 		this.imageOperator = new ImageOperator(Utils.getAnormalized(extraImage),ColorUtils::addColors);
 	}
 
 	@Override
-	public DenormalizedImage transformDenormalized(AnormalizedImage anormalizedImage) {
-		return imageOperator.transformDenormalized(anormalizedImage);
+	public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+		return imageOperator.transformDenormalized(denormalizedImage);
 	}
 
 	@Override

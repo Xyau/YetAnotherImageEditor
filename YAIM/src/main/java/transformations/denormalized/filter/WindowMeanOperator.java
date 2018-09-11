@@ -16,8 +16,8 @@ public class WindowMeanOperator implements FullTransformation {
 	}
 
 	@Override
-	public DenormalizedImage transformDenormalized(AnormalizedImage anormalizedImage) {
-		return windowOperator.transformDenormalized(anormalizedImage);
+	public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+		return windowOperator.transformDenormalized(denormalizedImage);
 	}
 
 	@Override
@@ -35,7 +35,6 @@ public class WindowMeanOperator implements FullTransformation {
 
 	@Override
 	public int hashCode() {
-
 		return Objects.hash(windowOperator);
 	}
 }

@@ -1,11 +1,11 @@
-package transformations.normal.borders;
+package transformations.normal.filters;
 
 import repositories.FiltersRepository;
 import transformations.denormalized.filter.WindowMeanOperator;
 
-public class LaplacianBordersTransformation extends WindowMeanOperator {
+public class LaplacianFilterTransformation extends WindowMeanOperator {
 
-    public LaplacianBordersTransformation() {
+    public LaplacianFilterTransformation() {
         super(FiltersRepository.LAPLACIAN);
     }
 

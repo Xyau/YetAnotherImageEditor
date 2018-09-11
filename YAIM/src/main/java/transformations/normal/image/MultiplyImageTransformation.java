@@ -16,8 +16,8 @@ public class MultiplyImageTransformation implements FullTransformation {
     }
 
     @Override
-    public DenormalizedImage transformDenormalized(AnormalizedImage anormalizedImage) {
-        return imageOperator.transformDenormalized(anormalizedImage);
+    public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        return imageOperator.transformDenormalized(denormalizedImage);
     }
 
     @Override

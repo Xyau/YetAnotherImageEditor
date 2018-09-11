@@ -2,6 +2,7 @@ package transformations.normalizers;
 
 import backend.DenormalizedColor;
 import backend.image.AnormalizedImage;
+import backend.image.DenormalizedImage;
 import backend.transformators.Normalizer;
 import backend.utils.ColorUtils;
 import backend.utils.Utils;
@@ -14,8 +15,8 @@ import javafx.scene.paint.Color;
  */
 public class MultiChannelRangeNormalizer implements Normalizer {
 	@Override
-	public WritableImage normalize(AnormalizedImage anormalizedImage) {
-		WritableImage writableImage = new WritableImage(anormalizedImage.getWidth(),anormalizedImage.getHeight());
+	public WritableImage normalize(DenormalizedImage denormalizedImage) {
+		WritableImage writableImage = new WritableImage(denormalizedImage.getWidth(),denormalizedImage.getHeight());
 		Double maxRed = -Double.MAX_VALUE;
 		Double minRed = Double.MAX_VALUE;
 		Double maxBlue = -Double.MAX_VALUE;
@@ -23,9 +24,9 @@ public class MultiChannelRangeNormalizer implements Normalizer {
 		Double maxGreen = -Double.MAX_VALUE;
 		Double minGreen = Double.MAX_VALUE;
 
-		for (int i = 0; i < anormalizedImage.getWidth(); i++) {
-			for (int j = 0; j < anormalizedImage.getHeight(); j++) {
-				DenormalizedColor color = anormalizedImage.getColorAt(i,j);
+		for (int i = 0; i < denormalizedImage.getWidth(); i++) {
+			for (int j = 0; j < denormalizedImage.getHeight(); j++) {
+				DenormalizedColor color = denormalizedImage.getColorAt(i,j);
 				minRed = Utils.getMinRed(minRed,color);
 				maxRed = Utils.getMaxRed(maxRed,color);
 				minBlue = Utils.getMinBlue(minBlue,color);
@@ -35,9 +36,9 @@ public class MultiChannelRangeNormalizer implements Normalizer {
 			}
 		}
 
-		for (int i = 0; i < anormalizedImage.getWidth(); i++) {
-			for (int j = 0; j < anormalizedImage.getHeight(); j++) {
-				DenormalizedColor c = anormalizedImage.getColorAt(i,j);
+		for (int i = 0; i < denormalizedImage.getWidth(); i++) {
+			for (int j = 0; j < denormalizedImage.getHeight(); j++) {
+				DenormalizedColor c = denormalizedImage.getColorAt(i,j);
 				Double red = c.getRed();
 				Double green = c.getGreen();
 				Double blue = c.getBlue();
