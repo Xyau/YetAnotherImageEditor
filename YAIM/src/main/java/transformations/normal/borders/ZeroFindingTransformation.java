@@ -1,5 +1,6 @@
 package transformations.normal.borders;
 
+import backend.combiners.ZeroesFinderCombiner;
 import backend.image.DenormalizedImage;
 import backend.transformators.DenormalizedTransformation;
 import backend.transformators.FullTransformation;
@@ -7,6 +8,7 @@ import backend.transformators.Transformation;
 import javafx.scene.image.WritableImage;
 import repositories.FiltersRepository;
 import transformations.denormalized.filter.WindowMeanOperator;
+import transformations.denormalized.filter.WindowOperator;
 import transformations.normal.image.AddImageTransformation;
 import transformations.normal.image.DistanceImageTransformation;
 import transformations.normalizers.GlobalNormalizer;
@@ -19,8 +21,8 @@ public class ZeroFindingTransformation implements FullTransformation {
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
-        DenormalizedTransformation horizontalZeroes = new WindowMeanOperator(FiltersRepository.HORIZONTAL_ZEROES);
-        DenormalizedTransformation verticalZeroes = new WindowMeanOperator(FiltersRepository.VERTICAL_ZEROES);
+        DenormalizedTransformation horizontalZeroes = new WindowOperator(FiltersRepository.HORIZONTAL_ZEROES,new ZeroesFinderCombiner());
+        DenormalizedTransformation verticalZeroes = new WindowOperator(FiltersRepository.VERTICAL_ZEROES,new ZeroesFinderCombiner());
 
         //Make a copy of the original and apply vertical borders
         DenormalizedImage vertical = verticalZeroes.transformDenormalized(new DenormalizedImage(denormalizedImage));

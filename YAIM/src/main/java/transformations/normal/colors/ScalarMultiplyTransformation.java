@@ -1,37 +1,26 @@
 package transformations.normal.colors;
 
+import backend.utils.Utils;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import backend.transformators.Transformation;
+import transformations.normal.common.PixelByPixelTransformation;
 
+import javax.rmi.CORBA.Util;
 import java.util.Objects;
 
-public class ScalarMultiplyTransformation implements Transformation {
+public class ScalarMultiplyTransformation extends PixelByPixelTransformation {
     Double redScalar;
     Double greenScalar;
     Double blueScalar;
 
     public ScalarMultiplyTransformation(Double redScalar, Double greenScalar, Double blueScalar) {
+        super(c -> new Color(c.getRed()*redScalar,c.getGreen()*greenScalar,c.getBlue()*blueScalar,c.getOpacity()));
         this.redScalar = redScalar;
         this.greenScalar = greenScalar;
         this.blueScalar = blueScalar;
-    }
-
-    @Override
-    public WritableImage transform(WritableImage writableImage) {
-        PixelReader pixelReader = writableImage.getPixelReader();
-        PixelWriter pixelWriter = writableImage.getPixelWriter();
-        for (int i = 0; i < writableImage.getWidth(); i++) {
-            for (int j = 0; j < writableImage.getHeight(); j++) {
-                Color c = pixelReader.getColor(i,j);
-                pixelWriter.setColor(i,j,new Color((c.getRed()*redScalar),
-                        c.getGreen()*greenScalar,
-                        c.getBlue()*blueScalar,c.getOpacity()));
-            }
-        }
-        return writableImage;
     }
 
     @Override
@@ -46,13 +35,13 @@ public class ScalarMultiplyTransformation implements Transformation {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(redScalar, greenScalar, blueScalar);
     }
 
     @Override
-
     public String getDescription() {
-        return "Changes the image by some scalar";
+        return "Multiply the colors by (r:" + Utils.roundToRearestFraction(redScalar,0.01)
+                                        + " g:" + Utils.roundToRearestFraction(greenScalar,0.01)
+                                        + " b:" + Utils.roundToRearestFraction(blueScalar,0.01);
     }
 }

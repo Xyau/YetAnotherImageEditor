@@ -48,19 +48,18 @@ public class ImageUtils {
         return null;
     }
 
-    public static DenormalizedImage transformImages(AnormalizedImage baseImage, AnormalizedImage extraImage, BiFunction<DenormalizedColor,DenormalizedColor,DenormalizedColor> function){
-        DenormalizedImage denormalizedImage = new DenormalizedImage(baseImage.getWidth(),baseImage.getHeight());
+    public static DenormalizedImage transformImages(DenormalizedImage baseImage, AnormalizedImage extraImage, BiFunction<DenormalizedColor,DenormalizedColor,DenormalizedColor> function){
         for (int i = 0; i < baseImage.getWidth(); i++) {
             for (int j = 0; j < baseImage.getHeight(); j++) {
-                if(isPixelInImage(baseImage,new Pixel(i,j))){
+                if(isPixelInImage(baseImage,i,j) && isPixelInImage(extraImage,i,j)){
                     DenormalizedColor baseColor = baseImage.getColorAt(i,j);
                     DenormalizedColor extraColor = extraImage.getColorAt(i,j);
                     DenormalizedColor resultColor = function.apply(baseColor,extraColor);
-                    denormalizedImage.setColor(i,j,resultColor);
+                    baseImage.setColor(i,j,resultColor);
                 }
             }
         }
-        return denormalizedImage;
+        return baseImage;
     }
 
    public static WritableImage transformImagesNormalized(WritableImage imageToWriteIn, Image image, BiFunction<Color,Color,DenormalizedColor> function){

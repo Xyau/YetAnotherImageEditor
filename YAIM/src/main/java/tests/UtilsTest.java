@@ -4,6 +4,7 @@ import backend.utils.Utils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import repositories.FiltersRepository;
 
 public class UtilsTest {
     @Test
@@ -27,5 +28,18 @@ public class UtilsTest {
         System.out.println(Utils.roundToRearestFraction(0.1312,0.05));
         System.out.println(Utils.roundToRearestFraction(0.1812,0.05));
         Assert.assertThat(Utils.roundToRearestFraction(0.141212114,0.05), CoreMatchers.equalTo(Utils.roundToRearestFraction(0.1312,0.05)));
+    }
+
+    @Test
+    public void testFilter(){
+        Double[][] mat = FiltersRepository.getLOGFilter(3);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                sb.append(mat[i][j]).append(" ");
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
     }
 }

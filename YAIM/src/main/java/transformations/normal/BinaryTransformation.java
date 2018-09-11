@@ -46,6 +46,6 @@ public class BinaryTransformation implements Transformation {
 
     @Override
     public String getDescription() {
-        return "Binary";
+        return "Binary with threshold:" + threashold;
     }
 }

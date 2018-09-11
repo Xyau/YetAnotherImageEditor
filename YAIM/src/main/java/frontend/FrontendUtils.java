@@ -1,5 +1,6 @@
 package frontend;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import backend.transformators.Transformation;
 
@@ -9,5 +10,4 @@ public class FrontendUtils {
         item.setOnAction(event -> transformationManagerView.addTransformation(transformation));
         return item;
     }
-
 }

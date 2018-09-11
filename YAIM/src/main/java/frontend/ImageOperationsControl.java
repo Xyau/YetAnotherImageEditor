@@ -4,16 +4,19 @@ import backend.utils.ImageUtils;
 import backend.transformators.Transformation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import transformations.normal.image.MultiplyImageTransformation;
-import transformations.normal.image.AddImageTransformation;
-import transformations.normal.image.MinusImageTransformation;
+import transformations.normal.image.*;
+
+import java.util.function.Function;
 
 public class ImageOperationsControl extends GridPane {
     private ImageLoadControl imageLoadControl;
     private Button addButton;
     private Button multiplyButton;
     private Button substractButton;
+    private Button distanceButton;
+    private Button averageButton;
     private Button getFromPreview;
 
     private Button applyButton;
@@ -23,32 +26,13 @@ public class ImageOperationsControl extends GridPane {
     public ImageOperationsControl(Scene scene, TransformationManagerView transformationManagerView){
         imageLoadControl = new ImageLoadControl(scene);
 
-        addButton = new Button("Add");
-        multiplyButton = new Button("Multiply");
-        substractButton = new Button("Substract");
+        addButton = getTransformationPreviewButton("Add",AddImageTransformation::new,transformationManagerView);
+        multiplyButton = getTransformationPreviewButton("Multiply",MultiplyImageTransformation::new,transformationManagerView);
+        substractButton = getTransformationPreviewButton("Substract",MinusImageTransformation::new,transformationManagerView);
+        distanceButton = getTransformationPreviewButton("Modulus",DistanceImageTransformation::new,transformationManagerView);
+        averageButton = getTransformationPreviewButton("Average",AverageImageTransformation::new,transformationManagerView);
         applyButton = new Button("Apply");
         getFromPreview = new Button("Get from preview");
-
-        addButton.setOnMouseClicked((x) -> {
-            if(imageLoadControl.getImage().isPresent()){
-                activeTransformation = new AddImageTransformation(imageLoadControl.getImage().get());
-                transformationManagerView.preview(activeTransformation);
-            }
-        });
-
-        substractButton.setOnMouseClicked((x) -> {
-            if(imageLoadControl.getImage().isPresent()){
-                activeTransformation = new MinusImageTransformation(imageLoadControl.getImage().get());
-                transformationManagerView.preview(activeTransformation);
-            }
-        });
-
-        multiplyButton.setOnMouseClicked((x) -> {
-            if(imageLoadControl.getImage().isPresent()){
-                activeTransformation = new MultiplyImageTransformation(imageLoadControl.getImage().get());
-                transformationManagerView.preview(activeTransformation);
-            }
-        });
 
         getFromPreview.setOnMouseClicked((x)->{
             imageLoadControl.setImage(ImageUtils.copyImage(transformationManagerView.getPreview()));
@@ -61,8 +45,22 @@ public class ImageOperationsControl extends GridPane {
         add(substractButton,0,0);
         add(addButton,1,0);
         add(multiplyButton,2,0);
-        add(applyButton,3,0);
-        add(getFromPreview,4,0);
-        add(imageLoadControl,0,1,5,1);
+        add(distanceButton,3,0);
+        add(averageButton,4,0);
+        add(applyButton,0,1);
+        add(getFromPreview,1,1,2,1);
+        add(imageLoadControl,0,2,5,2);
+    }
+
+    private Button getTransformationPreviewButton(String name, Function<Image,Transformation> transformationBuilder, TransformationManagerView transformationManagerView){
+        Button button = new Button(name);
+
+        button.setOnMouseClicked((x) -> {
+            if(imageLoadControl.getImage().isPresent()){
+                activeTransformation = transformationBuilder.apply(imageLoadControl.getImage().get());
+                transformationManagerView.preview(activeTransformation);
+            }
+        });
+        return button;
     }
 }

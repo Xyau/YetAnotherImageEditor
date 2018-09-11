@@ -24,7 +24,7 @@ public class LaplacianBorderTransformation implements FullTransformation {
 
     @Override
     public String getDescription() {
-        return "Sobel border Transformation";
+        return "Full Laplacian border Transformation";
     }
 
     @Override

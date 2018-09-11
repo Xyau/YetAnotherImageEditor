@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Pair;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -132,5 +133,16 @@ public class Utils {
 
     public static boolean isInRange(Double value, Double min, Double max) {
         return value >= min && value <= max;
+    }
+
+    public static void printFilter(Double[][] filter){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < filter.length; i++) {
+            for (int j = 0; j < filter[0].length; j++) {
+                sb.append(Utils.roundToRearestFraction(filter[i][j],0.001)).append(" ");
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
     }
 }

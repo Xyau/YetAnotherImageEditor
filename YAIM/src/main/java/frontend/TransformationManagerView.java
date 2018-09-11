@@ -47,7 +47,7 @@ public class TransformationManagerView extends GridPane {
         imageView.setPreserveRatio(true);
         imageView.setFitHeight(TRANSFORMATION_SIZE);
         imageView.setFitWidth(TRANSFORMATION_SIZE);
-        imageView.setImage(transformationManager.getImageAt(index));
+        imageView.setImage(transformationManager.isTransformationEnabled(index)?transformationManager.getImageAt(index):ImagesRepository.RED_CROSS);
         imageView.setOnMouseClicked(event ->{
             Boolean result = transformationManager.toggleTransformation(index);
             linkedImageView.setImage(transformationManager.getImage());
