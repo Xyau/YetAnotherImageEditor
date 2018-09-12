@@ -109,7 +109,7 @@ public class Utils {
         return value >= min && value <= max;
     }
 
-    public static void printFilter(Double[][] filter){
+    public static String printFilter(Double[][] filter){
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < filter.length; i++) {
             for (int j = 0; j < filter[0].length; j++) {
@@ -118,5 +118,6 @@ public class Utils {
             sb.append("\n");
         }
         System.out.println(sb.toString());
+        return sb.toString();
     }
 }

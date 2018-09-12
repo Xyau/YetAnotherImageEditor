@@ -2,22 +2,20 @@ package transformations.normal.umbrals;
 
 import backend.DenormalizedColor;
 import backend.utils.ColorUtils;
-import backend.utils.Utils;
-import javafx.scene.paint.Color;
 import transformations.normal.common.PixelByPixelTransformation;
 
 import java.util.Objects;
 
 
 public class SingleChannelBinaryTransformation extends PixelByPixelTransformation {
-    double threashold;
+    double threshold;
 
-    public SingleChannelBinaryTransformation(double threashold) {
+    public SingleChannelBinaryTransformation(double threshold) {
         super(c -> {
-            Boolean pass = ColorUtils.getBrightness(c)>=threashold;
+            Boolean pass = ColorUtils.getBrightness(c)>=threshold;
             return new DenormalizedColor(pass?1.0:0,pass?1.0:0,pass?1.0:0,c.getAlpha());
         });
-        this.threashold = threashold;
+        this.threshold = threshold;
     }
 
     @Override
@@ -26,16 +24,16 @@ public class SingleChannelBinaryTransformation extends PixelByPixelTransformatio
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SingleChannelBinaryTransformation that = (SingleChannelBinaryTransformation) o;
-        return Double.compare(that.threashold, threashold) == 0;
+        return Double.compare(that.threshold, threshold) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), threashold);
+        return Objects.hash(super.hashCode(), threshold);
     }
 
     @Override
     public String getDescription() {
-        return "Single Channel Binary with threshold:" + threashold;
+        return "Single Channel Binary with threshold:" + threshold;
     }
 }

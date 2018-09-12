@@ -135,12 +135,6 @@ public class MenusRepository {
             transformationManagerView.preview(new DrawHistogramTransformation());
         });
 
-        MenuItem binary = new MenuItem("Binary...");
-        binary.setOnAction( event -> {
-            StagesRepository.getStage("Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
-                    threashold -> new MultiChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView)).show();
-        });
-
         MenuItem gamma = new MenuItem("Gamma function...");
         gamma.setOnAction( event -> {
             StagesRepository.getStage("Gamma function", new SingleSliderGridPane("Gamma",0.0,1.0,0.05,
@@ -150,7 +144,6 @@ public class MenusRepository {
         imageMenu.getItems().addAll(
                 getMenuItemByTranformation("Negative",new NegativeTransformation(),transformationManagerView),
                 getMenuItemByTranformation("High contrast",new HighContrastTransformation(),transformationManagerView),
-                binary,
                 gamma,
                 histogram,
                 getMenuItemByTranformation("Equalization", new HistogramEqualizationTransformation(),transformationManagerView),
@@ -282,6 +275,10 @@ public class MenusRepository {
             blue.set(y.doubleValue());
             transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
         });
+
+        redSlider.setSliderValue(0.0);
+        greenSlider.setSliderValue(0.0);
+        blueSlider.setSliderValue(0.0);
         Button button = new Button("Apply");
         button.setOnAction(event -> {
             transformationManagerView.addTransformation(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));

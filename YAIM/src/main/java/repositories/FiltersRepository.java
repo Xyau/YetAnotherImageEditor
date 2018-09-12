@@ -21,8 +21,9 @@ public class FiltersRepository {
             {2.0,4.0,2.0},
             {1.0,2.0,1.0}};
     public static Double[][] PREWITT_HORIZONTAL = new Double[][]{{-1.0,-1.0,-1.0},
-            {0.0,0.0,0.0},
-            {1.0,1.0,1.0}};
+                                                                 {0.0,0.0,0.0},
+                                                                 {1.0,1.0,1.0}};
+
     public static Double[][] PREWITT_VERTICAL = new Double[][]{ {-1.0,0.0,1.0},
                                                                 {-1.0,0.0,1.0},
                                                                 {-1.0,0.0,1.0}};
@@ -38,6 +39,11 @@ public class FiltersRepository {
     public static Double[][] LAPLACIAN = new Double[][]{        {0.0,-1.0,0.0},
                                                                 {-1.0,4.0,-1.0},
                                                                 {0.0,-1.0,0.0}};
+
+    public static final Double[][] TRIANGLE = new Double[][]{{1.0, 1.0, 1.0},
+                                                             {1.0, -2.0, 1.0},
+                                                             {-1.0, -1.0, -1.0}};
+
     public static Double[][] KIRSH = new Double[][]{            {5.0,5.0,5.0},
                                                                 {-3.0,0.0,-3.0},
                                                                 {-3.0,-3.0,-3.0}};

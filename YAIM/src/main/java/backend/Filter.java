@@ -4,9 +4,20 @@ import java.util.Arrays;
 
 public class Filter {
     Double[][] filter;
+    String name;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 
     public Filter(Double[][] filter) {
         this.filter = filter;
+    }
+
+    public Filter(Double[][] filter, String name) {
+        this.filter = filter;
+        this.name = name;
     }
 
     public Double[][] getFilter() {
