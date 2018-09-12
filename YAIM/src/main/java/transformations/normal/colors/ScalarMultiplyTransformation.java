@@ -1,5 +1,6 @@
 package transformations.normal.colors;
 
+import backend.DenormalizedColor;
 import backend.utils.Utils;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -17,7 +18,7 @@ public class ScalarMultiplyTransformation extends PixelByPixelTransformation {
     Double blueScalar;
 
     public ScalarMultiplyTransformation(Double redScalar, Double greenScalar, Double blueScalar) {
-        super(c -> new Color(c.getRed()*redScalar,c.getGreen()*greenScalar,c.getBlue()*blueScalar,c.getOpacity()));
+        super(c -> new DenormalizedColor(c.getRed()*redScalar,c.getGreen()*greenScalar,c.getBlue()*blueScalar,c.getAlpha()));
         this.redScalar = redScalar;
         this.greenScalar = greenScalar;
         this.blueScalar = blueScalar;

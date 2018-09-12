@@ -41,33 +41,7 @@ public class Utils {
         return Math.round(num / fraction) * (fraction);
     }
 
-    private static Cache<Pair<Double, Integer>, Double[][]> gaussianCache = CacheBuilder.newBuilder()
-            .maximumSize(30)
-            .build();
 
-    public static Double[][] getGaussianMatrixWeight(Double std, Integer filterSize) {
-        Double[][] weights = null;
-        Double roundedStd = roundToRearestFraction(std, 0.05);
-        System.out.println("getting gauss cache");
-        try {
-            weights = gaussianCache.get(new Pair<>(std, filterSize), () -> {
-                Double[][] wMatrix = new Double[2 * filterSize + 1][2 * filterSize + 1];
-                for (int i = -filterSize; i <= filterSize; i++) {
-                    for (int j = -filterSize; j <= filterSize; j++) {
-                        wMatrix[i + filterSize][j + filterSize] = getGaussianFilterWeight(roundedStd, i, j);
-                    }
-                }
-                return wMatrix;
-            });
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        System.out.println("getted gauss cache");
-        if (weights == null) {
-            throw new IllegalStateException("Gaussian Cache failed!");
-        }
-        return weights;
-    }
 
     public static Double getMax(Double prevMax, DenormalizedColor color) {
         prevMax = color.getRed() > prevMax ? color.getRed() : prevMax;

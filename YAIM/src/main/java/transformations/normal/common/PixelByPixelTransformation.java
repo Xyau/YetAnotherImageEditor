@@ -1,32 +1,24 @@
 package transformations.normal.common;
 
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
+import backend.DenormalizedColor;
+import backend.image.DenormalizedImage;
+import backend.transformators.FullTransformation;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-import backend.transformators.Transformation;
+import transformations.normalizers.MultiChannelRangeNormalizer;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-public class PixelByPixelTransformation implements Transformation {
-    private Function<Color,Color> colorTransformer;
+public class PixelByPixelTransformation implements FullTransformation {
+    private Function<DenormalizedColor, DenormalizedColor> colorTransformer;
 
-    public PixelByPixelTransformation(Function<Color, Color> colorTransformer) {
+    public PixelByPixelTransformation(Function<DenormalizedColor, DenormalizedColor> colorTransformer) {
         this.colorTransformer = colorTransformer;
     }
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
-        PixelReader pixelReader = writableImage.getPixelReader();
-        PixelWriter pixelWriter = writableImage.getPixelWriter();
-        for (int i = 0; i < writableImage.getWidth(); i++) {
-            for (int j = 0; j < writableImage.getHeight(); j++) {
-                Color c = colorTransformer.apply(pixelReader.getColor(i,j));
-                pixelWriter.setColor(i,j,c);
-            }
-        }
-        return writableImage;
+        return FullTransformation.transform(writableImage, this,new MultiChannelRangeNormalizer());
     }
 
     @Override
@@ -45,5 +37,16 @@ public class PixelByPixelTransformation implements Transformation {
     @Override
     public int hashCode() {
         return Objects.hash(colorTransformer);
+    }
+
+    @Override
+    public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        for (int i = 0; i < denormalizedImage.getWidth(); i++) {
+            for (int j = 0; j < denormalizedImage.getHeight(); j++) {
+                DenormalizedColor c = colorTransformer.apply(denormalizedImage.getColorAt(i,j));
+                denormalizedImage.setColor(i,j,c);
+            }
+        }
+        return denormalizedImage;
     }
 }

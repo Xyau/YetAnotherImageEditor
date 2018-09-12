@@ -1,9 +1,9 @@
 package transformations.normal.filters;
 
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanOperator;
+import transformations.denormalized.filter.WindowMeanTransformation;
 
-public class HighpassFilterTransformation extends WindowMeanOperator {
+public class HighpassFilterTransformation extends WindowMeanTransformation {
     public HighpassFilterTransformation() {
         super(FiltersRepository.HIGHPASS);
     }

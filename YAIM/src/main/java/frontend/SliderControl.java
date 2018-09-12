@@ -25,7 +25,7 @@ public class SliderControl extends GridPane {
         slider.valueProperty().addListener( (change,x,y) -> {
             consumer.accept(x,y);
             value.setText(Utils.roundToRearestFraction(y.doubleValue(),increment).toString());
-            System.out.println("accepting: " + y);
+//            System.out.println("accepting: " + y);
         });
         text = new Text(label);
         value = new TextArea();
@@ -34,9 +34,7 @@ public class SliderControl extends GridPane {
         value.setOnKeyReleased( (x)->{
             try {
                 Double value = Double.parseDouble(x.getText());
-                if(value >= min && value <= max) {
-                    setSliderValue(value);
-                }
+                setSliderValue(value);
             } catch (NumberFormatException ignored){
             };
         });
@@ -46,6 +44,7 @@ public class SliderControl extends GridPane {
         slider.widthProperty().addListener( (x) -> {
             slider.setMajorTickUnit(slider.getWidth()/10);
         });
+        slider.setValue(min);
     }
 
     public Optional<Double> getSelectedValue(){

@@ -1,6 +1,14 @@
 package repositories;
 
+import backend.Filter;
+import backend.utils.Utils;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import javafx.util.Pair;
+
+import javax.rmi.CORBA.Util;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class FiltersRepository {
     public static Double[][] HIGHPASS = new Double[][]{{-1.0,-1.0,-1.0},
@@ -71,12 +79,28 @@ public class FiltersRepository {
         return ones;
     }
 
+    private static Cache<Pair<Filter, Integer>, Filter> rotationCache = CacheBuilder.newBuilder()
+            .maximumSize(30)
+            .build();
+
     public static Double[][] getRotatedFilter(Double[][] filter, Integer fourthsOfRotation){
-        Double[][] rotatedFilter = filter;
-        for (int i = 0; i < fourthsOfRotation; i++) {
-            rotatedFilter = getRotatedFilter(rotatedFilter);
+        Integer finalRotation = fourthsOfRotation%4;
+        Filter rotatedFilter = null;
+        try {
+            rotatedFilter = rotationCache.get(new Pair<>(new Filter(filter),fourthsOfRotation),()->{
+                Double[][] temporaryFilter = filter;
+                for (int i = 0; i < finalRotation; i++) {
+                    temporaryFilter = getRotatedFilter(temporaryFilter);
+                }
+                return new Filter(temporaryFilter);
+            });
+        } catch (ExecutionException e){
+            e.printStackTrace();
         }
-        return rotatedFilter;
+        if(rotatedFilter == null){
+            throw new IllegalStateException("Rotation cache failed!");
+        }
+        return rotatedFilter.getFilter();
     }
 
     public static Double[][] getRotatedFilter(Double[][] filter){
@@ -94,5 +118,32 @@ public class FiltersRepository {
             }
         }
         return rotatedFilter;
+    }
+    private static Cache<Pair<Double, Integer>, Double[][]> gaussianCache = CacheBuilder.newBuilder()
+            .maximumSize(30)
+            .build();
+
+    public static Double[][] getGaussianMatrixWeight(Double std, Integer filterSize) {
+        Double[][] weights = null;
+        Double roundedStd = Utils.roundToRearestFraction(std, 0.05);
+        System.out.println("getting gauss cache");
+        try {
+            weights = gaussianCache.get(new Pair<>(std, filterSize), () -> {
+                Double[][] wMatrix = new Double[2 * filterSize + 1][2 * filterSize + 1];
+                for (int i = -filterSize; i <= filterSize; i++) {
+                    for (int j = -filterSize; j <= filterSize; j++) {
+                        wMatrix[i + filterSize][j + filterSize] = Utils.getGaussianFilterWeight(roundedStd, i, j);
+                    }
+                }
+                return wMatrix;
+            });
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        System.out.println("getted gauss cache");
+        if (weights == null) {
+            throw new IllegalStateException("Gaussian Cache failed!");
+        }
+        return weights;
     }
 }

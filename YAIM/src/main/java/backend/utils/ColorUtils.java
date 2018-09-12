@@ -65,4 +65,17 @@ public class ColorUtils {
     public static Double getBrightness(DenormalizedColor color){
         return Utils.RGBtoHSB(color.getRed(), color.getRed(), color.getBlue())[2];
     }
+
+    public static DenormalizedColor getGreyscale(DenormalizedColor color){
+        double gray = 0.21 * color.getRed() + 0.71 * color.getGreen() + 0.07 * color.getBlue();
+        return new DenormalizedColor(gray,gray,gray,color.getAlpha());
+    }
+
+    public static DenormalizedColor getBrighter(DenormalizedColor c){
+        return new DenormalizedColor(c.getRed()+0.1,c.getGreen()+0.1,c.getBlue()+0.1,c.getAlpha());
+    }
+
+    public static DenormalizedColor getDarker(DenormalizedColor c){
+        return new DenormalizedColor(c.getRed()-0.1,c.getGreen()-0.1,c.getBlue()-0.1,c.getAlpha());
+    }
 }

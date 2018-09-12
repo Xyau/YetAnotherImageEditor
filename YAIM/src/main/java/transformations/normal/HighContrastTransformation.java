@@ -34,6 +34,6 @@ public class HighContrastTransformation implements Transformation {
 
     @Override
     public String getDescription () {
-        return "Additive Gaussian Noise";
+        return "High Contrast";
     }
 }

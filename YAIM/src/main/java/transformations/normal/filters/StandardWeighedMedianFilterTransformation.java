@@ -3,7 +3,6 @@ package transformations.normal.filters;
 import backend.combiners.MedianCombiner;
 import backend.transformators.FullTransformation;
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanOperator;
 import transformations.denormalized.filter.WindowOperator;
 
 public class StandardWeighedMedianFilterTransformation extends WindowOperator implements FullTransformation {

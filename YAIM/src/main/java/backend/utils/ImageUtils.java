@@ -10,8 +10,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 import javax.imageio.ImageIO;
+import javax.rmi.CORBA.Util;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -209,5 +211,57 @@ public class ImageUtils {
         }
 
         return writableImage;
+    }
+
+    public static Integer countWhitePixels(DenormalizedImage denormalizedImage){
+        Integer count=0;
+        for (int i = 0; i < denormalizedImage.getHeight(); i++) {
+            for (int j = 0; j < denormalizedImage.getWidth(); j++) {
+                if(ColorUtils.getBrightness(denormalizedImage.getColorAt(j,i)).equals(1.0)){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static Double getAverageBrightness(DenormalizedImage denormalizedImage){
+        Integer count=0;
+        Double brightness=0.0;
+        for (int i = 0; i < denormalizedImage.getHeight(); i++) {
+            for (int j = 0; j < denormalizedImage.getWidth(); j++) {
+                count++;
+                brightness += ColorUtils.getBrightness(denormalizedImage.getColorAt(j,i));
+            }
+        }
+        return brightness/count;
+    }
+
+    public static Double getAverageBrightnessOfWhitePixels(DenormalizedImage denormalizedImage){
+        Integer count=0;
+        Double brightness=0.0;
+        for (int i = 0; i < denormalizedImage.getHeight(); i++) {
+            for (int j = 0; j < denormalizedImage.getWidth(); j++) {
+                if(ColorUtils.getBrightness(denormalizedImage.getColorAt(j,i)).equals(1.0)) {
+                    count++;
+                    brightness += ColorUtils.getBrightness(denormalizedImage.getColorAt(j, i));
+                }
+            }
+        }
+        return brightness/count;
+    }
+
+    public static Double getAverageBrightnessOfBlackPixels(DenormalizedImage denormalizedImage){
+        Integer count=0;
+        Double brightness=0.0;
+        for (int i = 0; i < denormalizedImage.getHeight(); i++) {
+            for (int j = 0; j < denormalizedImage.getWidth(); j++) {
+                if(ColorUtils.getBrightness(denormalizedImage.getColorAt(j,i)).equals(0.0)) {
+                    count++;
+                    brightness += ColorUtils.getBrightness(denormalizedImage.getColorAt(j, i));
+                }
+            }
+        }
+        return brightness/count;
     }
 }

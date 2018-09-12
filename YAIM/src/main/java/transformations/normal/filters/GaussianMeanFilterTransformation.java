@@ -1,17 +1,21 @@
 package transformations.normal.filters;
 
 
+import backend.Filter;
 import backend.utils.Utils;
-import transformations.denormalized.filter.WindowMeanOperator;
+import javafx.stage.FileChooser;
+import repositories.FiltersRepository;
+import transformations.denormalized.filter.WindowMeanTransformation;
 
+import java.io.FilterReader;
 import java.util.Objects;
 
-public class GaussianMeanFilterTransformation extends WindowMeanOperator {
+public class GaussianMeanFilterTransformation extends WindowMeanTransformation {
     private Double std;
     private Integer filterSize;
 
     public GaussianMeanFilterTransformation(Integer filterSize, Double std) {
-        super(Utils.getGaussianMatrixWeight(std,filterSize));
+        super(FiltersRepository.getGaussianMatrixWeight(std,filterSize));
         this.filterSize = filterSize;
         this.std = std;
     }

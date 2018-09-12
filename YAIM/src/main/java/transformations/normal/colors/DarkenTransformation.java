@@ -1,12 +1,14 @@
 package transformations.normal.colors;
 
+import backend.DenormalizedColor;
+import backend.utils.ColorUtils;
 import javafx.scene.paint.Color;
 import transformations.normal.common.PixelByPixelTransformation;
 
 import java.util.function.Function;
 
 public class DarkenTransformation extends PixelByPixelTransformation {
-    private static Function<Color,Color> DARKEN = Color::darker;
+    private static Function<DenormalizedColor, DenormalizedColor> DARKEN = ColorUtils::getDarker;
     public DarkenTransformation() {
         super(DARKEN);
     }

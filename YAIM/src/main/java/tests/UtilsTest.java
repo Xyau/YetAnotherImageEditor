@@ -1,5 +1,6 @@
 package tests;
 
+import backend.Filter;
 import backend.utils.Utils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -9,7 +10,7 @@ import repositories.FiltersRepository;
 public class UtilsTest {
     @Test
     public void testMatrix(){
-        Double[][] mat = Utils.getGaussianMatrixWeight(1.0,2);
+        Double[][] mat = FiltersRepository.getGaussianMatrixWeight(1.0,2);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {

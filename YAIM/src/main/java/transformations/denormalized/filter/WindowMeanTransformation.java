@@ -1,17 +1,15 @@
 package transformations.denormalized.filter;
 
-import backend.combiners.Combiner;
 import backend.combiners.MeanCombiner;
-import backend.image.AnormalizedImage;
 import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 
 import java.util.Objects;
 
-public class WindowMeanOperator implements FullTransformation {
+public class WindowMeanTransformation implements FullTransformation {
 	private WindowOperator windowOperator;
 
-	public WindowMeanOperator(Double[][] filter) {
+	public WindowMeanTransformation(Double[][] filter) {
 		this.windowOperator = new WindowOperator(filter,new MeanCombiner());
 	}
 
@@ -22,14 +20,14 @@ public class WindowMeanOperator implements FullTransformation {
 
 	@Override
 	public String getDescription() {
-		return "Window Mean operator";
+		return "Custom Filter transformation";
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		WindowMeanOperator that = (WindowMeanOperator) o;
+		WindowMeanTransformation that = (WindowMeanTransformation) o;
 		return Objects.equals(windowOperator, that.windowOperator);
 	}
 

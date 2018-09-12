@@ -1,16 +1,10 @@
 package transformations.normal.filters;
 
-import backend.ColorPixel;
 import backend.combiners.MedianCombiner;
 import backend.transformators.FullTransformation;
-import backend.utils.Utils;
-import javafx.scene.paint.Color;
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanOperator;
 import transformations.denormalized.filter.WindowOperator;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 
 public class MedianFilterTransformation extends WindowOperator implements FullTransformation {

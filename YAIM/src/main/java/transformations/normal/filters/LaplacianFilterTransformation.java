@@ -1,9 +1,9 @@
 package transformations.normal.filters;
 
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanOperator;
+import transformations.denormalized.filter.WindowMeanTransformation;
 
-public class LaplacianFilterTransformation extends WindowMeanOperator {
+public class LaplacianFilterTransformation extends WindowMeanTransformation {
 
     public LaplacianFilterTransformation() {
         super(FiltersRepository.LAPLACIAN);

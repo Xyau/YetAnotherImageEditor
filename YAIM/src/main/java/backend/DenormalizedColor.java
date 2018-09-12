@@ -1,5 +1,6 @@
 package backend;
 
+import backend.utils.ColorUtils;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
@@ -10,6 +11,13 @@ public class DenormalizedColor {
     private Double blue;
     private Double alpha;
 
+
+    public DenormalizedColor(Color color) {
+        red = color.getRed();
+        green = color.getGreen();
+        blue = color.getBlue();
+        alpha = color.getOpacity();
+    }
 
     public DenormalizedColor(Double red, Double green, Double blue, Double alpha) {
         this.red = red;

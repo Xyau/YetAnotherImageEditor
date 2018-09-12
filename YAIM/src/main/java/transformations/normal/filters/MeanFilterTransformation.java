@@ -1,10 +1,10 @@
 package transformations.normal.filters;
 
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanOperator;
+import transformations.denormalized.filter.WindowMeanTransformation;
 
 
-public class MeanFilterTransformation extends WindowMeanOperator {
+public class MeanFilterTransformation extends WindowMeanTransformation {
     private Integer filterSize;
     public MeanFilterTransformation(Integer filterSize) {
         super(FiltersRepository.getOnesFilter(filterSize));

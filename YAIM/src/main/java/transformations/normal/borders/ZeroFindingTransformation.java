@@ -4,14 +4,10 @@ import backend.combiners.ZeroesFinderCombiner;
 import backend.image.DenormalizedImage;
 import backend.transformators.DenormalizedTransformation;
 import backend.transformators.FullTransformation;
-import backend.transformators.Transformation;
 import javafx.scene.image.WritableImage;
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanOperator;
 import transformations.denormalized.filter.WindowOperator;
-import transformations.normal.image.AddImageTransformation;
 import transformations.normal.image.DistanceImageTransformation;
-import transformations.normalizers.GlobalNormalizer;
 import transformations.normalizers.MultiChannelNormalizer;
 
 public class ZeroFindingTransformation implements FullTransformation {

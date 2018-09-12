@@ -14,7 +14,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import transformations.normal.BinaryTransformation;
+import transformations.normal.umbrals.GlobalUmbralizationTransformation;
+import transformations.normal.umbrals.MultiChannelBinaryTransformation;
 import transformations.normal.DrawHistogramTransformation;
 import transformations.normal.DynamicRangeCompressionTransformation;
 import transformations.normal.GammaTransformation;
@@ -32,8 +33,10 @@ import transformations.normal.filters.*;
 import transformations.normal.noise.AdditiveGaussianNoiseTransformation;
 import transformations.normal.noise.ExponentialDistributionNoiseTransformation;
 import transformations.normal.noise.SaltAndPeperNoiseTransformation;
+import transformations.normal.umbrals.SingleChannelBinaryTransformation;
 
 import java.io.File;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static frontend.FrontendUtils.getMenuItemByTranformation;
@@ -65,12 +68,13 @@ public class MenusRepository {
         Menu fileMenu = new Menu("Filter");
         fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView)
                 ,getMeanFilterMenuItem(transformationManagerView)
-                ,getWeighedMedianFilterMenuItem(transformationManagerView)
                 ,getGaussianMeanFilterMenuItem(transformationManagerView)
+                ,getMenuItemByTranformation("Weighed Median Filter",new StandardWeighedMedianFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Highpass",new HighpassFilterTransformation(),transformationManagerView)
-            );
+                ,getCustomFilterMenuItem(transformationManagerView)
+        );
         return fileMenu;
     }
 
@@ -89,9 +93,70 @@ public class MenusRepository {
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
         );
         return fileMenu;
+    }
+
+    public static Menu getUmbralsMenu(TransformationManagerView transformationManagerView){
+        Menu imageMenu = new Menu("Umbrals");
+
+        MenuItem singleChannelBinary = new MenuItem("Single channel Binary...");
+        singleChannelBinary.setOnAction( event -> {
+            StagesRepository.getStage("Single channel Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
+                    threashold -> new SingleChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView)).show();
+        });
+
+        MenuItem multiChannelBinary = new MenuItem("Multi channel Binary...");
+        multiChannelBinary.setOnAction( event -> {
+            StagesRepository.getStage("Multi channel Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
+                    threashold -> new MultiChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView)).show();
+        });
+
+        imageMenu.getItems().addAll(singleChannelBinary
+                ,multiChannelBinary
+                ,getMenuItemByTranformation("Global umbralization", new GlobalUmbralizationTransformation(), transformationManagerView)
+        );
+        return imageMenu;
+    }
+
+    public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
+        Menu imageMenu = new Menu("Image");
+        MenuItem imageOperations = new MenuItem("Image Operations...");
+        ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
+
+        imageOperations.setOnAction( event -> {
+            StagesRepository.getStage("Image Operations",imageOperationsControl).show();
+        });
+
+        MenuItem histogram = new MenuItem("Histogram");
+        histogram.setOnAction( event -> {
+            transformationManagerView.preview(new DrawHistogramTransformation());
+        });
+
+        MenuItem binary = new MenuItem("Binary...");
+        binary.setOnAction( event -> {
+            StagesRepository.getStage("Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
+                    threashold -> new MultiChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView)).show();
+        });
+
+        MenuItem gamma = new MenuItem("Gamma function...");
+        gamma.setOnAction( event -> {
+            StagesRepository.getStage("Gamma function", new SingleSliderGridPane("Gamma",0.0,1.0,0.05,
+                    val -> new GammaTransformation(val.doubleValue()),transformationManagerView)).show();
+        });
+
+        imageMenu.getItems().addAll(
+                getMenuItemByTranformation("Negative",new NegativeTransformation(),transformationManagerView),
+                getMenuItemByTranformation("High contrast",new HighContrastTransformation(),transformationManagerView),
+                binary,
+                gamma,
+                histogram,
+                getMenuItemByTranformation("Equalization", new HistogramEqualizationTransformation(),transformationManagerView),
+                getDynamicRangeCompressionMenuItem(transformationManagerView),
+                imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
+        return imageMenu;
     }
 
     public static Menu getNoiseMenu(TransformationManagerView transformationManagerView){
@@ -145,19 +210,6 @@ public class MenusRepository {
         return item;
     }
 
-    private static MenuItem getLoadRawMenuItem(final Stage stage, TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Load RAW...");
-        item.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
-            File file = fileChooser.showOpenDialog(stage);
-            WritableImage image = ImageUtils.readImage(file);
-
-            transformationManagerView.setInitialImage(image);
-        });
-        return item;
-    }
-
     private static MenuItem getGenerateSquare(TransformationManagerView transformationManagerView){
         MenuItem item = new MenuItem("Create Square");
         item.setOnAction(event -> {
@@ -202,78 +254,6 @@ public class MenusRepository {
         });
         return item;
     }
-
-    public static GridPane getBinaryGridPane(TransformationManagerView transformationManagerView) {
-        GridPane gridPane = new GridPane();
-
-        SliderControl sliderControl = new SliderControl("Threshold",0.0,255.0,25.5,(x,y)->{
-            transformationManagerView.preview(new BinaryTransformation(y.doubleValue()/255.0));
-        });
-
-        Button apply = new Button("Apply");
-        apply.setOnMouseClicked( applyEvent -> {
-            transformationManagerView.addTransformation(new BinaryTransformation(sliderControl.getSelectedValue().get()/255));
-        });
-
-        gridPane.add(sliderControl,0,0);
-        gridPane.add(apply,0,1);
-
-        return gridPane;
-    }
-
-    public static GridPane getGammaGridPane(TransformationManagerView transformationManagerView) {
-        GridPane gridPane = new GridPane();
-        SliderControl sliderControl = new SliderControl("Gamma",0.0,10.0,0.05,(x,y)->{
-            transformationManagerView.preview(new GammaTransformation(y.doubleValue()));
-        });
-        Button apply = new Button("Apply");
-        apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new GammaTransformation(sliderControl.getSelectedValue().get()));
-        });
-        gridPane.add(sliderControl,0,0);
-        gridPane.add(apply,0,1);
-
-        return gridPane;
-    }
-
-    public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
-        Menu imageMenu = new Menu("Image");
-        MenuItem imageOperations = new MenuItem("Image Operations...");
-        ImageOperationsControl imageOperationsControl = new ImageOperationsControl(scene, transformationManagerView);
-
-        imageOperations.setOnAction( event -> {
-            StagesRepository.getStage("Image Operations",imageOperationsControl).show();
-        });
-
-        MenuItem histogram = new MenuItem("Histogram");
-        histogram.setOnAction( event -> {
-            transformationManagerView.preview(new DrawHistogramTransformation());
-        });
-
-        MenuItem equalization = new MenuItem("Equalization");
-        equalization.setOnAction( event -> {
-            transformationManagerView.addTransformation(new HistogramEqualizationTransformation());
-        });
-
-        MenuItem binary = new MenuItem("Binary...");
-        binary.setOnAction( event -> {
-            StagesRepository.getStage("Binary", getBinaryGridPane(transformationManagerView)).show();
-        });
-
-        MenuItem gamma = new MenuItem("Gamma function...");
-        gamma.setOnAction( event -> {
-            StagesRepository.getStage("Gamma function", getGammaGridPane(transformationManagerView)).show();
-        });
-
-        imageMenu.getItems().addAll(
-                getMenuItemByTranformation("Negative",new NegativeTransformation(),transformationManagerView),
-                getMenuItemByTranformation("High contrast",new HighContrastTransformation(),transformationManagerView),
-                binary,gamma,histogram,equalization,
-                getDynamicRangeCompressionMenuItem(transformationManagerView),
-                imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
-        return imageMenu;
-    }
-
 
     private static MenuItem getDynamicRangeCompressionMenuItem(TransformationManagerView transformationManagerView){
         MenuItem item = new MenuItem("Dynamic Range Compression");
@@ -338,12 +318,10 @@ public class MenusRepository {
         return item;
     }
 
-    private static MenuItem getWeighedMedianFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Weighed Median Filter");
-
-        item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new StandardWeighedMedianFilterTransformation());
-        });
+    private static MenuItem getCustomFilterMenuItem(TransformationManagerView transformationManagerView){
+        MenuItem item = new MenuItem("Custom Median Filter");
+        CustomFilterControlPane customFilterControlPane = new CustomFilterControlPane(transformationManagerView);
+        item.setOnAction( e -> StagesRepository.getStage("Custom Median Filter",customFilterControlPane).show());
         return item;
     }
 
