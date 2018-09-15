@@ -14,6 +14,9 @@ public class GaussianMeanFilterTransformation extends WindowMeanTransformation {
     private Double std;
     private Integer filterSize;
 
+    public GaussianMeanFilterTransformation(Double std) {
+        this(Utils.toInteger(2*std+1),std);
+    }
     public GaussianMeanFilterTransformation(Integer filterSize, Double std) {
         super(FiltersRepository.getGaussianMatrixWeight(std,filterSize));
         this.filterSize = filterSize;

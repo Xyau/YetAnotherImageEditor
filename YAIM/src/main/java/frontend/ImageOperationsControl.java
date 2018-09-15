@@ -17,6 +17,7 @@ public class ImageOperationsControl extends GridPane {
     private Button substractButton;
     private Button distanceButton;
     private Button averageButton;
+    private Button modulusButton;
     private Button getFromPreview;
 
     private Button applyButton;
@@ -31,6 +32,7 @@ public class ImageOperationsControl extends GridPane {
         substractButton = getTransformationPreviewButton("Substract",MinusImageTransformation::new,transformationManagerView);
         distanceButton = getTransformationPreviewButton("Modulus",DistanceImageTransformation::new,transformationManagerView);
         averageButton = getTransformationPreviewButton("Average",AverageImageTransformation::new,transformationManagerView);
+        modulusButton = getTransformationPreviewButton("Modulus",ModulusImageTransformation::new,transformationManagerView);
         applyButton = new Button("Apply");
         getFromPreview = new Button("Get from preview");
 
@@ -47,6 +49,7 @@ public class ImageOperationsControl extends GridPane {
         add(multiplyButton,2,0);
         add(distanceButton,3,0);
         add(averageButton,4,0);
+        add(modulusButton,5,0);
         add(applyButton,0,1);
         add(getFromPreview,1,1,2,1);
         add(imageLoadControl,0,2,5,2);

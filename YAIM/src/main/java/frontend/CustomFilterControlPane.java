@@ -7,7 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import repositories.FiltersRepository;
-import transformations.normal.filters.CustomFilterTransformation;
+import transformations.normal.filters.RotatedFilter;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,7 +18,7 @@ public class CustomFilterControlPane extends GridPane {
     public CustomFilterControlPane(TransformationManagerView transformationManagerView){
         this.transformationManagerView = transformationManagerView;
         AtomicInteger cuarterRotations = new AtomicInteger(0);
-        AtomicReference<Double[][]> filter = new AtomicReference<>(FiltersRepository.KIRSH);
+        AtomicReference<Filter> filter = new AtomicReference<>(new Filter(FiltersRepository.KIRSH,"Kirsh"));
 
         Text filterVisualization = new Text();
         filterVisualization.setText("Here will appear the filter you chose");
@@ -26,8 +26,8 @@ public class CustomFilterControlPane extends GridPane {
         SliderControl rotationSlider = new SliderControl("Rotation",0.0,4.0,1.0,(old,curr)->{
             if(old.intValue() != curr.intValue()){
                 cuarterRotations.set(curr.intValue());
-                transformationManagerView.preview(new CustomFilterTransformation(filter.get(),cuarterRotations.get()));
-                filterVisualization.setText(Utils.printFilter(FiltersRepository.getRotatedFilter(filter.get(),cuarterRotations.get())));
+                transformationManagerView.preview(new RotatedFilter(filter.get(),cuarterRotations.get()));
+                filterVisualization.setText(Utils.printFilter(FiltersRepository.getRotatedFilter(filter.get().getFilter(),cuarterRotations.get())));
             }
         });
 
@@ -42,14 +42,14 @@ public class CustomFilterControlPane extends GridPane {
 
         filterView.getSelectionModel().selectedItemProperty().addListener((l,old,curr) -> {
             if(old != curr){
-                filter.set(curr.getFilter());
-                transformationManagerView.preview(new CustomFilterTransformation(filter.get(),cuarterRotations.get()));
-                filterVisualization.setText(Utils.printFilter(FiltersRepository.getRotatedFilter(filter.get(),cuarterRotations.get())));
+                filter.set(curr);
+                transformationManagerView.preview(new RotatedFilter(filter.get(),cuarterRotations.get()));
+                filterVisualization.setText(Utils.printFilter(FiltersRepository.getRotatedFilter(filter.get().getFilter(),cuarterRotations.get())));
             }
         });
         Button applyButton = new Button("Apply");
         applyButton.setOnMouseClicked((x)->{
-            transformationManagerView.addTransformation(new CustomFilterTransformation(filter.get(),cuarterRotations.get()));
+            transformationManagerView.addTransformation(new RotatedFilter(filter.get(),cuarterRotations.get()));
         });
 
         add(rotationSlider,0,0);

@@ -1,5 +1,6 @@
 package transformations.normal.filters;
 
+import backend.Filter;
 import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 import repositories.FiltersRepository;
@@ -7,20 +8,24 @@ import transformations.denormalized.filter.WindowMeanTransformation;
 
 import java.util.Objects;
 
-public class CustomFilterTransformation implements FullTransformation {
-    private Double[][] activeFilter;
+public class RotatedFilter implements FullTransformation {
+    private Filter activeFilter;
     private Integer cuarterRotations;
     private WindowMeanTransformation windowMeanOperator;
 
-    public CustomFilterTransformation(Double[][] filter, Integer cuarterRotations) {
+    public RotatedFilter(Filter filter, Integer cuarterRotations){
         this.cuarterRotations = cuarterRotations;
-        activeFilter = FiltersRepository.getRotatedFilter(filter,cuarterRotations);
-        this.windowMeanOperator = new WindowMeanTransformation(activeFilter);
+        activeFilter = new Filter(FiltersRepository.getRotatedFilter(filter.getFilter(),cuarterRotations),filter.toString());
+        this.windowMeanOperator = new WindowMeanTransformation(activeFilter.getFilter());
+    }
+
+    public RotatedFilter(Double[][] filter, Integer cuarterRotations) {
+        this(new Filter(filter,"Unknown"),cuarterRotations);
     }
 
     @Override
     public String getDescription() {
-        return "Custom Hirsch filter rotated " + cuarterRotations + " cuarters";
+        return " filter rotated " + cuarterRotations + " cuarters";
     }
 
     @Override
@@ -32,7 +37,7 @@ public class CustomFilterTransformation implements FullTransformation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CustomFilterTransformation that = (CustomFilterTransformation) o;
+        RotatedFilter that = (RotatedFilter) o;
         return Objects.equals(windowMeanOperator, that.windowMeanOperator);
     }
 

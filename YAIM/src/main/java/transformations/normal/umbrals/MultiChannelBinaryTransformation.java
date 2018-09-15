@@ -7,6 +7,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import transformations.normal.common.PixelByPixelTransformation;
 
+import javax.rmi.CORBA.Util;
 import java.util.Objects;
 
 
@@ -25,7 +26,7 @@ public class MultiChannelBinaryTransformation extends PixelByPixelTransformation
 
     @Override
     public String getDescription() {
-        return "Multi channel Binary with threshold:" + threashold;
+        return "Multi channel Binary with threshold:" + Utils.roundToRearestFraction(threashold,0.01);
     }
 
     @Override

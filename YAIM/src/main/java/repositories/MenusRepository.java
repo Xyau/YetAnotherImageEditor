@@ -66,9 +66,11 @@ public class MenusRepository {
 
     public static Menu getFilterMenu( TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Filter");
+
         fileMenu.getItems().addAll(getMedianFilterMenuItem(transformationManagerView)
                 ,getMeanFilterMenuItem(transformationManagerView)
                 ,getGaussianMeanFilterMenuItem(transformationManagerView)
+                ,getBilateralFilterMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Weighed Median Filter",new StandardWeighedMedianFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView)
@@ -344,30 +346,30 @@ public class MenusRepository {
     private static MenuItem getGaussianMeanFilterMenuItem(TransformationManagerView transformationManagerView) {
         MenuItem item = new MenuItem("Gaussian Mean Filter...");
 
-        GridPane gridPane = new GridPane();
-        Button apply = new Button("Apply");
-        AtomicReference<Double> sigma = new AtomicReference<>(1.0);
-        AtomicReference<Integer> filterSize = new AtomicReference<>(1);
-        SliderControl filterSizeSlider = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            filterSize.set(y.intValue());
-            transformationManagerView.preview(new GaussianMeanFilterTransformation(filterSize.get(),sigma.get()));
-        });
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new GaussianMeanFilterTransformation(l.get(0).intValue(),l.get(1).doubleValue()),transformationManagerView);
 
-        SliderControl stdSlider = new SliderControl("Sigma",0.5,5.0,0.5,(x, y)->{
-            sigma.set(y.doubleValue());
-            transformationManagerView.preview(new GaussianMeanFilterTransformation(filterSize.get(),sigma.get()));
-        });
-        apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new GaussianMeanFilterTransformation(filterSize.get(),sigma.get()));
-        });
-        gridPane.add(filterSizeSlider,0,0);
-        gridPane.add(stdSlider,0,1);
-        gridPane.add(apply,0,2);
+        sliderGridPaneBuilder.addSlider("Filter Size",1.0,5.0,1.0);
+        sliderGridPaneBuilder.addSlider("Sigma",0.5,5.0,0.5);
         item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Mean Filter", gridPane).show();
+            StagesRepository.getStage("Gaussian Mean Filter", sliderGridPaneBuilder.build()).show();
         });
         return item;
+    }
 
+    private static MenuItem getBilateralFilterMenuItem(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Bilateral Filter...");
+
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new BilateralFilterTransformation(l.get(0).doubleValue(),l.get(1).doubleValue()),transformationManagerView);
+
+        sliderGridPaneBuilder.addSlider("Color STD",1.0,5.0,0.5);
+        sliderGridPaneBuilder.addSlider("Spatial STD",1.0,5.0,0.5);
+        GridPane gridPane = sliderGridPaneBuilder.build();
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Bilateral Filter", gridPane).show();
+        });
+        return item;
     }
 
     private static MenuItem getSaltAndPepperNoiseTransformation(TransformationManagerView transformationManagerView) {

@@ -2,6 +2,7 @@ package transformations.normal.umbrals;
 
 import backend.DenormalizedColor;
 import backend.utils.ColorUtils;
+import backend.utils.Utils;
 import transformations.normal.common.PixelByPixelTransformation;
 
 import java.util.Objects;
@@ -34,6 +35,6 @@ public class SingleChannelBinaryTransformation extends PixelByPixelTransformatio
 
     @Override
     public String getDescription() {
-        return "Single Channel Binary with threshold:" + threshold;
+        return "Single Channel Binary with threshold:" + Utils.roundToRearestFraction(threshold,0.01);
     }
 }

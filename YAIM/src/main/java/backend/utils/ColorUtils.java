@@ -46,6 +46,14 @@ public class ColorUtils {
         return new DenormalizedColor(red,blue,green,alpha);
     }
 
+    public static DenormalizedColor modulusColors(DenormalizedColor c1, DenormalizedColor c2){
+        Double red = Math.abs(c1.getRed() - c2.getRed());
+        Double blue = Math.abs(c1.getBlue() - c2.getBlue());
+        Double green = Math.abs(c1.getGreen() - c2.getGreen());
+        Double alpha = (c1.getAlpha());
+        return new DenormalizedColor(red,blue,green,alpha);
+    }
+
     public static Double normalize(Double x, Double min, Double max){
         return (x-min)/(max-min);
     }
@@ -64,6 +72,10 @@ public class ColorUtils {
 
     public static Double getBrightness(DenormalizedColor color){
         return Utils.RGBtoHSB(color.getRed(), color.getRed(), color.getBlue())[2];
+    }
+
+    public static Double getModulus(DenormalizedColor color){
+        return Math.sqrt(Math.pow(color.getRed(),2)+Math.pow(color.getGreen(),2)+Math.pow(color.getBlue(),2));
     }
 
     public static DenormalizedColor getGreyscale(DenormalizedColor color){
