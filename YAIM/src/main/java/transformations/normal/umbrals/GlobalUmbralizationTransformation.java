@@ -15,7 +15,7 @@ public class GlobalUmbralizationTransformation implements FullTransformation {
 
         DenormalizedImage umbralized = denormalizedImage;
         Double prevThreshold = Double.MAX_VALUE;
-        while (Math.abs(prevThreshold-threshold) > 0.2){
+        while (Math.abs(prevThreshold-threshold) > 0.01){
             umbralized = new SingleChannelBinaryTransformation(threshold)
                     .transformDenormalized(new DenormalizedImage(denormalizedImage));
 
