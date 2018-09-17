@@ -33,6 +33,7 @@ import transformations.normal.filters.*;
 import transformations.normal.noise.AdditiveGaussianNoiseTransformation;
 import transformations.normal.noise.ExponentialDistributionNoiseTransformation;
 import transformations.normal.noise.SaltAndPeperNoiseTransformation;
+import transformations.normal.umbrals.OtsuUmbralizationTransformation;
 import transformations.normal.umbrals.SingleChannelBinaryTransformation;
 
 import java.io.File;
@@ -119,7 +120,9 @@ public class MenusRepository {
         imageMenu.getItems().addAll(singleChannelBinary
                 ,multiChannelBinary
                 ,getMenuItemByTranformation("Global umbralization", new GlobalUmbralizationTransformation(), transformationManagerView)
+                ,getMenuItemByTranformation("Otsu umbralization", new OtsuUmbralizationTransformation(), transformationManagerView)
         );
+
         return imageMenu;
     }
 
