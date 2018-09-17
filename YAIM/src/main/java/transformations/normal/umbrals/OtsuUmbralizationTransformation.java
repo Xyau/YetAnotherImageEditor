@@ -64,7 +64,7 @@ public class OtsuUmbralizationTransformation implements Transformation {
         Double greenThreashold = getMaxValueIndex(varianceGreen) / 256.0;
         Double blueThreashold = getMaxValueIndex(varianceBlue) / 256.0;
 
-        return new MultiChannelBinaryTransformation(redThreashold, greenThreashold, blueThreashold).transform(writableImage);
+        return new MultiChannelBinaryTransformation((redThreashold + greenThreashold + blueThreashold) / 3.0).transform(writableImage);
     }
 
     // Returns index of maximum value. If more than one, it returns the mean of all of them

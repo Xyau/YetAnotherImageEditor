@@ -24,6 +24,9 @@ public class HistogramEqualizationTransformation implements Transformation {
                 for (int k = 0; k < writableImage.getPixelReader().getColor(i,j).getGreen() * 255; k++) {
                     blueAccum += histogram.getHistogramBlue()[k];
                 }
+                redAccum = Math.min(Math.max(redAccum, 0.0), 1.0);
+                greenAccum = Math.min(Math.max(greenAccum, 0.0), 1.0);
+                blueAccum = Math.min(Math.max(blueAccum, 0.0), 1.0);
                 writableImage.getPixelWriter().setColor(i, j, new Color(redAccum, greenAccum, blueAccum, writableImage.getPixelReader().getColor(i,j).getOpacity()));
             }
         }
