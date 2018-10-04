@@ -69,10 +69,10 @@ public class MultiSliderGridPaneBuilder {
    }
 
    public MenuItem buildAndGetMenuItem(String name){
-       MenuItem menuItem = new MenuItem(name);
+       MenuItem menuItem = new MenuItem(name+"...");
        GridPane gridPane = this.build();
        menuItem.setOnAction(event -> {
-           StagesRepository.getStage(name+"...", gridPane).show();
+           StagesRepository.getStage(name, gridPane).show();
        });
        return menuItem;
    }

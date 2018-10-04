@@ -44,6 +44,7 @@ import transformations.normal.umbrals.SingleChannelBinaryTransformation;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static frontend.FrontendUtils.getMenuItemByGridpane;
 import static frontend.FrontendUtils.getMenuItemByTranformation;
 
 public class MenusRepository {
@@ -80,7 +81,7 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Laplacian",new LaplacianFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Lowpass",new LowpassFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Highpass",new HighpassFilterTransformation(),transformationManagerView)
-                ,getCustomFilterMenuItem(transformationManagerView)
+                ,getMenuItemByGridpane("Custom Median Filter",new CustomFilterControlPane(transformationManagerView))
         );
         return fileMenu;
     }
@@ -160,8 +161,8 @@ public class MenusRepository {
                 gamma,
                 histogram,
                 getMenuItemByTranformation("Equalization", new HistogramEqualizationTransformation(),transformationManagerView),
-                getDynamicRangeCompressionMenuItem(transformationManagerView),
-                imageOperations, getMultiplyByScalarMenuItem(transformationManagerView),
+                getMenuItemByTranformation("Dynamic Range Compression", new DynamicRangeCompressionTransformation(),transformationManagerView),
+                imageOperations, getMultiplyByScalarMenuItemV2(transformationManagerView),
                 getVideo());
         return imageMenu;
     }
@@ -262,128 +263,47 @@ public class MenusRepository {
         return item;
     }
 
-    private static MenuItem getDynamicRangeCompressionMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Dynamic Range Compression");
-        item.setOnAction(event -> {
-            transformationManagerView.addTransformation(new DynamicRangeCompressionTransformation());
-        });
-        return item;
+    private static MenuItem getMultiplyByScalarMenuItemV2(TransformationManagerView transformationManagerView) {
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder(list->
+                new ScalarMultiplyTransformation(list.get(0).doubleValue(),list.get(1).doubleValue(),list.get(2).doubleValue()),transformationManagerView);
+        builder.addSlider("Red",0.0,1.0,0.05);
+        builder.addSlider("Green",0.0,1.0,0.05);
+        builder.addSlider("Blue",0.0,1.0,0.05);
+        return builder.buildAndGetMenuItem("Multiply by scalar");
     }
-
-    private static MenuItem getMultiplyByScalarMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Multiply by scalar");
-        GridPane gridPane = new GridPane();
-        AtomicReference<Double> red = new AtomicReference<>(1.0);
-        AtomicReference<Double> green = new AtomicReference<>(1.0);
-        AtomicReference<Double> blue = new AtomicReference<>(1.0);
-
-        SliderControl redSlider = new SliderControl("Red",0.0,1.0,0.05,(x,y)->{
-            red.set(y.doubleValue());
-            transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
-        });
-        SliderControl greenSlider = new SliderControl("Green",0.0,1.0,0.05,(x,y)->{
-            green.set(y.doubleValue());
-            transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
-        });
-        SliderControl blueSlider = new SliderControl("Blue",0.0,1.0,0.05,(x,y)->{
-            blue.set(y.doubleValue());
-            transformationManagerView.preview(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
-        });
-
-        redSlider.setSliderValue(0.0);
-        greenSlider.setSliderValue(0.0);
-        blueSlider.setSliderValue(0.0);
-        Button button = new Button("Apply");
-        button.setOnAction(event -> {
-            transformationManagerView.addTransformation(new ScalarMultiplyTransformation(red.get(),green.get(),blue.get()));
-        });
-        gridPane.add(redSlider,0,0);
-        gridPane.add(greenSlider,0,1);
-        gridPane.add(blueSlider,0,2);
-        gridPane.add(button,0,3);
-
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Multiply by scalar",gridPane).show();
-        });
-        return item;
-    }
-
-
 
     private static MenuItem getMedianFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Median Filter...");
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new MedianFilterTransformation(list.get(0).intValue()),transformationManagerView);
 
-        GridPane gridPane = new GridPane();
-        Button apply = new Button("Apply");
-        SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            transformationManagerView.preview(new MedianFilterTransformation(y.intValue()));
-        });
-        apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new MedianFilterTransformation(sliderControl.getSelectedValue().get().intValue()));
-        });
-        gridPane.add(sliderControl,0,0);
-        gridPane.add(apply,0,1);
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Median Filter", gridPane).show();
-        });
-        return item;
-    }
-
-    private static MenuItem getCustomFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Custom Median Filter");
-        CustomFilterControlPane customFilterControlPane = new CustomFilterControlPane(transformationManagerView);
-        item.setOnAction( e -> StagesRepository.getStage("Custom Median Filter",customFilterControlPane).show());
-        return item;
+        builder.addSlider("Filter Size",1.0,5.0,1.0);
+        return builder.buildAndGetMenuItem("Median Filter");
     }
 
     private static MenuItem getMeanFilterMenuItem(TransformationManagerView transformationManagerView){
-        MenuItem item = new MenuItem("Mean Filter...");
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new MeanFilterTransformation(list.get(0).intValue()),transformationManagerView);
 
-        GridPane gridPane = new GridPane();
-        Button apply = new Button("Apply");
-        SliderControl sliderControl = new SliderControl("Filter Size",1.0,5.0,1.0,(x, y)->{
-            transformationManagerView.preview(new MeanFilterTransformation(y.intValue()));
-        });
-        apply.setOnMouseClicked( event -> {
-            transformationManagerView.addTransformation(new MeanFilterTransformation(sliderControl.getSelectedValue().get().intValue()));
-        });
-        gridPane.add(sliderControl,0,0);
-        gridPane.add(apply,0,1);
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Mean Filter", gridPane).show();
-        });
-        return item;
+        builder.addSlider("Filter Size",1.0,5.0,1.0);
+        return builder.buildAndGetMenuItem("Mean Filter");
     }
 
     private static MenuItem getGaussianMeanFilterMenuItem(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Gaussian Mean Filter...");
-
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new GaussianMeanFilterTransformation(l.get(0).intValue(),l.get(1).doubleValue()),transformationManagerView);
 
         sliderGridPaneBuilder.addSlider("Filter Size",1.0,5.0,1.0);
         sliderGridPaneBuilder.addSlider("Sigma",0.5,5.0,0.5);
-        GridPane pane = sliderGridPaneBuilder.build();
-
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Mean Filter", pane).show();
-        });
-        return item;
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Gaussian Mean Filter");
     }
 
     private static MenuItem getAnisotropicDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Anisotropic Diffusion...");
-
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new AnisotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
 
         sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
-        GridPane pane = sliderGridPaneBuilder.build();
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Anisotropic Diffusion", pane).show();
-        });
-        return item;
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Anisotropic Diffusion");
     }
 
     private static MenuItem getIsotropicDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
@@ -392,20 +312,16 @@ public class MenusRepository {
 
         sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
-        return sliderGridPaneBuilder.buildAndGetMenuItem("Isotropic Diffusion...");
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Isotropic Diffusion");
     }
 
     private static MenuItem getBilateralFilterMenuItem(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Bilateral Filter...");
-
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new BilateralFilterTransformation(l.get(0).doubleValue(),l.get(1).doubleValue()),transformationManagerView);
 
         sliderGridPaneBuilder.addSlider("Color STD",1.0,30.0,1.0);
         sliderGridPaneBuilder.addSlider("Spatial STD",1.0,5.0,0.5);
-        GridPane gridPane = sliderGridPaneBuilder.build();
-        item.setOnAction(event -> StagesRepository.getStage("Bilateral Filter", gridPane).show());
-        return item;
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Bilateral Filter");
     }
 
     private static MenuItem getVideo(){

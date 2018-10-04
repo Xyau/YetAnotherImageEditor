@@ -14,4 +14,10 @@ public class FrontendUtils {
         item.setOnAction(event -> transformationManagerView.addTransformation(transformation));
         return item;
     }
+
+    public static MenuItem getMenuItemByGridpane(String name, GridPane gridPane){
+        MenuItem item = new MenuItem(name+"...");
+        item.setOnAction(event -> StagesRepository.getStage(name, gridPane).show());
+        return item;
+    }
 }
