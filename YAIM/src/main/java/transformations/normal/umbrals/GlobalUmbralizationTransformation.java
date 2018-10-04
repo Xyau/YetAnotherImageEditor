@@ -43,6 +43,7 @@ public class GlobalUmbralizationTransformation implements FullTransformation {
             prevThreshold = threshold;
             threshold = 0.5*(whitePixelAvgBrightness+blackPixelAvgBrightness);
         }
+        System.out.println(threshold);
         return umbralized;
     }
 

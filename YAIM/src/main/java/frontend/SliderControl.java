@@ -22,6 +22,7 @@ public class SliderControl extends GridPane {
         slider.setShowTickMarks(true);
         slider.setSnapToTicks(false);
         slider.setMinorTickCount(1);
+        slider.setValue(min);
         slider.valueProperty().addListener( (change,x,y) -> {
             consumer.accept(x,y);
             value.setText(Utils.roundToRearestFraction(y.doubleValue(),increment).toString());
@@ -29,6 +30,7 @@ public class SliderControl extends GridPane {
         });
         text = new Text(label);
         value = new TextArea();
+        value.setText(Utils.roundToRearestFraction(min,increment).toString());
         value.setPrefColumnCount(2);
         value.setPrefRowCount(1);
         value.setOnKeyReleased( (x)->{
@@ -44,7 +46,6 @@ public class SliderControl extends GridPane {
         slider.widthProperty().addListener( (x) -> {
             slider.setMajorTickUnit(slider.getWidth()/10);
         });
-        slider.setValue(min);
     }
 
     public Optional<Double> getSelectedValue(){

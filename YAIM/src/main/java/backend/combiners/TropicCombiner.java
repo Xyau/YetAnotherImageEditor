@@ -13,7 +13,7 @@ import java.util.function.Function;
 import static backend.utils.ColorUtils.multiplyColors;
 
 public class TropicCombiner implements Combiner{
-	static Double LAMBDA = 0.1;
+	static Double LAMBDA = 0.25;
 
 	private Double std;
 	private BiFunction<Double, Double, Double> weightEvaluator;

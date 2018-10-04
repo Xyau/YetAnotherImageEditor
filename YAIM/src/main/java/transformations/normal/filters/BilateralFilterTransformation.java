@@ -2,8 +2,11 @@ package transformations.normal.filters;
 
 import backend.combiners.BilaterlalCombiner;
 import backend.transformators.FullTransformation;
+import backend.utils.Utils;
 import repositories.FiltersRepository;
 import transformations.denormalized.filter.WindowOperator;
+
+import javax.rmi.CORBA.Util;
 
 public class BilateralFilterTransformation extends WindowOperator implements FullTransformation {
     private Double colorStd;
@@ -17,6 +20,6 @@ public class BilateralFilterTransformation extends WindowOperator implements Ful
 
     @Override
     public String getDescription() {
-        return "Bilateral Transformation, color Std:"+ colorStd + "spatial Std:" + spatialStd;
+        return "Bilateral Transformation, color Std:"+ Utils.roundToRearestFraction(colorStd,0.01) + "spatial Std:" + spatialStd;
     }
 }
