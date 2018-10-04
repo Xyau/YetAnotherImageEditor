@@ -11,6 +11,10 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -153,7 +157,8 @@ public class MenusRepository {
                 histogram,
                 getMenuItemByTranformation("Equalization", new HistogramEqualizationTransformation(),transformationManagerView),
                 getDynamicRangeCompressionMenuItem(transformationManagerView),
-                imageOperations, getMultiplyByScalarMenuItem(transformationManagerView));
+                imageOperations, getMultiplyByScalarMenuItem(transformationManagerView),
+                getVideo());
         return imageMenu;
     }
 
@@ -369,9 +374,31 @@ public class MenusRepository {
         sliderGridPaneBuilder.addSlider("Color STD",1.0,5.0,0.5);
         sliderGridPaneBuilder.addSlider("Spatial STD",1.0,5.0,0.5);
         GridPane gridPane = sliderGridPaneBuilder.build();
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Bilateral Filter", gridPane).show();
-        });
+        item.setOnAction(event -> StagesRepository.getStage("Bilateral Filter", gridPane).show());
+        return item;
+    }
+
+    private static MenuItem getVideo(){
+
+        MenuItem item = new MenuItem("Get Video");
+        GridPane root = new GridPane();
+
+//        MediaPlayer player = new MediaPlayer( new Media("https://www.youtube.com/watch?v=vKQmeCl0PWc"));
+        Media media = new Media("http://localhost:8090/camera.mjpeg");
+        Media media2 = new Media("https://www.youtube.com/watch?v=vKQmeCl0PWc");
+        Media media3 = ImagesRepository.OVER;
+        MediaPlayer player = new MediaPlayer( media);
+        System.out.println("PAso");
+        MediaView mediaView = new MediaView(player);
+        root.add(mediaView,0,1);
+        Button b = new Button("Play");
+        b.setOnMouseClicked( e-> player.play());
+        root.add(b,0,0);
+        item.setOnAction(event ->{
+            StagesRepository.getStage("VideoStream ",root).show();
+            player.play();
+                });
+
         return item;
     }
 

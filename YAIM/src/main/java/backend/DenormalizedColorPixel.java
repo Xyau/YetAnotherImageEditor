@@ -2,7 +2,24 @@ package backend;
 
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
+
 public class DenormalizedColorPixel {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DenormalizedColorPixel that = (DenormalizedColorPixel) o;
+        return Objects.equals(pixel, that.pixel) &&
+                Objects.equals(color, that.color);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(pixel, color);
+    }
+
     private Pixel pixel;
     private DenormalizedColor color;
 

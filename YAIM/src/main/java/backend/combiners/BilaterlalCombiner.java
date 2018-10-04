@@ -62,26 +62,29 @@ public class BilaterlalCombiner implements Combiner{
 
 	private Double getSpatialWeight(Double spatialStd, DenormalizedColorPixel pixel1, DenormalizedColorPixel pixel2){
 		return (difference(pixel1.getPixel().getX(),pixel2.getPixel().getX()) +
-				difference(pixel1.getPixel().getY(),pixel2.getPixel().getY()))/(2*spatialStd);
+				difference(pixel1.getPixel().getY(),pixel2.getPixel().getY()))/(2*spatialStd*spatialStd);
 	}
 
 	private Double getColorWeight(Double colorStd, DenormalizedColor color1, DenormalizedColor color2){
-		return ColorUtils.getModulus(ColorUtils.substractColors(color1,color2))/(2*colorStd);
+		return ColorUtils.getModulus(ColorUtils.substractColors(color1,color2))/(2*colorStd*colorStd);
 	}
 
 	public Double difference(Integer n1, Integer n2){
 		return Math.pow(n1-n2,2);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BilaterlalCombiner that = (BilaterlalCombiner) o;
+        return Objects.equals(colorStd, that.colorStd) &&
+                Objects.equals(spatialStd, that.spatialStd);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.getClass());
-	}
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(colorStd, spatialStd);
+    }
 }

@@ -11,7 +11,6 @@ public class DenormalizedColor {
     private Double blue;
     private Double alpha;
 
-
     public DenormalizedColor(Color color) {
         red = color.getRed();
         green = color.getGreen();
@@ -43,23 +42,6 @@ public class DenormalizedColor {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DenormalizedColor color = (DenormalizedColor) o;
-        return Objects.equals(red, color.red) &&
-                Objects.equals(green, color.green) &&
-                Objects.equals(blue, color.blue) &&
-                Objects.equals(alpha, color.alpha);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(red, green, blue, alpha);
-    }
-
-    @Override
     public String toString() {
         return "DenormalizedColor{" +
                 "r=" + red +
@@ -67,5 +49,22 @@ public class DenormalizedColor {
                 ", b=" + blue +
                 ", a=" + alpha +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DenormalizedColor that = (DenormalizedColor) o;
+        return Objects.equals(red, that.red) &&
+                Objects.equals(green, that.green) &&
+                Objects.equals(blue, that.blue) &&
+                Objects.equals(alpha, that.alpha);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(red, green, blue, alpha);
     }
 }

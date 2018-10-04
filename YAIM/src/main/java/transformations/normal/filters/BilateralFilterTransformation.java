@@ -3,7 +3,6 @@ package transformations.normal.filters;
 import backend.combiners.BilaterlalCombiner;
 import backend.transformators.FullTransformation;
 import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanTransformation;
 import transformations.denormalized.filter.WindowOperator;
 
 public class BilateralFilterTransformation extends WindowOperator implements FullTransformation {
