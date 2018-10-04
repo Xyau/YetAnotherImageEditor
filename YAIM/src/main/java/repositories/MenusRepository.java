@@ -389,7 +389,7 @@ public class MenusRepository {
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new BilateralFilterTransformation(l.get(0).doubleValue(),l.get(1).doubleValue()),transformationManagerView);
 
-        sliderGridPaneBuilder.addSlider("Color STD",1.0,5.0,0.5);
+        sliderGridPaneBuilder.addSlider("Color STD",1.0,30.0,1.0);
         sliderGridPaneBuilder.addSlider("Spatial STD",1.0,5.0,0.5);
         GridPane gridPane = sliderGridPaneBuilder.build();
         item.setOnAction(event -> StagesRepository.getStage("Bilateral Filter", gridPane).show());
@@ -404,7 +404,7 @@ public class MenusRepository {
 //        MediaPlayer player = new MediaPlayer( new Media("https://www.youtube.com/watch?v=vKQmeCl0PWc"));
         Media media = new Media("http://localhost:8090/camera.mjpeg");
         Media media2 = new Media("https://www.youtube.com/watch?v=vKQmeCl0PWc");
-        Media media3 = ImagesRepository.OVER;
+//        Media media3 = ImagesRepository.OVER;
         MediaPlayer player = new MediaPlayer( media);
         System.out.println("PAso");
         MediaView mediaView = new MediaView(player);
