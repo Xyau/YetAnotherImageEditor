@@ -10,7 +10,7 @@ public class BilateralFilterTransformation extends WindowOperator implements Ful
     private Double spatialStd;
 
     public BilateralFilterTransformation(Double colorStd, Double spatialStd) {
-        super(FiltersRepository.getOnesFilter(3),new BilaterlalCombiner(colorStd,spatialStd));
+        super(FiltersRepository.getOnesFilter(spatialStd.intValue() * 2 + 1),new BilaterlalCombiner(colorStd,spatialStd));
         this.colorStd = colorStd;
         this.spatialStd = spatialStd;
     }
