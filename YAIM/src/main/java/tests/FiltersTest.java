@@ -13,4 +13,11 @@ public class FiltersTest {
         Utils.printFilter(FiltersRepository.getRotatedFilter(filter,1));
         Utils.printFilter(FiltersRepository.getRotatedFilter(filter,3));
     }
+
+    @Test
+    public void testRotationEight(){
+        Double[][] filter = FiltersRepository.KIRSH;
+        Utils.printFilter(filter);
+        Utils.printFilter(FiltersRepository.getRotatedEightsFilter(filter));
+    }
 }

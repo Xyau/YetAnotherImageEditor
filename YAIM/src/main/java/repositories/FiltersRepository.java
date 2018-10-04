@@ -129,6 +129,76 @@ public class FiltersRepository {
             .maximumSize(30)
             .build();
 
+
+
+
+    public static Double[][] getRotatedEightsFilter(Double[][] filter) {
+        int row = 0, col = 0;
+        Double prev, curr;
+        Integer width = filter[0].length;
+        Integer height = filter.length;
+        Double[][] rotatedFilter = new Double[filter[0].length][filter.length];
+        /*
+        row - Staring row index
+        m width - ending row index
+        col - starting column index
+        n height - ending column index
+        i - iterator
+        */
+        while (row < width && col < height) {
+
+            if (row + 1 == width || col + 1 == height)
+                break;
+
+            // Store the first element of next
+            // row, this element will replace
+            // first element of current row
+            prev = filter[row + 1][col];
+
+            // Move elements of first row
+            // from the remaining rows
+            for (int i = col; i < height; i++) {
+                curr = filter[row][i];
+                rotatedFilter[row][i] = prev;
+                prev = curr;
+            }
+            row++;
+
+            // Move elements of last column
+            // from the remaining columns
+            for (int i = row; i < width; i++) {
+                curr = filter[i][height-1];
+                rotatedFilter[i][height-1] = prev;
+                prev = curr;
+            }
+            height--;
+
+            // Move elements of last row
+            // from the remaining rows
+            if (row < width) {
+                for (int i = height-1; i >= col; i--) {
+                    curr = filter[width-1][i];
+                    rotatedFilter[width-1][i] = prev;
+                    prev = curr;
+                }
+            }
+            width--;
+
+            // Move elements of first column
+            // from the remaining rows
+            if (col < height) {
+                for (int i = width-1; i >= row; i--) {
+                    curr = filter[i][col];
+                    rotatedFilter[i][col] = prev;
+                    prev = curr;
+                }
+            }
+            col++;
+        }
+
+        return rotatedFilter;
+    }
+
     public static Double[][] getGaussianMatrixWeight(Double std, Integer filterSize) {
         Double[][] weights = null;
         Double roundedStd = Utils.roundToRearestFraction(std, 0.05);

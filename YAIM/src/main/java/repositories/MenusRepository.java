@@ -11,7 +11,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -19,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import transformations.normal.difusion.AnisotropicDifusionTransformation;
+import transformations.normal.difusion.IsotropicDifusionTransformation;
 import transformations.normal.umbrals.GlobalUmbralizationTransformation;
 import transformations.normal.umbrals.MultiChannelBinaryTransformation;
 import transformations.normal.DrawHistogramTransformation;
@@ -42,7 +42,6 @@ import transformations.normal.umbrals.OtsuUmbralizationTransformation;
 import transformations.normal.umbrals.SingleChannelBinaryTransformation;
 
 import java.io.File;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static frontend.FrontendUtils.getMenuItemByTranformation;
@@ -106,6 +105,8 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
                 ,getAnisotropicDiffusionFilterMenuItem(transformationManagerView)
+                ,getIsotropicDiffusionFilterMenuItem(transformationManagerView)
+                ,getIsotropicCTEDiffusionFilterMenuItem(transformationManagerView)
         );
         return fileMenu;
     }
@@ -379,6 +380,34 @@ public class MenusRepository {
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
         item.setOnAction(event -> {
             StagesRepository.getStage("Anisotropic Diffusion", sliderGridPaneBuilder.build()).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getIsotropicDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Isotropic Diffusion...");
+
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new IsotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
+
+        sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
+        sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Isotropic Diffusion", sliderGridPaneBuilder.build()).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getIsotropicCTEDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Isotropic CTE Diffusion...");
+
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new IsotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
+
+        sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
+        sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Isotropic CTE Diffusion", sliderGridPaneBuilder.build()).show();
         });
         return item;
     }
