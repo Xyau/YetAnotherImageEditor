@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import transformations.normal.difusion.AnisotropicDifusionTransformation;
+import transformations.normal.difusion.IsotropicCTEDifusionTransformation;
 import transformations.normal.difusion.IsotropicDifusionTransformation;
 import transformations.normal.umbrals.GlobalUmbralizationTransformation;
 import transformations.normal.umbrals.MultiChannelBinaryTransformation;
@@ -402,7 +403,7 @@ public class MenusRepository {
         MenuItem item = new MenuItem("Isotropic CTE Diffusion...");
 
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
-                new IsotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
+                new IsotropicCTEDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
 
         sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
