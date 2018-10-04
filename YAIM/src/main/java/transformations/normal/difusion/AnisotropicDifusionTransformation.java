@@ -7,10 +7,29 @@ import backend.transformators.FullTransformation;
 import backend.utils.Utils;
 import repositories.FiltersRepository;
 import transformations.denormalized.filter.WindowOperator;
+import transformations.normal.filters.LaplacianFilterTransformation;
+
+import java.util.Objects;
 
 public class AnisotropicDifusionTransformation implements FullTransformation {
     private Double std;
     private Integer iterations;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnisotropicDifusionTransformation that = (AnisotropicDifusionTransformation) o;
+        return Objects.equals(std, that.std) &&
+                Objects.equals(iterations, that.iterations);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(std, iterations);
+    }
+
     private WindowOperator anisotropicOperator;
 
     public AnisotropicDifusionTransformation(Double std, Integer iterations) {
@@ -22,6 +41,7 @@ public class AnisotropicDifusionTransformation implements FullTransformation {
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+//        denormalizedImage = new LaplacianFilterTransformation().transformDenormalized(denormalizedImage);
         for (int i = 0; i < iterations; i++) {
             denormalizedImage = anisotropicOperator.transformDenormalized(denormalizedImage);
         }

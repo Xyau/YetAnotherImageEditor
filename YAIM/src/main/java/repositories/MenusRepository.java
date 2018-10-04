@@ -375,8 +375,8 @@ public class MenusRepository {
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new AnisotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
 
-        sliderGridPaneBuilder.addSlider("Sigma",0.0,4.0,0.5);
-        sliderGridPaneBuilder.addSlider("Iterations",5.0,50.0,5.0);
+        sliderGridPaneBuilder.addSlider("Sigma",0.0,15.0,0.5);
+        sliderGridPaneBuilder.addSlider("Iterations",5.0,200.0,5.0);
         item.setOnAction(event -> {
             StagesRepository.getStage("Anisotropic Diffusion", sliderGridPaneBuilder.build()).show();
         });
