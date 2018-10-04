@@ -5,12 +5,21 @@ import backend.DenormalizedColor;
 import com.sun.javafx.util.Utils;
 import javafx.scene.paint.Color;
 
+import java.util.function.Function;
+
 public class ColorUtils {
-    public static DenormalizedColor addColors(DenormalizedColor c1, DenormalizedColor c2){
-        Double red = (c1.getRed() + c2.getRed());
-        Double blue = (c1.getBlue() + c2.getBlue());
-        Double green = (c1.getGreen() + c2.getGreen());
+    public static DenormalizedColor addColors(DenormalizedColor c1, DenormalizedColor... cs){
+        Double red = c1.getRed();
+        Double blue = c1.getBlue();
+        Double green = c1.getGreen();
         Double alpha = (c1.getAlpha());
+
+        for (DenormalizedColor color : cs){
+            red += color.getRed();
+            blue += color.getBlue();
+            green += color.getGreen();
+        }
+
         return new DenormalizedColor(red,blue,green,alpha);
     }
 
@@ -18,6 +27,14 @@ public class ColorUtils {
         Double red = (c1.getRed() * c2.getRed());
         Double blue = (c1.getBlue() * c2.getBlue());
         Double green = (c1.getGreen() * c2.getGreen());
+        Double alpha = (c1.getAlpha());
+        return new DenormalizedColor(red,blue,green,alpha);
+    }
+
+    public static DenormalizedColor multiplyColors(DenormalizedColor c1, Double c){
+        Double red = (c1.getRed() * c);
+        Double blue = (c1.getBlue() * c);
+        Double green = (c1.getGreen() * c);
         Double alpha = (c1.getAlpha());
         return new DenormalizedColor(red,blue,green,alpha);
     }
@@ -52,6 +69,11 @@ public class ColorUtils {
         Double green = Math.abs(c1.getGreen() - c2.getGreen());
         Double alpha = (c1.getAlpha());
         return new DenormalizedColor(red,blue,green,alpha);
+    }
+
+    public static DenormalizedColor transform(DenormalizedColor color, Function<Double,Double> transformation){
+        return new DenormalizedColor(transformation.apply(color.getRed()),transformation.apply(color.getBlue()),
+                transformation.apply(color.getGreen()),color.getAlpha());
     }
 
     public static Double normalize(Double x, Double min, Double max){

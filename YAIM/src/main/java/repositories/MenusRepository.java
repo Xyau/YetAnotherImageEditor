@@ -18,6 +18,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.normal.difusion.AnisotropicDifusionTransformation;
 import transformations.normal.umbrals.GlobalUmbralizationTransformation;
 import transformations.normal.umbrals.MultiChannelBinaryTransformation;
 import transformations.normal.DrawHistogramTransformation;
@@ -96,12 +97,20 @@ public class MenusRepository {
 
     public static Menu getBordersMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Borders");
+
+        MenuItem anisotropic = new MenuItem("Anisotropic Difusion...");
+        anisotropic.setOnAction(event -> {
+            StagesRepository.getStage("Anisotropic Diffusion", new SingleSliderGridPane("STD",0.0,1.0,0.02,
+                    std -> new AnisotropicDifusionTransformation(std.doubleValue()),transformationManagerView)).show();
+        });
+
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
+                ,anisotropic
         );
         return fileMenu;
     }
