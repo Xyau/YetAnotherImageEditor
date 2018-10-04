@@ -13,14 +13,14 @@ import java.util.function.Function;
 import static backend.utils.ColorUtils.multiplyColors;
 
 public class TropicCombiner implements Combiner{
-	Double std;
 	static Double LAMBDA = 0.1;
 
-	private BiFunction<Double,Double,Double> LECLERC_DETECTOR = (intensity, std) -> Math.exp(-intensity*intensity/(std*std));
-	private BiFunction<Double,Double,Double> LORENTZIAN_DETECTOR = (intensity, std) -> 1/(1+(intensity*intensity/(std*std)));
+	private Double std;
+	private BiFunction<Double, Double, Double> weightEvaluator;
 
-	public TropicCombiner(Double std) {
+	public TropicCombiner(Double std, BiFunction<Double, Double, Double> weightEvaluator) {
 		this.std = std;
+		this.weightEvaluator = weightEvaluator;
 	}
 
 	@Override
@@ -38,10 +38,10 @@ public class TropicCombiner implements Combiner{
 		DenormalizedColor rightDiff = ColorUtils.substractColors(rightPixel.getColor(),middlePixel.getColor());
 		DenormalizedColor leftDiff = ColorUtils.substractColors(leftPixel.getColor(),middlePixel.getColor());
 
-		DenormalizedColor upC = ColorUtils.transform(upDiff, intensity -> LORENTZIAN_DETECTOR.apply(intensity,std));
-		DenormalizedColor downC = ColorUtils.transform(downDiff, intensity -> LORENTZIAN_DETECTOR.apply(intensity,std));
-		DenormalizedColor rightC = ColorUtils.transform(rightDiff, intensity -> LORENTZIAN_DETECTOR.apply(intensity,std));
-		DenormalizedColor leftC = ColorUtils.transform(leftDiff, intensity -> LORENTZIAN_DETECTOR.apply(intensity,std));
+		DenormalizedColor upC = ColorUtils.transform(upDiff, intensity -> weightEvaluator.apply(intensity,std));
+		DenormalizedColor downC = ColorUtils.transform(downDiff, intensity -> weightEvaluator.apply(intensity,std));
+		DenormalizedColor rightC = ColorUtils.transform(rightDiff, intensity -> weightEvaluator.apply(intensity,std));
+		DenormalizedColor leftC = ColorUtils.transform(leftDiff, intensity -> weightEvaluator.apply(intensity,std));
 
 		//sum all the differences multiplied by the
 		DenormalizedColor raw = ColorUtils.multiplyColors(ColorUtils.addColors(multiplyColors(upC,upDiff)
@@ -73,12 +73,12 @@ public class TropicCombiner implements Combiner{
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		TropicCombiner that = (TropicCombiner) o;
-		return Objects.equals(std, that.std);
+		return Objects.equals(std, that.std) &&
+				Objects.equals(weightEvaluator, that.weightEvaluator);
 	}
 
 	@Override
 	public int hashCode() {
-
-		return Objects.hash(std);
+		return Objects.hash(std, weightEvaluator);
 	}
 }

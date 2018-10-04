@@ -6,6 +6,7 @@ import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 import backend.utils.Utils;
 import repositories.FiltersRepository;
+import repositories.FunctionsRepository;
 import transformations.denormalized.filter.WindowOperator;
 import transformations.normal.filters.LaplacianFilterTransformation;
 
@@ -35,7 +36,8 @@ public class AnisotropicDifusionTransformation implements FullTransformation {
     public AnisotropicDifusionTransformation(Double std, Integer iterations) {
         this.iterations = iterations;
         this.std = std;
-        anisotropicOperator = new WindowOperator(FiltersRepository.getOnesFilter(1),new TropicCombiner(std));
+        anisotropicOperator = new WindowOperator(FiltersRepository.getOnesFilter(1),
+                new TropicCombiner(std, FunctionsRepository.LECLERC_DETECTOR));
     }
 
 

@@ -4,19 +4,23 @@ import backend.transformators.Transformation;
 import backend.utils.Utils;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import repositories.StagesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MultiSliderGridPaneBuilder {
     private List<Pair<SliderControl,AtomicReference<Number>>> sliders;
     private TransformationManagerView transformationManagerView;
     private Function<List<Number>,Transformation> transformationBuilder;
+    private Boolean built = false;
 
     public MultiSliderGridPaneBuilder(Function<List<Number>,Transformation> transformationBuilder,
                                       TransformationManagerView transformationManagerView) {
@@ -45,6 +49,9 @@ public class MultiSliderGridPaneBuilder {
    }
 
    public GridPane build(){
+        if (built){
+            throw new IllegalStateException("Builder already builded a MultiSliderGridPane");
+        }
         GridPane gridPane = new GridPane();
 
        for (int i = 0; i < sliders.size(); i++) {
@@ -57,6 +64,16 @@ public class MultiSliderGridPaneBuilder {
        });
 
        gridPane.add(applyButton,0,sliders.size());
+       built = true;
        return gridPane;
+   }
+
+   public MenuItem buildAndGetMenuItem(String name){
+       MenuItem menuItem = new MenuItem(name);
+       GridPane gridPane = this.build();
+       menuItem.setOnAction(event -> {
+           StagesRepository.getStage(name+"...", gridPane).show();
+       });
+       return menuItem;
    }
 }

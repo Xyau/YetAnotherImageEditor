@@ -1,33 +1,41 @@
 package transformations.normal.difusion;
 
+import backend.combiners.TropicCombiner;
 import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 import backend.utils.Utils;
-import transformations.normal.filters.GaussianMeanFilterTransformation;
+import repositories.FiltersRepository;
+import repositories.FunctionsRepository;
+import transformations.denormalized.filter.WindowOperator;
 
 import java.util.Objects;
 
 public class IsotropicDifusionTransformation implements FullTransformation {
     private Double std;
     private Integer iterations;
-    private FullTransformation operator;
+    private WindowOperator anisotropicOperator;
 
 
     public IsotropicDifusionTransformation(Double std, Integer iterations) {
         this.iterations = iterations;
         this.std = std;
-
-        operator = new GaussianMeanFilterTransformation(std);
+        anisotropicOperator = new WindowOperator(FiltersRepository.getOnesFilter(1),
+                new TropicCombiner(std,(delta, lambda) -> 1.0));
     }
 
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
-//        denormalizedImage = new LaplacianFilterTransformation().transformDenormalized(denormalizedImage);
         for (int i = 0; i < iterations; i++) {
-            denormalizedImage = operator.transformDenormalized(denormalizedImage);
+            denormalizedImage = anisotropicOperator.transformDenormalized(denormalizedImage);
         }
         return denormalizedImage;
+    }
+
+
+    @Override
+    public String getDescription() {
+        return "Isotropic Difusion STD:"+ Utils.roundToRearestFraction(std,0.01) + " Rounds:" + iterations;
     }
 
     @Override
@@ -41,12 +49,6 @@ public class IsotropicDifusionTransformation implements FullTransformation {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(std, iterations);
-    }
-
-    @Override
-    public String getDescription() {
-        return "Isotropic Difusion (Gauss) STD:"+ Utils.roundToRearestFraction(std,0.01) + " Rounds:" + iterations;
     }
 }

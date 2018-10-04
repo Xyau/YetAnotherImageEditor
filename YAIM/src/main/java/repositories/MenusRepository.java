@@ -18,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import transformations.normal.difusion.AnisotropicDifusionTransformation;
-import transformations.normal.difusion.IsotropicCTEDifusionTransformation;
 import transformations.normal.difusion.IsotropicDifusionTransformation;
 import transformations.normal.umbrals.GlobalUmbralizationTransformation;
 import transformations.normal.umbrals.MultiChannelBinaryTransformation;
@@ -107,7 +106,6 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
                 ,getAnisotropicDiffusionFilterMenuItem(transformationManagerView)
                 ,getIsotropicDiffusionFilterMenuItem(transformationManagerView)
-                ,getIsotropicCTEDiffusionFilterMenuItem(transformationManagerView)
         );
         return fileMenu;
     }
@@ -365,8 +363,10 @@ public class MenusRepository {
 
         sliderGridPaneBuilder.addSlider("Filter Size",1.0,5.0,1.0);
         sliderGridPaneBuilder.addSlider("Sigma",0.5,5.0,0.5);
+        GridPane pane = sliderGridPaneBuilder.build();
+
         item.setOnAction(event -> {
-            StagesRepository.getStage("Gaussian Mean Filter", sliderGridPaneBuilder.build()).show();
+            StagesRepository.getStage("Gaussian Mean Filter", pane).show();
         });
         return item;
     }
@@ -379,38 +379,20 @@ public class MenusRepository {
 
         sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
+        GridPane pane = sliderGridPaneBuilder.build();
         item.setOnAction(event -> {
-            StagesRepository.getStage("Anisotropic Diffusion", sliderGridPaneBuilder.build()).show();
+            StagesRepository.getStage("Anisotropic Diffusion", pane).show();
         });
         return item;
     }
 
     private static MenuItem getIsotropicDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Isotropic Diffusion...");
-
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new IsotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
 
         sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Isotropic Diffusion", sliderGridPaneBuilder.build()).show();
-        });
-        return item;
-    }
-
-    private static MenuItem getIsotropicCTEDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
-        MenuItem item = new MenuItem("Isotropic CTE Diffusion...");
-
-        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
-                new IsotropicCTEDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
-
-        sliderGridPaneBuilder.addSlider("Sigma",0.0,0.5,0.01);
-        sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
-        item.setOnAction(event -> {
-            StagesRepository.getStage("Isotropic CTE Diffusion", sliderGridPaneBuilder.build()).show();
-        });
-        return item;
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Isotropic Diffusion...");
     }
 
     private static MenuItem getBilateralFilterMenuItem(TransformationManagerView transformationManagerView) {
