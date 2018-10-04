@@ -25,8 +25,6 @@ public class TropicCombiner implements Combiner{
 
 	@Override
 	public DenormalizedColor combine(List<DenormalizedColorPixel> colorPixels, Double[][] filter) {
-		Double totalWeight=0.0;
-
 		DenormalizedColorPixel middlePixel = getCenterPixel(colorPixels,new Filter(filter));
 
 		//This are the coefficients, we have to multiply this by the difference

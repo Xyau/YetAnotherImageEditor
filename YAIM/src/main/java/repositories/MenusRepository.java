@@ -98,11 +98,6 @@ public class MenusRepository {
     public static Menu getBordersMenu(TransformationManagerView transformationManagerView){
         Menu fileMenu = new Menu("Borders");
 
-        MenuItem anisotropic = new MenuItem("Anisotropic Difusion...");
-        anisotropic.setOnAction(event -> {
-            StagesRepository.getStage("Anisotropic Diffusion", new SingleSliderGridPane("STD",0.0,1.0,0.02,
-                    std -> new AnisotropicDifusionTransformation(std.doubleValue()),transformationManagerView)).show();
-        });
 
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
@@ -110,7 +105,7 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
-                ,anisotropic
+                ,getAnisotropicDiffusionFilterMenuItem(transformationManagerView)
         );
         return fileMenu;
     }
@@ -370,6 +365,20 @@ public class MenusRepository {
         sliderGridPaneBuilder.addSlider("Sigma",0.5,5.0,0.5);
         item.setOnAction(event -> {
             StagesRepository.getStage("Gaussian Mean Filter", sliderGridPaneBuilder.build()).show();
+        });
+        return item;
+    }
+
+    private static MenuItem getAnisotropicDiffusionFilterMenuItem(TransformationManagerView transformationManagerView) {
+        MenuItem item = new MenuItem("Anisotropic Diffusion...");
+
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new AnisotropicDifusionTransformation(l.get(0).doubleValue(),l.get(1).intValue()),transformationManagerView);
+
+        sliderGridPaneBuilder.addSlider("Sigma",0.0,4.0,0.5);
+        sliderGridPaneBuilder.addSlider("Iterations",5.0,50.0,5.0);
+        item.setOnAction(event -> {
+            StagesRepository.getStage("Anisotropic Diffusion", sliderGridPaneBuilder.build()).show();
         });
         return item;
     }
