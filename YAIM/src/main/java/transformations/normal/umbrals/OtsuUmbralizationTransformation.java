@@ -10,6 +10,8 @@ import java.util.*;
 
 
 public class OtsuUmbralizationTransformation implements Transformation {
+    private Double threashold = 0.0;
+
     @Override
     public WritableImage transform(WritableImage writableImage) {
         WritableImage tmpWritableImage = ImageUtils.copyImage(writableImage);
@@ -64,6 +66,7 @@ public class OtsuUmbralizationTransformation implements Transformation {
         Double greenThreashold = getMaxValueIndex(varianceGreen) / 256.0;
         Double blueThreashold = getMaxValueIndex(varianceBlue) / 256.0;
 
+        this.threashold = (redThreashold + greenThreashold + blueThreashold) / 3.0;
         return new MultiChannelBinaryTransformation((redThreashold + greenThreashold + blueThreashold) / 3.0).transform(writableImage);
     }
 
@@ -91,7 +94,7 @@ public class OtsuUmbralizationTransformation implements Transformation {
 
     @Override
     public String getDescription() {
-        return "Otsu Binary";
+        return "Otsu Binary: " + this.threashold;
     }
 
 
