@@ -2,9 +2,11 @@ package backend.utils;
 
 
 import backend.DenormalizedColor;
+import backend.image.DenormalizedImage;
 import com.sun.javafx.util.Utils;
 import javafx.scene.paint.Color;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ColorUtils {
@@ -74,6 +76,15 @@ public class ColorUtils {
     public static DenormalizedColor transform(DenormalizedColor color, Function<Double,Double> transformation){
         return new DenormalizedColor(transformation.apply(color.getRed()),transformation.apply(color.getBlue()),
                 transformation.apply(color.getGreen()),color.getAlpha());
+    }
+
+    public static DenormalizedColor combineColors(DenormalizedColor c1, DenormalizedColor c2,
+                                                  BiFunction<Double, Double, Double> transformation){
+        Double red = transformation.apply(c1.getRed(), c2.getRed());
+        Double green = transformation.apply(c1.getGreen(), c2.getGreen());
+        Double blue = transformation.apply(c1.getBlue(), c2.getBlue());
+        Double alpha = transformation.apply(c1.getAlpha(), c2.getAlpha());
+        return new DenormalizedColor(red,blue,green,alpha);
     }
 
     public static Double normalize(Double x, Double min, Double max){

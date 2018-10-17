@@ -2,6 +2,7 @@ package transformations.normal.borders;
 
 import backend.image.DenormalizedImage;
 import backend.transformators.DenormalizedTransformation;
+import backend.transformators.FullTransformation;
 import backend.transformators.Normalizer;
 import backend.utils.ImageUtils;
 import javafx.scene.image.WritableImage;
@@ -11,24 +12,19 @@ import transformations.denormalized.filter.WindowMeanTransformation;
 import transformations.normal.image.DistanceImageTransformation;
 import transformations.normalizers.MultiChannelNormalizer;
 
-public class SobelBorderTransformation implements Transformation {
+public class SobelBorderTransformation implements FullTransformation {
 
     @Override
-    public WritableImage transform(WritableImage writableImage) {
-        DenormalizedTransformation verticalOperation = new WindowMeanTransformation(FiltersRepository.SOBEL_VERTICAL);
-        DenormalizedImage verticalImage = verticalOperation.transformDenormalized(new DenormalizedImage(writableImage));
-        DenormalizedTransformation horizontalOperation = new WindowMeanTransformation(FiltersRepository.SOBEL_HORIZONTAL);
-        DenormalizedImage horizontalImage = horizontalOperation.transformDenormalized(new DenormalizedImage(writableImage));
+    public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        DenormalizedImage verticalImage = new WindowMeanTransformation(FiltersRepository.SOBEL_VERTICAL).transformDenormalized(denormalizedImage);
+        DenormalizedImage horizontalImage = new WindowMeanTransformation(FiltersRepository.SOBEL_HORIZONTAL).transformDenormalized(denormalizedImage);
 
-        DenormalizedTransformation distanceImageTransformation = new DistanceImageTransformation(verticalImage);
-        DenormalizedImage resultImage = distanceImageTransformation.transformDenormalized(horizontalImage);
-
-        Normalizer normalizer = new MultiChannelNormalizer();
-        return ImageUtils.transferImageTo(writableImage,normalizer.normalize(resultImage));
+        return new DistanceImageTransformation(verticalImage).transformDenormalized(horizontalImage);
     }
 
     @Override
     public String getDescription() {
         return "Sobel border Transformation";
     }
+
 }

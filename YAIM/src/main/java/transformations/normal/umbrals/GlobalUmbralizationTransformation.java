@@ -9,6 +9,8 @@ import java.util.Objects;
 
 
 public class GlobalUmbralizationTransformation implements FullTransformation {
+    private Double threashold = 0.0;
+
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
         Double threshold = ImageUtils.getAverageBrightness(denormalizedImage);
@@ -43,13 +45,13 @@ public class GlobalUmbralizationTransformation implements FullTransformation {
             prevThreshold = threshold;
             threshold = 0.5*(whitePixelAvgBrightness+blackPixelAvgBrightness);
         }
-        System.out.println(threshold);
+        this.threashold = threshold;
         return umbralized;
     }
 
     @Override
     public String getDescription() {
-        return "Global Binary";
+        return "Global Binary: " + this.threashold;
     }
 
     @Override
