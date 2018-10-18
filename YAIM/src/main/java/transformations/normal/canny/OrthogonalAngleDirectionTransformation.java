@@ -1,4 +1,4 @@
-package transformations.normal;
+package transformations.normal.canny;
 
 import backend.DenormalizedColor;
 import backend.image.DenormalizedImage;

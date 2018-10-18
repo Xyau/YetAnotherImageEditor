@@ -11,6 +11,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static backend.utils.ColorUtils.multiplyColors;
+import static backend.utils.CombinerUtils.getCenterPixel;
+import static backend.utils.CombinerUtils.getPixel;
 
 public class TropicCombiner implements Combiner{
 	static Double LAMBDA = 0.25;
@@ -51,21 +53,6 @@ public class TropicCombiner implements Combiner{
 
 		DenormalizedColor result = ColorUtils.addColors(middlePixel.getColor(),raw);
 		return result;
-	}
-
-	public DenormalizedColorPixel getPixel(List<DenormalizedColorPixel> pixels, Integer x, Integer y){
-		return pixels.stream()
-				.filter( p -> p.getPixel().getX().equals(x) && p.getPixel().getY().equals(y))
-				.findFirst()
-				.get();
-	}
-
-
-	public DenormalizedColorPixel getCenterPixel(List<DenormalizedColorPixel> pixels, Filter filter){
-		Integer x = filter.getWidth()/2;
-		Integer y = filter.getHeight()/2;
-
-		return getPixel(pixels,x,y);
 	}
 
 	@Override

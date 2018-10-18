@@ -41,7 +41,7 @@ public class WindowOperator implements DenormalizedTransformation {
         return denormalizedImage;
     }
 
-    public List<DenormalizedColorPixel> getNeighborPixels(AnormalizedImage image, Integer x, Integer y, Integer filterHeight, Integer filterWidth){
+    public static List<DenormalizedColorPixel> getNeighborPixels(AnormalizedImage image, Integer x, Integer y, Integer filterHeight, Integer filterWidth){
         List<DenormalizedColorPixel> neighbors = new ArrayList<>();
         Integer xIndex = 0;
         Integer xOffsetStart = -(filterWidth/2);

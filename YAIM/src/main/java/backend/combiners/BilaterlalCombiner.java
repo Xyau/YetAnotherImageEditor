@@ -10,6 +10,8 @@ import javax.swing.text.html.ListView;
 import java.util.List;
 import java.util.Objects;
 
+import static backend.utils.CombinerUtils.getCenterPixel;
+
 public class BilaterlalCombiner implements Combiner{
 	Double colorStd;
 	Double spatialStd;
@@ -48,16 +50,6 @@ public class BilaterlalCombiner implements Combiner{
 				green/(totalWeight),
 				blue/(totalWeight),
 				alpha);
-	}
-
-	public DenormalizedColorPixel getCenterPixel(List<DenormalizedColorPixel> pixels, Filter filter){
-		Integer x = filter.getWidth()/2;
-		Integer y = filter.getHeight()/2;
-
-		return pixels.stream()
-				.filter( p -> p.getPixel().getX().equals(x) && p.getPixel().getY().equals(y))
-				.findFirst()
-				.get();
 	}
 
 	private Double getSpatialWeight(Double spatialStd, DenormalizedColorPixel pixel1, DenormalizedColorPixel pixel2){

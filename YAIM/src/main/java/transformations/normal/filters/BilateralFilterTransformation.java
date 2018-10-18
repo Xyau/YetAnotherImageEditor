@@ -6,7 +6,6 @@ import backend.utils.Utils;
 import repositories.FiltersRepository;
 import transformations.denormalized.filter.WindowOperator;
 
-import javax.rmi.CORBA.Util;
 
 public class BilateralFilterTransformation extends WindowOperator implements FullTransformation {
     private Double colorStd;
