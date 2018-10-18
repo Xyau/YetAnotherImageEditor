@@ -83,8 +83,7 @@ public class ColorUtils {
         Double red = transformation.apply(c1.getRed(), c2.getRed());
         Double green = transformation.apply(c1.getGreen(), c2.getGreen());
         Double blue = transformation.apply(c1.getBlue(), c2.getBlue());
-        Double alpha = transformation.apply(c1.getAlpha(), c2.getAlpha());
-        return new DenormalizedColor(red,blue,green,alpha);
+        return new DenormalizedColor(red,blue,green,c1.getAlpha());
     }
 
     public static Double normalize(Double x, Double min, Double max){

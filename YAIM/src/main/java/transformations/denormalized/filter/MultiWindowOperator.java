@@ -2,6 +2,7 @@ package transformations.denormalized.filter;
 
 import backend.DenormalizedColor;
 import backend.DenormalizedColorPixel;
+import backend.Filter;
 import backend.combiners.Combiner;
 import backend.combiners.multicombiner.MultiCombiner;
 import backend.image.AnormalizedImage;
@@ -19,7 +20,7 @@ import static transformations.denormalized.filter.WindowOperator.getNeighborPixe
 public class MultiWindowOperator implements DenormalizedTransformation{
     private Double[][] filter;
     private MultiCombiner combiner;
-    private DenormalizedImage extraImage;
+    public DenormalizedImage extraImage;
 
     private Integer filterHeight;
     private Integer filterWidth;
@@ -29,7 +30,7 @@ public class MultiWindowOperator implements DenormalizedTransformation{
         this.filterWidth = filter.length == 0? 0 : filter[0].length;
         this.filter = filter;
         this.combiner = combiner;
-        this.extraImage = new DenormalizedImage(extraImage);
+        this.extraImage = extraImage == null ? null : new DenormalizedImage(extraImage);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class MultiWindowOperator implements DenormalizedTransformation{
                 multiNeighbors.add(getNeighborPixels(anormalizedImage,i,j,filterHeight,filterWidth));
                 multiNeighbors.add(getNeighborPixels(extraImage,i,j,filterHeight,filterWidth));
 
-                DenormalizedColor processedColor = combiner.combineMulti(multiNeighbors,filter);
+                DenormalizedColor processedColor = combiner.combineMulti(multiNeighbors, new Filter(filter));
                 denormalizedImage.setColor(i,j,processedColor);
             }
         }

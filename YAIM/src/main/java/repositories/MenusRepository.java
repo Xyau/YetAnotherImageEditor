@@ -17,6 +17,9 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.normal.canny.CannyTransformation;
+import transformations.normal.canny.NonMaximalBorderSupressionTransformation;
+import transformations.normal.canny.OrthogonalAngleDirectionTransformation;
 import transformations.normal.difusion.AnisotropicDifusionTransformation;
 import transformations.normal.difusion.IsotropicDifusionTransformation;
 import transformations.normal.umbrals.GlobalUmbralizationTransformation;
@@ -101,6 +104,9 @@ public class MenusRepository {
 
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Orthogonal",new OrthogonalAngleDirectionTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Canny",new CannyTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)

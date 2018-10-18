@@ -1,30 +1,38 @@
 package transformations.normal.canny;
 
 import backend.image.DenormalizedImage;
+import backend.transformators.FullTransformation;
 import backend.transformators.Transformation;
+import backend.utils.ColorUtils;
 import backend.utils.ImageUtils;
 import backend.utils.Utils;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import transformations.denormalized.ImageOperator;
 import transformations.normal.filters.GaussianMeanFilterTransformation;
+import transformations.normal.image.MultiplyImageTransformation;
 
 
 /**
  * Created by zion on 2018-08-25.
  */
-public class CannyTransformation implements Transformation {
+public class CannyTransformation implements FullTransformation {
 
     @Override
-    public WritableImage transform(WritableImage writableImage) {
-        DenormalizedImage first = new GaussianMeanFilterTransformation(1, 1.0).transformDenormalized(new DenormalizedImage(writableImage));
-        DenormalizedImage second = new GaussianMeanFilterTransformation(2, 2.0).transformDenormalized(new DenormalizedImage(writableImage));
+    public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        DenormalizedImage first = new GaussianMeanFilterTransformation(1, 1.0).transformDenormalized(new DenormalizedImage(denormalizedImage));
+        DenormalizedImage second = new GaussianMeanFilterTransformation(2, 2.0).transformDenormalized(new DenormalizedImage(denormalizedImage));
 
-        return writableImage;
+        first = new NonMaximalBorderSupressionTransformation().transformDenormalized(first);
+        second = new NonMaximalBorderSupressionTransformation().transformDenormalized(second);
+
+        return new ImageOperator(second, ColorUtils::multiplyColors).transformDenormalized(first);
     }
 
     @Override
     public String getDescription () {
         return "Canny Transformation";
     }
+
 }
