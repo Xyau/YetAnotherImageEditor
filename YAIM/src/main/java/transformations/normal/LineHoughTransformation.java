@@ -13,10 +13,15 @@ import java.util.*;
 public class LineHoughTransformation implements Transformation {
     private Map<Pair<Integer, Integer>, Integer> votationGrid; // angles wil be conveted to integers for precision reasons
     private List<ColorPixel> whitePixels;
+    private Integer maxLines;
 
     private final Double thetaStep = Math.toRadians(1.0);
     private final Integer pStep = 2;
     private final Double EPSILON = 5E-2;
+
+    public LineHoughTransformation(Integer maxLines) {
+        this.maxLines = maxLines;
+    }
 
     @Override
     public WritableImage transform(WritableImage writableImage) {
@@ -35,7 +40,6 @@ public class LineHoughTransformation implements Transformation {
             }
         }
         PriorityQueue<Map.Entry<Pair<Integer, Integer>, Integer>> pq = getOrderedVotation();
-        Integer maxLines = 20;
         while (maxLines-- != 0 && !pq.isEmpty()) {
             Map.Entry<Pair<Integer, Integer>, Integer> entry = pq.poll();
             writableImage = drawLine(entry.getKey().getKey(), integer2angle(entry.getKey().getValue()), writableImage);
