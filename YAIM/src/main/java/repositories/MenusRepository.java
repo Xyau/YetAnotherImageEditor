@@ -99,6 +99,7 @@ public class MenusRepository {
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
                 ,getLineHoughMenuItem(transformationManagerView)
+                ,getCircleHoughMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Orthogonal",new OrthogonalAngleDirectionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Canny",new CannyTransformation(),transformationManagerView)
@@ -295,6 +296,15 @@ public class MenusRepository {
 
         builder.addSlider("Max lines",1.0,40.0,1.0);
         return builder.buildAndGetMenuItem("Hough");
+    }
+
+    private static MenuItem getCircleHoughMenuItem(TransformationManagerView transformationManagerView){
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new CircleHoughTransformation(list.get(0).doubleValue(), list.get(1).intValue()),transformationManagerView);
+
+        builder.addSlider("Epsilon",1.0,30.0,1.0);
+        builder.addSlider("Max circles",1.0,40.0,1.0);
+        return builder.buildAndGetMenuItem("Hough (Circles)");
     }
 
     private static MenuItem getGaussianMeanFilterMenuItem(TransformationManagerView transformationManagerView) {
