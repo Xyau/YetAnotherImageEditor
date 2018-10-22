@@ -17,11 +17,14 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.normal.*;
 import transformations.normal.canny.CannyTransformation;
 import transformations.normal.canny.NonMaximalBorderSupressionTransformation;
 import transformations.normal.canny.OrthogonalAngleDirectionTransformation;
 import transformations.normal.difusion.AnisotropicDifusionTransformation;
 import transformations.normal.difusion.IsotropicDifusionTransformation;
+import transformations.normal.umbrals.GlobalUmbralizationTransformation;
+import transformations.normal.umbrals.MultiChannelBinaryTransformation;
 import transformations.normal.umbrals.*;
 import transformations.normal.DrawHistogramTransformation;
 import transformations.normal.DynamicRangeCompressionTransformation;
@@ -101,6 +104,7 @@ public class MenusRepository {
 
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
+                ,getLineHoughMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Orthogonal",new OrthogonalAngleDirectionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Canny",new CannyTransformation(),transformationManagerView)
@@ -304,6 +308,14 @@ public class MenusRepository {
 
         builder.addSlider("Filter Size",1.0,5.0,1.0);
         return builder.buildAndGetMenuItem("Mean Filter");
+    }
+
+    private static MenuItem getLineHoughMenuItem(TransformationManagerView transformationManagerView){
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new LineHoughTransformation(list.get(0).intValue()),transformationManagerView);
+
+        builder.addSlider("Max lines",1.0,40.0,1.0);
+        return builder.buildAndGetMenuItem("Hough");
     }
 
     private static MenuItem getGaussianMeanFilterMenuItem(TransformationManagerView transformationManagerView) {
