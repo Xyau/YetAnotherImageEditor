@@ -17,6 +17,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import transformations.normal.*;
 import transformations.normal.canny.CannyTransformation;
 import transformations.normal.canny.NonMaximalBorderSupressionTransformation;
 import transformations.normal.canny.OrthogonalAngleDirectionTransformation;
@@ -24,13 +25,6 @@ import transformations.normal.difusion.AnisotropicDifusionTransformation;
 import transformations.normal.difusion.IsotropicDifusionTransformation;
 import transformations.normal.umbrals.GlobalUmbralizationTransformation;
 import transformations.normal.umbrals.MultiChannelBinaryTransformation;
-import transformations.normal.DrawHistogramTransformation;
-import transformations.normal.DynamicRangeCompressionTransformation;
-import transformations.normal.GammaTransformation;
-import transformations.normal.HighContrastTransformation;
-import transformations.normal.HistogramEqualizationTransformation;
-import transformations.normal.NegativeTransformation;
-import transformations.normal.RayleighDistributionNoiseTransformation;
 import transformations.normal.borders.*;
 import transformations.normal.colors.BrightenTransformation;
 import transformations.normal.colors.DarkenTransformation;
@@ -104,6 +98,7 @@ public class MenusRepository {
 
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Hough",new LineHoughTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Orthogonal",new OrthogonalAngleDirectionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Canny",new CannyTransformation(),transformationManagerView)
