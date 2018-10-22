@@ -55,6 +55,7 @@ public class SliderControl extends GridPane {
     public void setSliderValue(Double value) {
         if(value <= slider.getMax() && value >= slider.getMin()){
             slider.setValue(value);
+            text.setText(value.toString());
         }
     }
 }

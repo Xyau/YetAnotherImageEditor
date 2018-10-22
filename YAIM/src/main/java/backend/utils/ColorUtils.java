@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ColorUtils {
     public static DenormalizedColor addColors(DenormalizedColor c1, DenormalizedColor... cs){
@@ -121,5 +122,9 @@ public class ColorUtils {
 
     public static DenormalizedColor getDarker(DenormalizedColor c){
         return new DenormalizedColor(c.getRed()-0.1,c.getGreen()-0.1,c.getBlue()-0.1,c.getAlpha());
+    }
+
+    public static Boolean anyMatchChannel(DenormalizedColor c, Predicate<Double> predicate){
+        return predicate.test(c.getRed()) || predicate.test(c.getGreen()) || predicate.test(c.getBlue());
     }
 }

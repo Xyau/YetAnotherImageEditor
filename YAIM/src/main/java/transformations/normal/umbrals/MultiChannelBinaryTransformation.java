@@ -14,17 +14,8 @@ import java.util.Objects;
 public class MultiChannelBinaryTransformation extends PixelByPixelTransformation {
     private double threasholdRed, threasholdGreen, threasholdBlue;
 
-
     public MultiChannelBinaryTransformation(double threashold) {
-        super(c -> {
-            double red = c.getRed() < threashold ? 0.0 : 1.0;
-            double green = c.getGreen() < threashold ? 0.0 : 1.0;
-            double blue = c.getBlue() < threashold ? 0.0 : 1.0;
-            return new DenormalizedColor(red, green, blue, 1.0);
-        });
-        this.threasholdRed = threashold;
-        this.threasholdGreen = threashold;
-        this.threasholdBlue = threashold;
+        this(threashold,threashold,threashold);
     }
 
     public MultiChannelBinaryTransformation(double threasholdRed, double threasholdGreen, double threasholdBlue) {

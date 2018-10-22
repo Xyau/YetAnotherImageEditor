@@ -6,6 +6,8 @@ import javafx.scene.paint.Color;
 import java.util.Objects;
 
 public class DenormalizedColor {
+    public static DenormalizedColor WHITE = new DenormalizedColor(1.0,1.0,1.0,1.0);
+    public static DenormalizedColor BLACK = new DenormalizedColor(0.0,0.0,0.0,1.0);
     private Double red;
     private Double green;
     private Double blue;

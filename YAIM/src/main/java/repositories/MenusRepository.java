@@ -22,8 +22,7 @@ import transformations.normal.canny.NonMaximalBorderSupressionTransformation;
 import transformations.normal.canny.OrthogonalAngleDirectionTransformation;
 import transformations.normal.difusion.AnisotropicDifusionTransformation;
 import transformations.normal.difusion.IsotropicDifusionTransformation;
-import transformations.normal.umbrals.GlobalUmbralizationTransformation;
-import transformations.normal.umbrals.MultiChannelBinaryTransformation;
+import transformations.normal.umbrals.*;
 import transformations.normal.DrawHistogramTransformation;
 import transformations.normal.DynamicRangeCompressionTransformation;
 import transformations.normal.GammaTransformation;
@@ -41,8 +40,6 @@ import transformations.normal.filters.*;
 import transformations.normal.noise.AdditiveGaussianNoiseTransformation;
 import transformations.normal.noise.ExponentialDistributionNoiseTransformation;
 import transformations.normal.noise.SaltAndPeperNoiseTransformation;
-import transformations.normal.umbrals.OtsuUmbralizationTransformation;
-import transformations.normal.umbrals.SingleChannelBinaryTransformation;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
@@ -120,26 +117,41 @@ public class MenusRepository {
     public static Menu getUmbralsMenu(TransformationManagerView transformationManagerView){
         Menu imageMenu = new Menu("Umbrals");
 
-        MenuItem singleChannelBinary = new MenuItem("Single channel Binary...");
-        singleChannelBinary.setOnAction( event -> {
-            StagesRepository.getStage("Single channel Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
-                    threashold -> new SingleChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView)).show();
-        });
+        MenuItem singleChannelBinary = getMenuItemByGridpane("Single channel Binary" ,new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
+                    threashold -> new SingleChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView));
 
-        MenuItem multiChannelBinary = new MenuItem("Multi channel Binary...");
-        multiChannelBinary.setOnAction( event -> {
-            StagesRepository.getStage("Multi channel Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
-                    threashold -> new MultiChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView)).show();
-        });
+        MenuItem multiChannelBinary = getMenuItemByGridpane("Multi channel Binary", new SingleSliderGridPane("Threshold",0.0,1.0,0.02,
+                        threashold -> new MultiChannelBinaryTransformation(threashold.doubleValue()),transformationManagerView));
 
         imageMenu.getItems().addAll(singleChannelBinary
                 ,multiChannelBinary
+                ,getTernaryUmbralizationMenuItem(transformationManagerView)
+                ,getHisteresisUmbralizationMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Global umbralization", new GlobalUmbralizationTransformation(), transformationManagerView)
                 ,getMenuItemByTranformation("Otsu umbralization", new OtsuUmbralizationTransformation(), transformationManagerView)
         );
 
         return imageMenu;
     }
+
+    private static MenuItem getTernaryUmbralizationMenuItem(TransformationManagerView transformationManagerView) {
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new MultiChannelTernaryTransformation(l.get(0).doubleValue(),l.get(1).doubleValue()),transformationManagerView);
+
+        sliderGridPaneBuilder.addSlider("Min ",0.0,1.0,0.025);
+        sliderGridPaneBuilder.addSlider("Max",0.0,1.0,0.025);
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Ternary Umbralization");
+    }
+
+    private static MenuItem getHisteresisUmbralizationMenuItem(TransformationManagerView transformationManagerView) {
+        MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
+                new HisteresisUmbralizationTransformation(l.get(0).doubleValue(),l.get(1).doubleValue()),transformationManagerView);
+
+        sliderGridPaneBuilder.addSlider("Min",0.0,1.0,0.025);
+        sliderGridPaneBuilder.addSlider("Max",0.0,1.0,0.025);
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Histeresis Umbralization");
+    }
+
 
     public static Menu getImageMenu(Scene scene, TransformationManagerView transformationManagerView){
         Menu imageMenu = new Menu("Image");
@@ -329,6 +341,7 @@ public class MenusRepository {
         sliderGridPaneBuilder.addSlider("Spatial STD",1.0,5.0,0.5);
         return sliderGridPaneBuilder.buildAndGetMenuItem("Bilateral Filter");
     }
+
 
     private static MenuItem getVideo(){
 
