@@ -14,13 +14,14 @@ public class LineHoughTransformation implements Transformation {
     private Map<Pair<Integer, Integer>, Integer> votationGrid; // angles wil be conveted to integers for precision reasons
     private List<ColorPixel> whitePixels;
     private Integer maxLines;
+    private Double epsilon;
 
-    private final Double thetaStep = Math.toRadians(1.0);
+    private final Double thetaStep = Math.toRadians(3.0);
     private final Integer pStep = 2;
-    private final Double EPSILON = 5E-2;
 
-    public LineHoughTransformation(Integer maxLines) {
+    public LineHoughTransformation(Double epsilon, Integer maxLines) {
         this.maxLines = maxLines;
+        this.epsilon = epsilon;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class LineHoughTransformation implements Transformation {
         for (Double a = -Math.PI; a < Math.PI ; a += thetaStep) {
             for (int p = 0; p < maxLineDistance; p += pStep) {
                 for (ColorPixel pixel: whitePixels) {
-                    if (Math.abs(p - pixel.getPixel().getX() * Math.cos(a) - pixel.getPixel().getY() * Math.sin(a)) < EPSILON) {
+                    if (Math.abs(p - pixel.getPixel().getX() * Math.cos(a) - pixel.getPixel().getY() * Math.sin(a)) < epsilon) {
                         addVotationToGrid(p, a);
                     }
                 }

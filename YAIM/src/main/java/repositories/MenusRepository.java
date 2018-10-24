@@ -320,8 +320,9 @@ public class MenusRepository {
 
     private static MenuItem getLineHoughMenuItem(TransformationManagerView transformationManagerView){
         MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
-                new LineHoughTransformation(list.get(0).intValue()),transformationManagerView);
+                new LineHoughTransformation(list.get(0).doubleValue(), list.get(1).intValue()),transformationManagerView);
 
+        builder.addSlider("Epsilon",0.1,1.0,0.1);
         builder.addSlider("Max lines",1.0,40.0,1.0);
         return builder.buildAndGetMenuItem("Hough");
     }
