@@ -141,7 +141,7 @@ public class HelloWorld extends Application {
                                 MenusRepository.getImageMenu(scene,transformationManagerView),
                                 MenusRepository.getUmbralsMenu(transformationManagerView),
                                 MenusRepository.getFilterMenu(transformationManagerView),
-                                MenusRepository.getBordersMenu(transformationManagerView),
+                                MenusRepository.getBordersMenu(transformationManagerView,currentImage),
                                 MenusRepository.getNoiseMenu(transformationManagerView));
         root.add(menuBar,0,0,10,1);
 

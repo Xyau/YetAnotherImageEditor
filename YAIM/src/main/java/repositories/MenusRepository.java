@@ -1,9 +1,12 @@
 package repositories;
 
+import backend.FocusablePane;
+import backend.Pixel;
 import backend.utils.ImageUtils;
 import backend.SyntheticGenerator;
 import backend.utils.Utils;
 import frontend.*;
+import frontend.builder.MultiSliderGridPaneBuilder;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -44,6 +47,7 @@ import transformations.normal.noise.AdditiveGaussianNoiseTransformation;
 import transformations.normal.noise.ExponentialDistributionNoiseTransformation;
 import transformations.normal.noise.SaltAndPeperNoiseTransformation;
 
+import java.beans.EventHandler;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -98,7 +102,7 @@ public class MenusRepository {
         return fileMenu;
     }
 
-    public static Menu getBordersMenu(TransformationManagerView transformationManagerView){
+    public static Menu getBordersMenu(TransformationManagerView transformationManagerView, EventManageableImageView imageView){
         Menu fileMenu = new Menu("Borders");
 
 
@@ -114,6 +118,7 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
                 ,getAnisotropicDiffusionFilterMenuItem(transformationManagerView)
                 ,getIsotropicDiffusionFilterMenuItem(transformationManagerView)
+                ,getActiveBordersPanel(imageView, transformationManagerView)
         );
         return fileMenu;
     }
@@ -131,6 +136,7 @@ public class MenusRepository {
                 ,multiChannelBinary
                 ,getTernaryUmbralizationMenuItem(transformationManagerView)
                 ,getHisteresisUmbralizationMenuItem(transformationManagerView)
+                ,getMenuItemByTranformation("Border expand", new BorderExpandUmbralizationTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Global umbralization", new GlobalUmbralizationTransformation(), transformationManagerView)
                 ,getMenuItemByTranformation("Otsu umbralization", new OtsuUmbralizationTransformation(), transformationManagerView)
         );
@@ -344,6 +350,32 @@ public class MenusRepository {
         sliderGridPaneBuilder.addSlider("Iterations",5.0,75.0,5.0);
         return sliderGridPaneBuilder.buildAndGetMenuItem("Isotropic Diffusion");
     }
+
+    public static MenuItem getActiveBordersPanel(EventManageableImageView imageView, TransformationManagerView transformationManagerView){
+        PixelPickerControlPane firstPixelPicker = new PixelPickerControlPane(imageView, "Top left cornet");
+        PixelPickerControlPane secondPixelPicker = new PixelPickerControlPane(imageView, "Bottom right corner");
+
+        //This event is triggered whenever the button is clicked
+        FocusablePane drawLinePanel = new FocusablePane(img -> {
+            img.addActiveEventToQueue(firstPixelPicker.getEventConsumer(),true);
+            img.addActiveEventToQueue(secondPixelPicker.getEventConsumer(),true);
+
+            img.setWhenQueueFinished(() -> {
+                Pixel first = firstPixelPicker.getChosenPixel().get();
+                Pixel second = secondPixelPicker.getChosenPixel().get();
+
+                transformationManagerView.addTransformation(
+                        new ActiveBorderTransformation(first.getX(),first.getY(),second.getX(),second.getY()));
+            });
+            System.out.println("Draw line at panel recieved focus, added 2 things to the active event queue");
+        });
+
+        drawLinePanel.add(firstPixelPicker,0,0);
+        drawLinePanel.add(secondPixelPicker,0,1);
+        return FrontendUtils.getMenuItemByGridpane("Active Borders",drawLinePanel);
+    }
+
+
 
     private static MenuItem getBilateralFilterMenuItem(TransformationManagerView transformationManagerView) {
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->

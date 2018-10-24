@@ -26,55 +26,51 @@ public class HisteresisUmbralizationTransformation implements FullTransformation
         this.min = min;
     }
 
-    @Override
-    public DenormalizedImage transformDenormalized(DenormalizedImage anormalizedImage) {
-        new MultiChannelTernaryTransformation(min,max).transformDenormalized(anormalizedImage);
-        List<DenormalizedColorPixel> middlePixels = new ArrayList<>();
-        for (int i = 0; i < anormalizedImage.getWidth(); i++) {
-            for (int j = 0; j < anormalizedImage.getHeight(); j++) {
-                DenormalizedColor binarized = ColorUtils.transform(anormalizedImage.getColorAt(i,j),
-                        ch -> ch < min ? 0.0 : ch > max ? 1.0 : ch);
-                anormalizedImage.setColor(i,j,binarized);
-                if(!ColorUtils.anyMatchChannel(binarized, ch -> ch.equals( 1.0) || ch.equals(0.0))){
-                    middlePixels.add(new DenormalizedColorPixel(i,j,binarized));
-                }
-            }
-        }
-        List<DenormalizedColorPixel> otherList = new ArrayList<>();
-        Integer prevSize = 0;
-        //Temporary skip until we figure out what 4-conexo means
-        while (middlePixels.size() != prevSize && false){
-            for (DenormalizedColorPixel dcpx : middlePixels){
-                Integer x=dcpx.getPixel().getX(),y=dcpx.getPixel().getY();
-                Double red=dcpx.getColor().getRed(), green=dcpx.getColor().getGreen(), blue=dcpx.getColor().getBlue();
-                Boolean colored = false;
-                for(DenormalizedColor dc :Arrays.asList(anormalizedImage.getColorAt(x+1,y),anormalizedImage.getColorAt(x-1,y),anormalizedImage.getColorAt(x,y+1),anormalizedImage.getColorAt(x,y-1))){
-                    if(dc.getRed().equals(1.0)) {
-                        red = 1.0;
-                        colored = true;
-                    }
-                    if(dc.getGreen().equals(1.0)) {
-                        green = 1.0;
-                        colored = true;
-                    }
-                    if(dc.getBlue().equals(1.0)) {
-                        blue = 1.0;
-                        colored = true;
-                    }
-                }
-                if(!colored){
-                    otherList.add(dcpx);
-                } else {
-                    anormalizedImage.setColor(dcpx.getPixel().getX(),dcpx.getPixel().getY(),
-                            new DenormalizedColor(red,green,blue,dcpx.getColor().getAlpha()));
-                }
-            }
-            prevSize = middlePixels.size();
-            middlePixels = otherList;
-        }
-
-        return anormalizedImage;
-    }
+//    @Override
+//    public DenormalizedImage transformDenormalized(DenormalizedImage anormalizedImage) {
+//        new MultiChannelTernaryTransformation(min,max).transformDenormalized(anormalizedImage);
+//        List<DenormalizedColorPixel> middlePixels = new ArrayList<>();
+//        for (int i = 0; i < anormalizedImage.getWidth(); i++) {
+//            for (int j = 0; j < anormalizedImage.getHeight(); j++) {
+//                DenormalizedColor binarized = ColorUtils.transform(anormalizedImage.getColorAt(i,j),
+//                        ch -> ch < min ? 0.0 : ch > max ? 1.0 : ch);
+//                anormalizedImage.setColor(i,j,binarized);
+//                if(!ColorUtils.anyMatchChannel(binarized, ch -> ch.equals( 1.0) || ch.equals(0.0))){
+//                    middlePixels.add(new DenormalizedColorPixel(i,j,binarized));
+//                }
+//            }
+//        }
+//        List<DenormalizedColorPixel> otherList = new ArrayList<>();
+//        Integer prevSize = 0;
+//        //Temporary skip until we figure out what 4-conexo means
+//            for (DenormalizedColorPixel dcpx : middlePixels){
+//                Integer x=dcpx.getPixel().getX(),y=dcpx.getPixel().getY();
+//                Double red=dcpx.getColor().getRed(), green=dcpx.getColor().getGreen(), blue=dcpx.getColor().getBlue();
+//                Boolean colored = false;
+//                for(DenormalizedColor dc :Arrays.asList(anormalizedImage.getColorAt(x+1,y),anormalizedImage.getColorAt(x-1,y),anormalizedImage.getColorAt(x,y+1),anormalizedImage.getColorAt(x,y-1))){
+//                    if(dc.getRed().equals(1.0)) {
+//                        red = 1.0;
+//                        colored = true;
+//                    }
+//                    if(dc.getGreen().equals(1.0)) {
+//                        green = 1.0;
+//                        colored = true;
+//                    }
+//                    if(dc.getBlue().equals(1.0)) {
+//                        blue = 1.0;
+//                        colored = true;
+//                    }
+//                }
+//                if(!colored){
+//                    otherList.add(dcpx);
+//                } else {
+//                    anormalizedImage.setColor(dcpx.getPixel().getX(),dcpx.getPixel().getY(),
+//                            new DenormalizedColor(red,green,blue,dcpx.getColor().getAlpha()));
+//                }
+//        }
+//
+//        return anormalizedImage;
+//    }
 
     @Override
     public String getDescription() {
@@ -95,5 +91,11 @@ public class HisteresisUmbralizationTransformation implements FullTransformation
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), min, max);
+    }
+
+    @Override
+    public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        new MultiChannelTernaryTransformation(min,max).transformDenormalized(denormalizedImage);
+        return new BorderExpandUmbralizationTransformation().transformDenormalized(denormalizedImage);
     }
 }

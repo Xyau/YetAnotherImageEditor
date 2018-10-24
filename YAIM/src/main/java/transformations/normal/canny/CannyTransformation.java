@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import transformations.denormalized.ImageOperator;
 import transformations.normal.filters.GaussianMeanFilterTransformation;
 import transformations.normal.image.MultiplyImageTransformation;
+import transformations.normal.umbrals.HisteresisUmbralizationTransformation;
 
 
 /**
@@ -26,6 +27,11 @@ public class CannyTransformation implements FullTransformation {
 
         first = new NonMaximalBorderSupressionTransformation().transformDenormalized(first);
         second = new NonMaximalBorderSupressionTransformation().transformDenormalized(second);
+
+        Double avg = ImageUtils.getAverageBrightness(first);
+
+        first = new HisteresisUmbralizationTransformation(avg-0.2,avg+0.2).transformDenormalized(first);
+        second= new HisteresisUmbralizationTransformation(avg-0.2,avg+0.2).transformDenormalized(second);
 
         return new ImageOperator(second, ColorUtils::multiplyColors).transformDenormalized(first);
     }

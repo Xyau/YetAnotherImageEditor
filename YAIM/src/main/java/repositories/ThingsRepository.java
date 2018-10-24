@@ -6,11 +6,13 @@ import backend.utils.ImageUtils;
 import backend.Pixel;
 import frontend.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import transformations.normal.DrawLineTransformation;
+import transformations.normal.borders.ActiveBorderTransformation;
 import transformations.normal.common.NoChangeTransformation;
 
 import java.io.File;

@@ -1,9 +1,11 @@
-package frontend;
+package frontend.builder;
 
 import backend.transformators.Transformation;
 import backend.utils.Utils;
+import frontend.SliderControl;
+import frontend.TextAreaControlPane;
+import frontend.TransformationManagerView;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
@@ -14,10 +16,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MultiSliderGridPaneBuilder {
-    private List<Pair<SliderControl,AtomicReference<Number>>> sliders;
+    private List<Pair<Control,AtomicReference<Number>>> sliders;
     private TransformationManagerView transformationManagerView;
     private Function<List<Number>,Transformation> transformationBuilder;
     private Boolean built = false;
@@ -46,7 +47,16 @@ public class MultiSliderGridPaneBuilder {
         });
         sliders.add(new Pair<>(sliderControl,value));
         return this;
-   }
+    }
+
+    public MultiSliderGridPaneBuilder addTextBox(String textboxName){
+        AtomicReference<Number> value = new AtomicReference<>();
+        TextAreaControlPane textControl = new TextAreaControlPane(textboxName,x->
+                value.set(Double.parseDouble(x)),3);
+
+        sliders.add(new Pair<>(textControl,value));
+        return this;
+    }
 
    public GridPane build(){
         if (built){
@@ -55,7 +65,7 @@ public class MultiSliderGridPaneBuilder {
         GridPane gridPane = new GridPane();
 
        for (int i = 0; i < sliders.size(); i++) {
-           gridPane.add(sliders.get(i).getKey(),0,i,4,1);
+           gridPane.add(sliders.get(i).getKey().getPane(),0,i,4,1);
        }
 
        Button applyButton = new Button("Apply");

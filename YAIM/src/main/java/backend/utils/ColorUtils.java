@@ -111,6 +111,10 @@ public class ColorUtils {
         return Math.sqrt(Math.pow(color.getRed(),2)+Math.pow(color.getGreen(),2)+Math.pow(color.getBlue(),2));
     }
 
+    public static Double getDifference(DenormalizedColor color1, DenormalizedColor color2){
+        return getModulus(modulusColors(color1,color2));
+    }
+
     public static DenormalizedColor getGreyscale(DenormalizedColor color){
         double gray = 0.21 * color.getRed() + 0.71 * color.getGreen() + 0.07 * color.getBlue();
         return new DenormalizedColor(gray,gray,gray,color.getAlpha());
@@ -118,6 +122,10 @@ public class ColorUtils {
 
     public static DenormalizedColor getBrighter(DenormalizedColor c){
         return new DenormalizedColor(c.getRed()+0.1,c.getGreen()+0.1,c.getBlue()+0.1,c.getAlpha());
+    }
+
+    public static DenormalizedColor getMax(DenormalizedColor c1, DenormalizedColor c2){
+        return combineColors(c1,c2, Math::max);
     }
 
     public static DenormalizedColor getDarker(DenormalizedColor c){

@@ -1,15 +1,19 @@
 package frontend;
 
+import frontend.builder.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
-public class TextAreaControlPane extends GridPane {
+public class TextAreaControlPane extends GridPane implements Control {
     private TextArea textArea;
     private Text label;
     private Consumer<String> onUpdate;
+    private Integer order;
 
     public TextAreaControlPane(String label){
         this(label,x -> {},1);
@@ -38,5 +42,24 @@ public class TextAreaControlPane extends GridPane {
 
     public void setText(String text) {
         textArea.setText(text);
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    @Override
+    public Integer getOrder() {
+        return order;
+    }
+
+    @Override
+    public GridPane getPane() {
+        return this;
+    }
+
+    @Override
+    public List<Number> getValues() {
+        return Arrays.asList(Double.parseDouble(getText()));
     }
 }

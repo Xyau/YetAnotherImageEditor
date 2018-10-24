@@ -1,18 +1,22 @@
 package frontend;
 
 import backend.utils.Utils;
+import frontend.builder.Control;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-public class SliderControl extends GridPane {
+public class SliderControl extends GridPane implements Control {
     private Text text;
     private Slider slider;
     private TextArea value;
+    private Integer order;
 
     public SliderControl(String label, Double min, Double max, Double increment, BiConsumer<Number, Number> consumer){
         slider = new Slider();
@@ -57,5 +61,24 @@ public class SliderControl extends GridPane {
             slider.setValue(value);
             text.setText(value.toString());
         }
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    @Override
+    public Integer getOrder() {
+        return order;
+    }
+
+    @Override
+    public GridPane getPane() {
+        return this;
+    }
+
+    @Override
+    public List<Number> getValues() {
+        return getSelectedValue().isPresent()?Arrays.asList(getSelectedValue().get()):Arrays.asList();
     }
 }
