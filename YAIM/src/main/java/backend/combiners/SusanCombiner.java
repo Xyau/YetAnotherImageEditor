@@ -33,11 +33,11 @@ public class SusanCombiner implements Combiner {
             }
         }
 
-        if (21 <= counter && counter <= 24) {
+        if (20 <= counter && counter <= 24) {
             // Border
             return new DenormalizedColor(1.0,0.0,0.0,1.0);
         }
-        else if (12 <= counter && counter <= 15) {
+        else if (11 <= counter && counter <= 19) {
             // Corner
             return new DenormalizedColor(0.0,1.0,0.0,1.0);
         }
