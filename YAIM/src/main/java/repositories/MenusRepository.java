@@ -104,6 +104,7 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Canny",new CannyTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Susan",new SusanFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
@@ -362,7 +363,7 @@ public class MenusRepository {
         item.setOnAction(event ->{
             StagesRepository.getStage("VideoStream ",root).show();
             player.play();
-                });
+        });
 
         return item;
     }
