@@ -61,6 +61,14 @@ public class FiltersRepository {
             {0.0008,0.0066,0.0215,0.031,0.0215,0.0066,0.0008},
     };
 
+    public static Double[][] SUSAN = new Double[][]{        {0.0,0.0,1.0,1.0,1.0,0.0,0.0},
+                                                            {0.0,1.0,1.0,1.0,1.0,1.0,0.0},
+                                                            {1.0,1.0,1.0,1.0,1.0,1.0,1.0},
+                                                            {1.0,1.0,1.0,1.0,1.0,1.0,1.0},
+                                                            {1.0,1.0,1.0,1.0,1.0,1.0,1.0},
+                                                            {0.0,1.0,1.0,1.0,1.0,1.0,0.0},
+                                                            {0.0,0.0,1.0,1.0,1.0,0.0,0.0}};
+
     public static Double[][] getLOGFilter(Integer filterSize){
         if(filterSize == 3) {
             return LOG;
@@ -74,6 +82,22 @@ public class FiltersRepository {
         }
         return subset;
     }
+
+    public static Double[][] getSusanFilter(Integer filterSize){
+        Double[][] susan = new Double[2*filterSize+1][2*filterSize+1];
+        for (int i = 0; i < 2 * filterSize + 1; i++) {
+            for (int j = 0; j < 2 * filterSize + 1; j++) {
+                if (i*i + j*j <= filterSize*filterSize + 1) {
+                    susan[i][j] = 1.0;
+                }
+                else {
+                    susan[i][j] = 0.0;
+                }
+            }
+        }
+        return susan;
+    }
+
 
     public static Double[][] getOnesFilter(Integer filterSize){
         Double[][] ones = new Double[2*filterSize+1][2*filterSize+1];

@@ -40,7 +40,8 @@ public class LineHoughTransformation implements Transformation {
             }
         }
         PriorityQueue<Map.Entry<Pair<Integer, Integer>, Integer>> pq = getOrderedVotation();
-        while (maxLines-- != 0 && !pq.isEmpty()) {
+        Integer tmpMaxLines = this.maxLines;
+        while (tmpMaxLines-- != 0 && !pq.isEmpty()) {
             Map.Entry<Pair<Integer, Integer>, Integer> entry = pq.poll();
             writableImage = drawLine(entry.getKey().getKey(), integer2angle(entry.getKey().getValue()), writableImage);
         }

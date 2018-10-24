@@ -109,10 +109,12 @@ public class MenusRepository {
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
                 ,getLineHoughMenuItem(transformationManagerView)
+                ,getCircleHoughMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Orthogonal",new OrthogonalAngleDirectionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Canny",new CannyTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Prewitt",new PrewittBorderTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Susan",new SusanFilterTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
@@ -324,6 +326,15 @@ public class MenusRepository {
         return builder.buildAndGetMenuItem("Hough");
     }
 
+    private static MenuItem getCircleHoughMenuItem(TransformationManagerView transformationManagerView){
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new CircleHoughTransformation(list.get(0).doubleValue(), list.get(1).intValue()),transformationManagerView);
+
+        builder.addSlider("Epsilon",1.0,30.0,1.0);
+        builder.addSlider("Max circles",1.0,40.0,1.0);
+        return builder.buildAndGetMenuItem("Hough (Circles)");
+    }
+
     private static MenuItem getGaussianMeanFilterMenuItem(TransformationManagerView transformationManagerView) {
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new GaussianMeanFilterTransformation(l.get(0).intValue(),l.get(1).doubleValue()),transformationManagerView);
@@ -406,7 +417,7 @@ public class MenusRepository {
         item.setOnAction(event ->{
             StagesRepository.getStage("VideoStream ",root).show();
             player.play();
-                });
+        });
 
         return item;
     }
