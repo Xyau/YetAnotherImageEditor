@@ -330,7 +330,7 @@ public class MenusRepository {
         MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
                 new CircleHoughTransformation(list.get(0).doubleValue(), list.get(1).intValue()),transformationManagerView);
 
-        builder.addSlider("Epsilon",1.0,30.0,1.0);
+        builder.addSlider("Epsilon",1.0,100.0,4.0);
         builder.addSlider("Max circles",1.0,40.0,1.0);
         return builder.buildAndGetMenuItem("Hough (Circles)");
     }
