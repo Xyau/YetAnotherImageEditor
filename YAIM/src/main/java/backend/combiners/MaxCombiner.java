@@ -38,7 +38,7 @@ public class MaxCombiner implements Combiner {
         if(maxOptional.isPresent()){
             max = maxOptional.get();
         } else {
-            return CombinerUtils.getCenterPixel(colorPixels,new Filter(filter)).getColor();
+            return CombinerUtils.getCenterPixel(colorPixels, new Filter(filter)).getColor();
         }
         return filtered.stream()
                 .filter(c -> c.getRed().equals(max.getRed()) ||
