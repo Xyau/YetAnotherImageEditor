@@ -10,7 +10,7 @@ import transformations.denormalized.filter.WindowOperator;
 
 public class BorderExpandUmbralizationTransformation extends WindowOperator implements FullTransformation {
     public BorderExpandUmbralizationTransformation() {
-        super(FiltersRepository.getOnesFilter(1), new FillConnectivity(DenormalizedColor.WHITE, DenormalizedColor.BLACK, 4));
+        super(FiltersRepository.getOnesFilter(1), new FillConnectivity(DenormalizedColor.WHITE, DenormalizedColor.BLACK, 5));
     }
 
     @Override

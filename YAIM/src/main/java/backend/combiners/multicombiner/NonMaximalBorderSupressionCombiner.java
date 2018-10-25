@@ -25,19 +25,19 @@ public class NonMaximalBorderSupressionCombiner implements MultiCombiner {
             if ((a >= 0.0 && a < 22.5) || (a > 157.5 && a <= 180.0)) {
                 nextIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX() + 1, intensity.getPixel().getY()).getColor().getRed();
                 prevIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX() - 1, intensity.getPixel().getY()).getColor().getRed();
-                if (i < prevIntensity || i < nextIntensity) return 0.0;
+                if (i <= prevIntensity || i <= nextIntensity) return 0.0;
             } else if (a >= 22.5 && a < 67.5) {
                 nextIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX()+1, intensity.getPixel().getY()+1).getColor().getRed();
                 prevIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX()-1, intensity.getPixel().getY()-1).getColor().getRed();
-                if (i < prevIntensity || i < nextIntensity) return 0.0;
+                if (i <= prevIntensity || i <= nextIntensity) return 0.0;
             } else if (a >= 67.5 && a < 112.5) {
                 nextIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX(), intensity.getPixel().getY() + 1).getColor().getRed();
                 prevIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX(), intensity.getPixel().getY() - 1).getColor().getRed();
-                if (i < prevIntensity || i < nextIntensity) return 0.0;
-            } else if (a >= 112.5 && a < 157.5) {
+                if (i <= prevIntensity || i <= nextIntensity) return 0.0;
+            } else if (a >= 112.5 && a <= 157.5) {
                  nextIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX() - 1, intensity.getPixel().getY() + 1).getColor().getRed();
                  prevIntensity = CombinerUtils.getPixel(intensities, intensity.getPixel().getX() + 1, intensity.getPixel().getY() - 1).getColor().getRed();
-                 if (i < prevIntensity || i < nextIntensity) return 0.0;
+                 if (i <= prevIntensity || i <= nextIntensity) return 0.0;
              } else {
                 throw new IllegalStateException("Incorrect angle: " + a);
             }
