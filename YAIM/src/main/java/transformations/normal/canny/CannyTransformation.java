@@ -13,6 +13,7 @@ import transformations.denormalized.ImageOperator;
 import transformations.normal.filters.GaussianMeanFilterTransformation;
 import transformations.normal.image.MultiplyImageTransformation;
 import transformations.normal.umbrals.HisteresisUmbralizationTransformation;
+import transformations.normal.umbrals.SingleChannelBinaryTransformation;
 
 
 /**
@@ -28,13 +29,13 @@ public class CannyTransformation implements FullTransformation {
         first = new NonMaximalBorderSupressionTransformation().transformDenormalized(first);
         second = new NonMaximalBorderSupressionTransformation().transformDenormalized(second);
 
-        Double avg = ImageUtils.getAverageBrightness(first);
+        first = new HisteresisUmbralizationTransformation(0.1, 0.3).transformDenormalized(first);
+        second= new HisteresisUmbralizationTransformation(0.1, 0.3).transformDenormalized(second);
 
-        first = new HisteresisUmbralizationTransformation(avg-0.2,avg+0.2).transformDenormalized(first);
-        second= new HisteresisUmbralizationTransformation(avg-0.2,avg+0.2).transformDenormalized(second);
-
-        return new ImageOperator(second, ColorUtils::multiplyColors).transformDenormalized(first);
+        return new ImageOperator(second, ColorUtils::addClampColors).transformDenormalized(first);
     }
+
+
 
     @Override
     public String getDescription () {

@@ -26,6 +26,25 @@ public class ColorUtils {
         return new DenormalizedColor(red,blue,green,alpha);
     }
 
+    public static DenormalizedColor addClampColors(DenormalizedColor c1, DenormalizedColor... cs){
+        Double red = c1.getRed();
+        Double blue = c1.getBlue();
+        Double green = c1.getGreen();
+        Double alpha = (c1.getAlpha());
+
+        for (DenormalizedColor color : cs){
+            red += color.getRed();
+            blue += color.getBlue();
+            green += color.getGreen();
+
+            red = red > 1.0 ? 1.0 : red;
+            blue = blue > 1.0 ? 1.0 : blue;
+            green = green > 1.0 ? 1.0 : green;
+        }
+
+        return new DenormalizedColor(red,blue,green,alpha);
+    }
+
     public static DenormalizedColor multiplyColors(DenormalizedColor c1, DenormalizedColor c2){
         Double red = (c1.getRed() * c2.getRed());
         Double blue = (c1.getBlue() * c2.getBlue());
@@ -97,6 +116,12 @@ public class ColorUtils {
         Double green = normalize(color.getRed(),min,max);
         Double alpha = normalize(color.getRed(),min,max);
         return new Color(red,blue,green,alpha);
+    }
+
+    public static boolean isGreater(DenormalizedColor c1, DenormalizedColor c2) {
+        return c1.getRed() >= c2.getRed() ||
+                c1.getGreen() >= c2.getGreen() ||
+                c1.getBlue() >= c2.getBlue();
     }
 
     public static DenormalizedColor denormalizeColor(Color color){

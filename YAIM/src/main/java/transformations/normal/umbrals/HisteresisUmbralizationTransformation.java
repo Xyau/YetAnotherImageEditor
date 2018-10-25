@@ -95,7 +95,7 @@ public class HisteresisUmbralizationTransformation implements FullTransformation
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
-        new MultiChannelTernaryTransformation(min,max).transformDenormalized(denormalizedImage);
-        return new BorderExpandUmbralizationTransformation().transformDenormalized(denormalizedImage);
+        DenormalizedImage tmp = new MultiChannelTernaryTransformation(min,max).transformDenormalized(denormalizedImage);
+        return new BorderExpandUmbralizationTransformation().transformDenormalized(tmp);
     }
 }
