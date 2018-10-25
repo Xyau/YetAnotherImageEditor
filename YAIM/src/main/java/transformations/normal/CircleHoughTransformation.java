@@ -35,7 +35,7 @@ public class CircleHoughTransformation implements Transformation {
         Double maxRadius = Math.sqrt(2) * Math.max(writableImage.getWidth(), writableImage.getHeight()) / 2;
         for (Integer i = 0; i < writableImage.getWidth(); i += iStep) {
             for (Integer j = 0; j < writableImage.getHeight(); j += jStep) {
-                for (int r = 0; r < maxRadius; r += rStep) {
+                for (int r = 30; r < maxRadius; r += rStep) {
                     for (ColorPixel pixel : whitePixels) {
                         if (Math.abs(r*r - Math.pow(pixel.getPixel().getX() - i, 2) - Math.pow(pixel.getPixel().getY() - j, 2)) < epsilon) {
                             addVotationToGrid(new Pixel(i, j), r);

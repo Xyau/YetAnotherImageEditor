@@ -142,6 +142,7 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Border expand", new BorderExpandUmbralizationTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Global umbralization", new GlobalUmbralizationTransformation(), transformationManagerView)
                 ,getMenuItemByTranformation("Otsu umbralization", new OtsuUmbralizationTransformation(), transformationManagerView)
+                ,getHysteresisMenuItem(transformationManagerView)
         );
 
         return imageMenu;
@@ -162,7 +163,7 @@ public class MenusRepository {
 
         sliderGridPaneBuilder.addSlider("Min",0.0,1.0,0.025);
         sliderGridPaneBuilder.addSlider("Max",0.0,1.0,0.025);
-        return sliderGridPaneBuilder.buildAndGetMenuItem("Histeresis Umbralization");
+        return sliderGridPaneBuilder.buildAndGetMenuItem("Hysteresis Umbralization");
     }
 
 
@@ -326,6 +327,16 @@ public class MenusRepository {
         builder.addSlider("Epsilon",0.1,1.0,0.1);
         builder.addSlider("Max lines",1.0,40.0,1.0);
         return builder.buildAndGetMenuItem("Hough");
+    }
+
+    private static MenuItem getHysteresisMenuItem(TransformationManagerView transformationManagerView){
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new HisteresisUmbralizationTransformation(list.get(0).doubleValue(), list.get(1).intValue()),
+                transformationManagerView);
+
+        builder.addSlider("min",0.0,0.05,1.0);
+        builder.addSlider("max",0.0,0.05,1.0);
+        return builder.buildAndGetMenuItem("Precise Hough");
     }
 
     private static MenuItem getPreciseLineHoughMenuItem(TransformationManagerView transformationManagerView){
