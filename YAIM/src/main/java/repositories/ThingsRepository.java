@@ -1,21 +1,36 @@
 package repositories;
 
+import backend.DenormalizedColor;
+import backend.DenormalizedColorPixel;
+import backend.image.DenormalizedImage;
+import backend.transformators.Transformation;
+import backend.utils.FileUtils;
+import backend.utils.Utils;
 import frontend.EventManageableImageView;
 import backend.FocusablePane;
 import backend.utils.ImageUtils;
 import backend.Pixel;
 import frontend.*;
+import frontend.builder.MultiSliderGridPaneBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import transformations.helpers.ActiveBorderHelperTransformation;
 import transformations.normal.DrawLineTransformation;
+import transformations.normal.LineHoughTransformation;
 import transformations.normal.borders.ActiveBorderTransformation;
 import transformations.normal.common.NoChangeTransformation;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ThingsRepository {
 
@@ -63,25 +78,56 @@ public class ThingsRepository {
         return button;
     }
 
-    public static GridPane getRawImageLoadPane(File file, TransformationManagerView transformationManagerView){
-        GridPane gridPane = new GridPane();
 
-        TextAreaControlPane heightPane = new TextAreaControlPane("Height:");
-        TextAreaControlPane widthPane = new TextAreaControlPane("Width:");
-        Text info = new Text("Please input the width and height of the RAW image");
-        Button apply = new Button("Apply");
-        apply.setOnMouseClicked((x)->{
-            try {
-                Integer height = Integer.parseInt(heightPane.getText());
-                Integer width = Integer.parseInt(widthPane.getText());
 
-                transformationManagerView.setInitialImage(ImageUtils.readImage(file,height,width));
-            } catch (NumberFormatException ignored){}
+    public static MenuItem getVideoGridPane(Window window, TransformationManagerView transformationManagerView,
+                                            EventManageableImageView eventManageableImageView){
+        MenuItem menuItem = new MenuItem();
+
+        menuItem.setOnAction( x -> {
+            Set<DenormalizedColorPixel> internal = new HashSet<>();
+            Set<DenormalizedColorPixel> external = new HashSet<>();
+            AtomicReference<DenormalizedColor> avgColor = new AtomicReference<>();
+            List<WritableImage> images = FileUtils.loadMultipleFiles(window);
+            DenormalizedImage gamma = new DenormalizedImage(images.get(0));
+            transformationManagerView.setInitialImage(images.get(0));
+            MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                    new ActiveBorderHelperTransformation(images, list.get(0).intValue(),
+                            list.get(0).intValue(),internal,external,gamma,avgColor.get()),transformationManagerView);
+
+            builder.addSlider("Frame Number",0.0,images.size()*1.0-1,1.0);
+            builder.addSlider("Iterations",0.0,5.0,1.0);
+
+            Button resetButton = new Button("Reset");
+            resetButton.setOnMouseClicked(y ->{
+                AtomicReference<Pixel> p1 = new AtomicReference<>();
+                AtomicReference<Pixel> p2 = new AtomicReference<>();
+                eventManageableImageView.addActiveEventToQueue( event ->{
+                    p1.set(Utils.getPixelFromMouseEvent(event));
+                });
+                eventManageableImageView.addActiveEventToQueue( event ->{
+                    p2.set(Utils.getPixelFromMouseEvent(event));
+                });
+                eventManageableImageView.setWhenQueueFinished(() -> {
+                    internal.clear();
+                    internal.addAll(ActiveBorderHelperTransformation.getIn(p1.get().getX(), p1.get().getY()
+                            ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
+                    external.clear();
+                    external.addAll(ActiveBorderHelperTransformation.getOut(p1.get().getX(), p1.get().getY()
+                            ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
+
+                    avgColor.set(ActiveBorderHelperTransformation.getAverageColor(new DenormalizedImage(images.get(0)),
+                            p1.get().getX(), p1.get().getY() ,p2.get().getX(), p2.get().getY()));
+                    ActiveBorderHelperTransformation.setGamma(p1.get().getX(), p1.get().getY()
+                            ,p2.get().getX(), p2.get().getY(),gamma);
+                    System.out.println("YOU MADE IT");
+                });
+            });
+            GridPane gridPane = builder.build();
+            gridPane.add(resetButton,2,2);
+            StagesRepository.getStage("Video", gridPane).show();
         });
-        gridPane.add(info,0,0,10,1);
-        gridPane.add(heightPane,0,1,3,1);
-        gridPane.add(widthPane,0,2,3,1);
-        gridPane.add(apply,0,3,1,1);
-        return gridPane;
+
+        return menuItem;
     }
 }

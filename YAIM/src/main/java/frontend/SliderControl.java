@@ -26,7 +26,7 @@ public class SliderControl extends GridPane implements Control {
         slider.setShowTickMarks(true);
         slider.setSnapToTicks(false);
         slider.setMinorTickCount(1);
-        slider.setValue(min);
+//        slider.setValue(min);
         slider.valueProperty().addListener( (change,x,y) -> {
             consumer.accept(x,y);
             value.setText(Utils.roundToRearestFraction(y.doubleValue(),increment).toString());

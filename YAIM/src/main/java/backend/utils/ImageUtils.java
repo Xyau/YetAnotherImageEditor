@@ -85,6 +85,7 @@ public class ImageUtils {
     }
 
     public static WritableImage transferImageTo(WritableImage writableImage, Image image){
+
         for (int y = 0; y < writableImage.getHeight(); y++){
             for (int x = 0; x < writableImage.getWidth(); x++){
                 Color color = image.getPixelReader().getColor(x, y);
