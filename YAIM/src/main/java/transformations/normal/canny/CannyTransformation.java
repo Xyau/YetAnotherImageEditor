@@ -29,8 +29,8 @@ public class CannyTransformation implements FullTransformation {
         first = new NonMaximalBorderSupressionTransformation().transformDenormalized(first);
         second = new NonMaximalBorderSupressionTransformation().transformDenormalized(second);
 
-        first = new HisteresisUmbralizationTransformation(0.1, 0.3).transformDenormalized(first);
-        second= new HisteresisUmbralizationTransformation(0.1, 0.3).transformDenormalized(second);
+        first = new HisteresisUmbralizationTransformation(0.15, 0.4).transformDenormalized(first);
+        second= new HisteresisUmbralizationTransformation(0.15, 0.4).transformDenormalized(second);
 
         return new ImageOperator(second, ColorUtils::addClampColors).transformDenormalized(first);
     }

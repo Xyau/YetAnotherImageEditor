@@ -109,6 +109,7 @@ public class MenusRepository {
         fileMenu.getItems().addAll(
                 getMenuItemByTranformation("Sobel",new SobelBorderTransformation(),transformationManagerView)
                 ,getLineHoughMenuItem(transformationManagerView)
+                ,getPreciseLineHoughMenuItem(transformationManagerView)
                 ,getCircleHoughMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Orthogonal",new OrthogonalAngleDirectionTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Non Maximal",new NonMaximalBorderSupressionTransformation(),transformationManagerView)
@@ -325,6 +326,16 @@ public class MenusRepository {
         builder.addSlider("Epsilon",0.1,1.0,0.1);
         builder.addSlider("Max lines",1.0,40.0,1.0);
         return builder.buildAndGetMenuItem("Hough");
+    }
+
+    private static MenuItem getPreciseLineHoughMenuItem(TransformationManagerView transformationManagerView){
+        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
+                new LineHoughTransformation(list.get(0).doubleValue(), list.get(1).intValue(), 1, Math.toRadians(3.0)),
+                transformationManagerView);
+
+        builder.addSlider("Epsilon",0.1,1.0,0.1);
+        builder.addSlider("Max lines",1.0,40.0,1.0);
+        return builder.buildAndGetMenuItem("Precise Hough");
     }
 
     private static MenuItem getCircleHoughMenuItem(TransformationManagerView transformationManagerView){
