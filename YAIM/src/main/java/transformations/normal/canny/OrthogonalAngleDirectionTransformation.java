@@ -24,7 +24,7 @@ public class OrthogonalAngleDirectionTransformation implements FullTransformatio
         DenormalizedImage Gx = new WindowMeanTransformation(FiltersRepository.SOBEL_HORIZONTAL).transformDenormalized(denormalizedImage);
         DenormalizedImage Gy = new WindowMeanTransformation(FiltersRepository.SOBEL_VERTICAL).transformDenormalized(denormalizedImage);
 
-        DenormalizedImage angles = ImageUtils.transformImages(new DenormalizedImage(Gx), Gy, ((color1, color2) ->
+        DenormalizedImage angles = ImageUtils.transformImages(Gx, Gy, ((color1, color2) ->
                 ColorUtils.combineColors(color1, color2, (x, y) -> x == 0 ? 90.0 : Math.toDegrees(Math.atan(y/x)))
             ));
         return angles;

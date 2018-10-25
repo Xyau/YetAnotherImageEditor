@@ -15,7 +15,7 @@ public class NonMaximalBorderSupressionTransformation extends MultiWindowOperato
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
-        DenormalizedImage angles = new OrthogonalAngleDirectionTransformation().transformDenormalized(new DenormalizedImage(denormalizedImage));
+        DenormalizedImage angles = new OrthogonalAngleDirectionTransformation().transformDenormalized(denormalizedImage);
         DenormalizedImage intensities = new SobelBorderTransformation().transformDenormalized(denormalizedImage);
         extraImage = angles; // TODO: CHANGE
 

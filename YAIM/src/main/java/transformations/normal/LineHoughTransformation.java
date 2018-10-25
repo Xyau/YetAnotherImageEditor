@@ -11,16 +11,24 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class LineHoughTransformation implements Transformation {
-    private Map<Pair<Integer, Integer>, Integer> votationGrid; // angles wil be conveted to integers for precision reasons
+    private Map<Pair<Integer, Integer>, Integer> votationGrid; // angles wil be converted to integers for precision reasons
     private List<ColorPixel> whitePixels;
     private Integer maxLines;
+    private Double epsilon;
 
-    private final Double thetaStep = Math.toRadians(1.0);
-    private final Integer pStep = 2;
-    private final Double EPSILON = 5E-2;
+    private Double thetaStep = Math.toRadians(5.0);
+    private Integer pStep = 5;
 
-    public LineHoughTransformation(Integer maxLines) {
+    public LineHoughTransformation(Double epsilon, Integer maxLines) {
         this.maxLines = maxLines;
+        this.epsilon = epsilon;
+    }
+
+    public LineHoughTransformation(Double epsilon, Integer maxLines, Integer pStep, Double thetaStep) {
+        this.epsilon = epsilon;
+        this.maxLines = maxLines;
+        this.pStep = pStep;
+        this.thetaStep = thetaStep;
     }
 
     @Override
@@ -33,7 +41,7 @@ public class LineHoughTransformation implements Transformation {
         for (Double a = -Math.PI; a < Math.PI ; a += thetaStep) {
             for (int p = 0; p < maxLineDistance; p += pStep) {
                 for (ColorPixel pixel: whitePixels) {
-                    if (Math.abs(p - pixel.getPixel().getX() * Math.cos(a) - pixel.getPixel().getY() * Math.sin(a)) < EPSILON) {
+                    if (Math.abs(p - pixel.getPixel().getX() * Math.cos(a) - pixel.getPixel().getY() * Math.sin(a)) < epsilon) {
                         addVotationToGrid(p, a);
                     }
                 }
@@ -71,7 +79,7 @@ public class LineHoughTransformation implements Transformation {
 
     private void addVotationToGrid(Integer p, Double angle) {
         Integer previousAmount = votationGrid.get(new Pair<>(p, angle2integer(angle)));
-        Integer newAmount = previousAmount != null ?  previousAmount + 1 : 1;
+        Integer newAmount = previousAmount != null ? previousAmount + 1 : 1;
         votationGrid.put(new Pair<>(p, angle2integer(angle)), newAmount);
     }
 
