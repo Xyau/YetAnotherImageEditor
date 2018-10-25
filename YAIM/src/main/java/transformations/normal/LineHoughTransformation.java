@@ -67,13 +67,18 @@ public class LineHoughTransformation implements Transformation {
         }
     }
 
+
     private WritableImage drawLine(Integer p, Double a, WritableImage writableImage) {
         GraphicsContext gc = ImageUtils.getGraphicsContextFromImage(writableImage);
         gc.drawImage(writableImage,0,0);
         gc.setStroke(new Color(1.0, 0.0, 1.0, 1.0));
         gc.setLineWidth(1);
-        gc.strokeLine(0, p / Math.sin(a),
-                writableImage.getWidth(), (p - writableImage.getWidth() * Math.cos(a)) / Math.sin(a));
+        if (a == 0) {
+            gc.strokeLine(p, writableImage.getHeight(), p, 0.0);
+        } else {
+            gc.strokeLine(0, p / Math.sin(a),
+                    writableImage.getWidth(), (p - writableImage.getWidth() * Math.cos(a)) / Math.sin(a));
+        }
         return ImageUtils.getImageFromGraphicsContext(gc,writableImage);
     }
 
