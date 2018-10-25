@@ -58,7 +58,7 @@ public class DenormalizedImage implements AnormalizedImage{
 	@Override
 	public DenormalizedColor getColorAt(Integer x, Integer y) {
 		if( x < 0 || x >= width || y < 0 || y >= height){
-			throw new IllegalStateException("Pixel is not within bounds");
+			throw new IllegalStateException("Pixel is not within bounds: x:" + x + " y:" + y);
 		}
 		return image[y][x];
 	}

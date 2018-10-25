@@ -5,6 +5,7 @@ import backend.DenormalizedColorPixel;
 import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 import backend.utils.ColorUtils;
+import transformations.helpers.ActiveBorderHelperTransformation;
 
 import java.util.*;
 import java.util.function.Function;
@@ -25,7 +26,7 @@ public class ActiveBorderTransformation implements FullTransformation {
                     1-(ColorUtils.getDifference(x,objectAvgColor)-0.5));
 
     private Function<DenormalizedColor, Double> fsupersimple = x ->
-            (0.5 - ColorUtils.getDifference(x,objectAvgColor));
+            (ColorUtils.getDifference(x,objectAvgColor)/3);
 
     private Set<DenormalizedColorPixel> internal;
     private Set<DenormalizedColorPixel> external;
@@ -38,6 +39,7 @@ public class ActiveBorderTransformation implements FullTransformation {
         this.gamma = gamma;
         this.objectAvgColor = objectAvgColor;
         this.iterations = iterations;
+        fsimple = fsupersimple;
     }
 
     public Set<DenormalizedColorPixel> getNeighborsWithGamma(Integer x, Integer y, DenormalizedColor gammaColor, DenormalizedImage image){
@@ -71,7 +73,7 @@ public class ActiveBorderTransformation implements FullTransformation {
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
 
-        DenormalizedImage copy = new DenormalizedImage(denormalizedImage);
+        backgroundAvgColor = ActiveBorderHelperTransformation.getAverageColor(denormalizedImage,denormalizedImage.getWidth()-50,0,denormalizedImage.getWidth(),50);
 
 //        paintLine(internal,denormalizedImage,DenormalizedColor.BLACK);
 //        paintLine(external,denormalizedImage,DenormalizedColor.WHITE);

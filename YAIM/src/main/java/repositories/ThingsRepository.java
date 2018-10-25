@@ -82,7 +82,7 @@ public class ThingsRepository {
 
     public static MenuItem getVideoGridPane(Window window, TransformationManagerView transformationManagerView,
                                             EventManageableImageView eventManageableImageView){
-        MenuItem menuItem = new MenuItem();
+        MenuItem menuItem = new MenuItem("Active Borders...");
 
         menuItem.setOnAction( x -> {
             Set<DenormalizedColorPixel> internal = new HashSet<>();
@@ -93,10 +93,10 @@ public class ThingsRepository {
             transformationManagerView.setInitialImage(images.get(0));
             MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
                     new ActiveBorderHelperTransformation(images, list.get(0).intValue(),
-                            list.get(0).intValue(),internal,external,gamma,avgColor.get()),transformationManagerView);
+                            list.get(1).intValue(),internal,external,gamma,avgColor.get()),transformationManagerView);
 
             builder.addSlider("Frame Number",0.0,images.size()*1.0-1,1.0);
-            builder.addSlider("Iterations",0.0,5.0,1.0);
+            builder.addSlider("Iterations",0.0,20.0,1.0);
 
             Button resetButton = new Button("Reset");
             resetButton.setOnMouseClicked(y ->{
@@ -116,10 +116,11 @@ public class ThingsRepository {
                     external.addAll(ActiveBorderHelperTransformation.getOut(p1.get().getX(), p1.get().getY()
                             ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
 
-                    avgColor.set(ActiveBorderHelperTransformation.getAverageColor(new DenormalizedImage(images.get(0)),
+                    avgColor.set(ActiveBorderHelperTransformation.getBackgroundAvg(new DenormalizedImage(images.get(0)),
                             p1.get().getX(), p1.get().getY() ,p2.get().getX(), p2.get().getY()));
                     ActiveBorderHelperTransformation.setGamma(p1.get().getX(), p1.get().getY()
                             ,p2.get().getX(), p2.get().getY(),gamma);
+
                     System.out.println("YOU MADE IT");
                 });
             });
