@@ -7,10 +7,14 @@ import backend.combiners.MeanCombiner;
 import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 import backend.utils.ColorUtils;
+import backend.utils.Utils;
+import javafx.scene.image.WritableImage;
 import repositories.FiltersRepository;
 import transformations.denormalized.filter.WindowMeanTransformation;
 import transformations.denormalized.filter.WindowOperator;
 import transformations.helpers.ActiveBorderHelperTransformation;
+import transformations.normal.filters.GaussianMeanFilterTransformation;
+import transformations.normalizers.MultiChannelRangeNormalizer;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static transformations.helpers.ActiveBorderHelperTransformation.paintLine;
 
-public class ActiveBorderTransformation2 implements FullTransformation {
+public class ActiveBorderTransformation2 implements FullTransformation{
 
     private DenormalizedImage gamma;
     private DenormalizedColor backgroundAvgColor;
@@ -30,14 +34,10 @@ public class ActiveBorderTransformation2 implements FullTransformation {
                     ColorUtils.getDifference(backgroundAvgColor,x)/
                     ColorUtils.getDifference(objectAvgColor,x)) > 0;
 
-    private Predicate<DenormalizedColor> twoAverage2ndCycle = x -> Math.log(
-                    ColorUtils.getDifference(backgroundAvgColor,x)/
-                    ColorUtils.getDifference(objectAvgColor,x)) > 0;
-
     private Predicate<DenormalizedColor> custom = x -> Math.log10(
                     1-(ColorUtils.getDifference(x,objectAvgColor)-0.5))>0;
 
-    private Predicate<DenormalizedColor> simple = (c) -> (ColorUtils.getDifference(c,objectAvgColor)/3)<0.4;
+    private Predicate<DenormalizedColor> simple = (c) -> (ColorUtils.getDifference(c,objectAvgColor)/3)<4.0;
 
     private Predicate<DenormalizedColor> usedCondition;
     private Set<DenormalizedColorPixel> internal;
@@ -45,11 +45,13 @@ public class ActiveBorderTransformation2 implements FullTransformation {
 
     private Integer iterations;
     public ActiveBorderTransformation2(Set<DenormalizedColorPixel> internal, Set<DenormalizedColorPixel> external,
-                                       DenormalizedImage gamma, DenormalizedColor objectAvgColor, Integer iterations){
+                                       DenormalizedImage gamma, DenormalizedColor objectAvgColor, DenormalizedColor backgroundAvgColor,
+                                       Integer iterations){
         this.internal = internal;
         this.external = external;
         this.gamma = gamma;
         this.objectAvgColor = objectAvgColor;
+        this.backgroundAvgColor = backgroundAvgColor;
         this.iterations = iterations;
         usedCondition = twoAverage;
     }
@@ -70,46 +72,78 @@ public class ActiveBorderTransformation2 implements FullTransformation {
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        Combiner meanCombiner = new MeanCombiner();
 
-        backgroundAvgColor = ActiveBorderHelperTransformation.getAverageColor(denormalizedImage,denormalizedImage.getWidth()-50,0,denormalizedImage.getWidth(),50);
+//        backgroundAvgColor = ActiveBorderHelperTransformation.getAverageColor(denormalizedImage,denormalizedImage.getWidth()-50,0,denormalizedImage.getWidth(),50);
 //        paintLine(internal,denormalizedImage,DenormalizedColor.BLACK);
 //        paintLine(external,denormalizedImage,DenormalizedColor.WHITE);
+        updateColors(external,denormalizedImage);
+        updateColors(internal,denormalizedImage);
         for (int i = 0; i < iterations; i++) {
             //Find external pixels that should be included
-//            System.out.println(external.stream().filter(cpx -> usedCondition.test(cpx.getColor()))
-//                    .sorted().collect(Collectors.toList()));
-
-            Set<DenormalizedColorPixel> added = external.stream().filter(cpx -> usedCondition.test(cpx.getColor()))
+            Set<DenormalizedColorPixel> added = external.stream()
+                    .filter(cpx -> usedCondition.test(cpx.getColor()))
                     .collect(Collectors.toSet());
-            System.out.println("newExternal:" +added);
             switchIn(added,gamma,denormalizedImage);
+            if(added.size() != 0){
+                System.out.println("external to internal:" +added.size() );
+            }
 
             Set<DenormalizedColorPixel> ext = internal.stream().filter(cpx -> !usedCondition.test(cpx.getColor()))
                     .collect(Collectors.toSet());
-            System.out.println("newInternal:" +ext);
             switchOut(ext,gamma,denormalizedImage);
+            if(ext.size() != 0){
+                System.out.println("internal to ext:" +ext.size());
+            }
+
+
         }
 
-        Combiner meanCombiner = new MeanCombiner();
+
+
         for (int i = 0; i < iterations; i++) {
-            Set<DenormalizedColorPixel> newInternal = external.stream().filter( cpx -> ColorUtils.getModulus(meanCombiner.combine(
-                    WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
-                    ,FiltersRepository.getGaussianMatrixWeight(1.0,1))) < 0)
+            DenormalizedImage gammaGauss = new DenormalizedImage(gamma);
+            new GaussianMeanFilterTransformation(1,1.0).transformDenormalized(gammaGauss);
+
+            Set<DenormalizedColorPixel> newInternal = external.stream()
+//                    .filter( cpx -> meanCombiner.combine(
+//                        WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
+//                        ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() > 0)
+                    .filter(cpx -> gammaGauss.getColorAt(cpx.getPixel().getX(),cpx.getPixel().getY()).getRed() < 0)
                     .collect(Collectors.toSet());
             switchIn(newInternal,gamma,denormalizedImage);
+            if(newInternal.size() != 0){
+                System.out.println("external to internal gauss:" +newInternal.size());
+            }
+
+
+            DenormalizedImage gammaGauss2 = new DenormalizedImage(gamma);
+            new GaussianMeanFilterTransformation(1,1.0).transformDenormalized(gammaGauss2);
 
             Set<DenormalizedColorPixel> newExternal = internal.stream()
-                .filter( cpx ->
-                    ColorUtils.getModulus(meanCombiner.combine(
-                        WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
-                        ,FiltersRepository.getGaussianMatrixWeight(1.0,1))) > 0)
-                .collect(Collectors.toSet());
+//                    .filter( cpx -> meanCombiner.combine(
+//                                    WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
+//                                    ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() < 0)
+                    .filter(cpx -> gammaGauss2.getColorAt(cpx.getPixel().getX(),cpx.getPixel().getY()).getRed() > 0)
+                    .collect(Collectors.toSet());
             switchOut(newExternal,gamma,denormalizedImage);
+            if(newExternal.size() != 0){
+                System.out.println("internal to ext gauus:" +newExternal.size());
+            }
         }
         paintLine(internal,denormalizedImage,DenormalizedColor.BLACK);
         paintLine(external,denormalizedImage,DenormalizedColor.WHITE);
 
         return denormalizedImage;
+    }
+
+    private void updateColors(Set<DenormalizedColorPixel> cpxs, DenormalizedImage image){
+        Set<DenormalizedColorPixel> old = new HashSet<>();
+        old.addAll(cpxs);
+        cpxs.clear();
+        old.forEach( cpx -> cpxs.add(
+                new DenormalizedColorPixel(cpx.getPixel().getX(), cpx.getPixel().getY()
+                        ,image.getColorAt(cpx.getPixel().getX(),cpx.getPixel().getY()))));
     }
 
     private void switchIn(Set<DenormalizedColorPixel> x, DenormalizedImage gamma, DenormalizedImage image) {
@@ -148,9 +182,16 @@ public class ActiveBorderTransformation2 implements FullTransformation {
         setGamma(gamma,newBackground,DenormalizedColor.BACKGROUND);
     }
 
+
+
     private void setGamma(DenormalizedImage gamma, Set<DenormalizedColorPixel> colorPixels, DenormalizedColor denormalizedColor){
         colorPixels.stream().forEach( cpx -> gamma.setColor(cpx.getPixel().getX(), cpx.getPixel().getY(),
                 denormalizedColor));
+    }
+
+    @Override
+    public WritableImage transform(WritableImage writableImage){
+        return FullTransformation.transform(writableImage,this::transformDenormalized,new MultiChannelRangeNormalizer()::normalize);
     }
 
     public Boolean anyNeighborHasColor(Integer x, Integer y, DenormalizedColor gammaColor, DenormalizedImage image){

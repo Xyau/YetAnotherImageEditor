@@ -5,12 +5,8 @@ import backend.DenormalizedColorPixel;
 import backend.image.DenormalizedImage;
 import backend.transformators.Transformation;
 import backend.utils.ColorUtils;
-import backend.utils.CombinerUtils;
 import backend.utils.ImageUtils;
 import javafx.scene.image.WritableImage;
-import repositories.FiltersRepository;
-import transformations.denormalized.filter.WindowMeanTransformation;
-import transformations.normal.borders.ActiveBorderTransformation;
 import transformations.normal.borders.ActiveBorderTransformation2;
 import transformations.normal.common.PixelByPixelTransformation;
 import transformations.normal.image.SetImageTransformation;
@@ -28,18 +24,33 @@ public class ActiveBorderHelperTransformation implements Transformation {
     private Set<DenormalizedColorPixel> external;
     private Set<DenormalizedColorPixel> internal;
     private DenormalizedImage gamma;
-    private DenormalizedColor avgColor;
+    private DenormalizedColor objAvgColor;
+    private DenormalizedColor backgAvgColor;
 
     public ActiveBorderHelperTransformation(List<WritableImage> images, Integer frameNumber, Integer iterations,
                                             Set<DenormalizedColorPixel> internal, Set<DenormalizedColorPixel> external,
-                                            DenormalizedImage gamma, DenormalizedColor avgColor) {
+                                            DenormalizedImage gamma, DenormalizedColor objAvgColor, DenormalizedColor backgAvgColor) {
         this.images = images;
         this.frameNumber = frameNumber;
         this.iterations = iterations;
         this.internal = internal;
         this.external = external;
-        this.avgColor = avgColor;
+        this.objAvgColor = objAvgColor;
+        this.backgAvgColor = backgAvgColor;
         this.gamma = gamma;
+//        System.out.println("obj:" + objAvgColor);
+//        System.out.println("background:" + backgAvgColor);
+    }
+
+    @Override
+    public WritableImage transform(WritableImage writableImage) {
+        WritableImage copy = ImageUtils.copyImage(writableImage);
+        new SetImageTransformation(ImageUtils.copyImage(images.get(frameNumber)))
+                .transform(copy);
+
+        new ActiveBorderTransformation2(internal,external, gamma, objAvgColor, backgAvgColor, iterations).transform(copy);
+
+        return copy;
     }
 
     public static void setGamma(Integer x1, Integer y1, Integer x2, Integer y2,
@@ -49,22 +60,11 @@ public class ActiveBorderHelperTransformation implements Transformation {
         paintSquare(x1,y1,x2,y2,gamma,false,DenormalizedColor.INTERNAL);
         paintSquare(x1+1,y1+1,x2-1,y2-1,gamma,true,DenormalizedColor.OBJECT);
     }
-
     public static void paintLine(Collection<DenormalizedColorPixel> cpxs, DenormalizedImage denormalizedImage, DenormalizedColor color){
         cpxs.stream().forEach( cpx ->
                 denormalizedImage.setColor(cpx.getPixel().getX(),cpx.getPixel().getY(),color)
         );
-        System.out.println("Painting:" + color + " amount: " + cpxs.size());
-    }
-    @Override
-    public WritableImage transform(WritableImage writableImage) {
-        WritableImage copy = ImageUtils.copyImage(writableImage);
-        new SetImageTransformation(ImageUtils.copyImage(images.get(frameNumber)))
-                .transform(copy);
-
-        new ActiveBorderTransformation2(internal,external, gamma,avgColor, iterations).transform(copy);
-
-        return copy;
+//        System.out.println("Painting:" + color + " amount: " + cpxs.size());
     }
 
     @Override
@@ -122,12 +122,15 @@ public class ActiveBorderHelperTransformation implements Transformation {
         return sumColor;
     }
 
+    public static DenormalizedColor getAverageInSquare(DenormalizedImage image, Integer x1, Integer y1, Integer x2, Integer y2){
+        return ColorUtils.multiplyColors(getColorSum(image,x1,y1,x2,y2),1.0/((x2-x1)*(y2-y1)));
+    }
 
     public static DenormalizedColor getBackgroundAvg(DenormalizedImage image, Integer x1, Integer y1, Integer x2, Integer y2){
         DenormalizedColor sumCenter = getColorSum(image,x1,y1,x2,y2);
         DenormalizedColor totalSum = getColorSum(image,0,0,image.getWidth(),image.getHeight());
         Integer amount = image.getWidth()*image.getHeight()-(x2-x1)*(y2-y1);
-        return ColorUtils.multiplyColors(ColorUtils.substractColors(totalSum,sumCenter),1/amount*1.0);
+        return ColorUtils.multiplyColors(ColorUtils.substractColors(totalSum,sumCenter),1.0/amount);
     }
 
 }

@@ -226,7 +226,7 @@ public class FiltersRepository {
     public static Double[][] getGaussianMatrixWeight(Double std, Integer filterSize) {
         Double[][] weights = null;
         Double roundedStd = Utils.roundToRearestFraction(std, 0.05);
-        System.out.println("getting gauss cache");
+//        System.out.println("getting gauss cache");
         try {
             weights = gaussianCache.get(new Pair<>(std, filterSize), () -> {
                 Double[][] wMatrix = new Double[2 * filterSize + 1][2 * filterSize + 1];
@@ -240,7 +240,7 @@ public class FiltersRepository {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        System.out.println("getted gauss cache");
+//        System.out.println("getted gauss cache");
         if (weights == null) {
             throw new IllegalStateException("Gaussian Cache failed!");
         }

@@ -87,21 +87,25 @@ public class ThingsRepository {
         menuItem.setOnAction( x -> {
             Set<DenormalizedColorPixel> internal = new HashSet<>();
             Set<DenormalizedColorPixel> external = new HashSet<>();
-            AtomicReference<DenormalizedColor> avgColor = new AtomicReference<>();
+            AtomicReference<DenormalizedColor> objAvgColor = new AtomicReference<>();
+            AtomicReference<DenormalizedColor> bckgAvgColor = new AtomicReference<>();
             List<WritableImage> images = FileUtils.loadMultipleFiles(window);
             DenormalizedImage gamma = new DenormalizedImage(images.get(0));
             transformationManagerView.setInitialImage(images.get(0));
             MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
                     new ActiveBorderHelperTransformation(images, list.get(0).intValue(),
-                            list.get(1).intValue(),internal,external,gamma,avgColor.get()),transformationManagerView);
+                            list.get(1).intValue(),internal,external,gamma,objAvgColor.get(),bckgAvgColor.get()),transformationManagerView);
 
             builder.addSlider("Frame Number",0.0,images.size()*1.0-1,1.0);
-            builder.addSlider("Iterations",0.0,20.0,1.0);
+            builder.addSlider("Iterations",0.0,50.0,1.0);
 
             Button resetButton = new Button("Reset");
             resetButton.setOnMouseClicked(y ->{
+                System.out.println("clicking");
                 AtomicReference<Pixel> p1 = new AtomicReference<>();
                 AtomicReference<Pixel> p2 = new AtomicReference<>();
+                AtomicReference<Pixel> p3 = new AtomicReference<>();
+                AtomicReference<Pixel> p4 = new AtomicReference<>();
                 eventManageableImageView.addActiveEventToQueue( event ->{
                     p1.set(Utils.getPixelFromMouseEvent(event));
                 });
@@ -109,6 +113,7 @@ public class ThingsRepository {
                     p2.set(Utils.getPixelFromMouseEvent(event));
                 });
                 eventManageableImageView.setWhenQueueFinished(() -> {
+                    System.out.println("reseting");
                     internal.clear();
                     internal.addAll(ActiveBorderHelperTransformation.getIn(p1.get().getX(), p1.get().getY()
                             ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
@@ -116,14 +121,20 @@ public class ThingsRepository {
                     external.addAll(ActiveBorderHelperTransformation.getOut(p1.get().getX(), p1.get().getY()
                             ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
 
-                    avgColor.set(ActiveBorderHelperTransformation.getBackgroundAvg(new DenormalizedImage(images.get(0)),
+                    objAvgColor.set(ActiveBorderHelperTransformation.getAverageInSquare(new DenormalizedImage(images.get(0)),
                             p1.get().getX(), p1.get().getY() ,p2.get().getX(), p2.get().getY()));
+
+                    bckgAvgColor.set(ActiveBorderHelperTransformation.getBackgroundAvg( new DenormalizedImage(images.get(0)),
+                            p1.get().getX(), p1.get().getY() ,p2.get().getX(), p2.get().getY()));
+
                     ActiveBorderHelperTransformation.setGamma(p1.get().getX(), p1.get().getY()
                             ,p2.get().getX(), p2.get().getY(),gamma);
+
 
                     System.out.println("YOU MADE IT");
                 });
             });
+
             GridPane gridPane = builder.build();
             gridPane.add(resetButton,2,2);
             StagesRepository.getStage("Video", gridPane).show();

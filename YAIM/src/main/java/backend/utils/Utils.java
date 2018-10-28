@@ -2,6 +2,7 @@ package backend.utils;
 
 
 import backend.DenormalizedColor;
+import backend.DenormalizedColorPixel;
 import backend.Pixel;
 import backend.image.AnormalizedImage;
 import backend.image.AnormalizedImageImpl;
@@ -13,9 +14,9 @@ import javafx.util.Pair;
 
 import javax.rmi.CORBA.Util;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 public class Utils {
     public static AnormalizedImage getAnormalized(Image image){
@@ -81,9 +82,51 @@ public class Utils {
     public static Double getMaxGreen(Double prevMaxGreen, DenormalizedColor color){
         return color.getGreen() > prevMaxGreen ? color.getGreen() : prevMaxGreen;
     }
-    
 
-    public static Double getStandardDeviation(List<Double> colors) {
+    public static String printStats(Collection<Double> values, String name){
+        StringBuilder sb = new StringBuilder();
+        if(values.size() == 0) {
+            return "";
+        }
+        sb.append("\n").append(name).append(" (").append(values.size()).append(")");
+        sb.append("\nmin:").append(values.stream().mapToDouble(Double::doubleValue).min())
+                .append(" max:").append(values.stream().mapToDouble(Double::doubleValue).max())
+                .append(" std:").append(Utils.getStandardDeviation(values));
+        return sb.toString();
+    }
+
+    public static String printColorStats(Collection<DenormalizedColorPixel> colors, String name, Function<DenormalizedColorPixel,String> function){
+        List<Double> red = new ArrayList<>();
+        List<Double> green = new ArrayList<>();
+        List<Double> blue = new ArrayList<>();
+        Double minRed=Double.MAX_VALUE,maxRed=Double.MIN_VALUE,
+                minGreen=Double.MAX_VALUE,maxGreen=Double.MIN_VALUE,
+                minBlue=Double.MAX_VALUE,maxBlue=Double.MIN_VALUE;
+        if(colors.isEmpty()) {
+            return "";
+        }
+        for (DenormalizedColorPixel color : colors) {
+            DenormalizedColor c = color.getColor();
+            red.add(c.getRed());
+            green.add(c.getGreen());
+            blue.add(c.getBlue());
+            minRed = getMinRed(minRed, c);
+            minGreen = getMinGreen(minGreen, c);
+            minBlue = getMinBlue(minBlue, c);
+            maxBlue = getMaxBlue(maxBlue, c);
+            maxRed = getMaxRed(maxRed, c);
+            maxGreen = getMaxGreen(maxGreen,c);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n").append(name).append(" (").append(red.size()).append(") f:");
+        sb.append("\nRed:{min:").append(minRed).append(" max:").append(maxRed).append(" std:").append(Utils.getStandardDeviation(red));
+        sb.append("\nGreen:{min:").append(minGreen).append(" max:").append(minGreen).append(" std:").append(Utils.getStandardDeviation(green));
+        sb.append("\nBlue:{min:").append(minBlue).append(" max:").append(maxBlue).append(" std:").append(Utils.getStandardDeviation(blue));
+        return sb.toString();
+    }
+
+    public static Double getStandardDeviation(Collection<Double> colors) {
         Double sum = colors.stream().mapToDouble(x -> x).sum();
         Double mean = sum / colors.size();
 
