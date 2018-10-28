@@ -96,20 +96,10 @@ public class ActiveBorderTransformation2 implements FullTransformation{
                 System.out.println("internal to ext:" +ext.size());
             }
 
-
-        }
-
-
-
-        for (int i = 0; i < iterations; i++) {
-            DenormalizedImage gammaGauss = new DenormalizedImage(gamma);
-            new GaussianMeanFilterTransformation(1,1.0).transformDenormalized(gammaGauss);
-
             Set<DenormalizedColorPixel> newInternal = external.stream()
-//                    .filter( cpx -> meanCombiner.combine(
-//                        WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
-//                        ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() > 0)
-                    .filter(cpx -> gammaGauss.getColorAt(cpx.getPixel().getX(),cpx.getPixel().getY()).getRed() < 0)
+                    .filter( cpx -> meanCombiner.combine(
+                            WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
+                            ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() < 0)
                     .collect(Collectors.toSet());
             switchIn(newInternal,gamma,denormalizedImage);
             if(newInternal.size() != 0){
@@ -117,19 +107,21 @@ public class ActiveBorderTransformation2 implements FullTransformation{
             }
 
 
-            DenormalizedImage gammaGauss2 = new DenormalizedImage(gamma);
-            new GaussianMeanFilterTransformation(1,1.0).transformDenormalized(gammaGauss2);
-
             Set<DenormalizedColorPixel> newExternal = internal.stream()
-//                    .filter( cpx -> meanCombiner.combine(
-//                                    WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
-//                                    ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() < 0)
-                    .filter(cpx -> gammaGauss2.getColorAt(cpx.getPixel().getX(),cpx.getPixel().getY()).getRed() > 0)
+                    .filter( cpx -> meanCombiner.combine(
+                            WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
+                            ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() > 0)
                     .collect(Collectors.toSet());
             switchOut(newExternal,gamma,denormalizedImage);
             if(newExternal.size() != 0){
                 System.out.println("internal to ext gauus:" +newExternal.size());
             }
+        }
+
+
+
+        for (int i = 0; i < iterations; i++) {
+
         }
         paintLine(internal,denormalizedImage,DenormalizedColor.BLACK);
         paintLine(external,denormalizedImage,DenormalizedColor.WHITE);
