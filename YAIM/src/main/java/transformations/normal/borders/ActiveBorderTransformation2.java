@@ -72,6 +72,7 @@ public class ActiveBorderTransformation2 implements FullTransformation{
 
     @Override
     public DenormalizedImage transformDenormalized(DenormalizedImage denormalizedImage) {
+        long t0 = System.currentTimeMillis();
         Combiner meanCombiner = new MeanCombiner();
 
 //        backgroundAvgColor = ActiveBorderHelperTransformation.getAverageColor(denormalizedImage,denormalizedImage.getWidth()-50,0,denormalizedImage.getWidth(),50);
@@ -85,27 +86,19 @@ public class ActiveBorderTransformation2 implements FullTransformation{
                     .filter(cpx -> usedCondition.test(cpx.getColor()))
                     .collect(Collectors.toSet());
             switchIn(added,gamma,denormalizedImage);
-            if(added.size() != 0){
-                System.out.println("external to internal:" +added.size() );
-            }
 
             Set<DenormalizedColorPixel> ext = internal.stream().filter(cpx -> !usedCondition.test(cpx.getColor()))
                     .collect(Collectors.toSet());
             switchOut(ext,gamma,denormalizedImage);
-            if(ext.size() != 0){
-                System.out.println("internal to ext:" +ext.size());
-            }
+        }
 
+        for (int i = 0; i < iterations; i++) {
             Set<DenormalizedColorPixel> newInternal = external.stream()
                     .filter( cpx -> meanCombiner.combine(
                             WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
                             ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() < 0)
                     .collect(Collectors.toSet());
             switchIn(newInternal,gamma,denormalizedImage);
-            if(newInternal.size() != 0){
-                System.out.println("external to internal gauss:" +newInternal.size());
-            }
-
 
             Set<DenormalizedColorPixel> newExternal = internal.stream()
                     .filter( cpx -> meanCombiner.combine(
@@ -113,19 +106,11 @@ public class ActiveBorderTransformation2 implements FullTransformation{
                             ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() > 0)
                     .collect(Collectors.toSet());
             switchOut(newExternal,gamma,denormalizedImage);
-            if(newExternal.size() != 0){
-                System.out.println("internal to ext gauus:" +newExternal.size());
-            }
-        }
-
-
-
-        for (int i = 0; i < iterations; i++) {
-
         }
         paintLine(internal,denormalizedImage,DenormalizedColor.BLACK);
         paintLine(external,denormalizedImage,DenormalizedColor.WHITE);
 
+        System.out.println("Time elapsed for frame:" + (System.currentTimeMillis() - t0));
         return denormalizedImage;
     }
 
