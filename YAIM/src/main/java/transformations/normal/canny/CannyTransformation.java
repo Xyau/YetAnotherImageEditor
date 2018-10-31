@@ -32,7 +32,7 @@ public class CannyTransformation implements FullTransformation {
 //        first = new HisteresisUmbralizationTransformation(0.15, 0.3).transformDenormalized(first);
 //        second= new HisteresisUmbralizationTransformation(0.15, 0.3).transformDenormalized(second);
 
-        return new ImageOperator(second, ColorUtils::addClampColors).transformDenormalized(first);
+        return first;
     }
 
 
