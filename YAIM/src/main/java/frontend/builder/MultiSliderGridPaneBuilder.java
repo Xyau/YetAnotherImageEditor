@@ -37,7 +37,7 @@ public class MultiSliderGridPaneBuilder {
                 .collect(Collectors.toList());
     }
 
-    public MultiSliderGridPaneBuilder addSlider(String sliderName, Double min, Double max, Double increment){
+    public AtomicReference<Number> addSlider(String sliderName, Double min, Double max, Double increment){
         AtomicReference<Number> value= new AtomicReference<>(min);
         SliderControl sliderControl = new SliderControl(sliderName,min,max,increment,(old,curr)->{
             if(!Utils.roundToRearestFraction(old.doubleValue(), increment).equals(Utils.roundToRearestFraction(curr.doubleValue(), increment))){
@@ -46,7 +46,7 @@ public class MultiSliderGridPaneBuilder {
             }
         });
         sliders.add(new Pair<>(sliderControl,value));
-        return this;
+        return value;
     }
 
     public MultiSliderGridPaneBuilder addTextBox(String textboxName){

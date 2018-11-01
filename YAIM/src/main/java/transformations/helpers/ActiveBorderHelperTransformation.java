@@ -27,11 +27,12 @@ public class ActiveBorderHelperTransformation implements Transformation {
     private DenormalizedColor objAvgColor;
     private DenormalizedColor backgAvgColor;
     private Double threshold;
+    private Integer filterSize;
 
     public ActiveBorderHelperTransformation(List<WritableImage> images, Integer frameNumber, Integer iterations,
                                             Set<DenormalizedColorPixel> internal, Set<DenormalizedColorPixel> external,
                                             DenormalizedImage gamma, DenormalizedColor objAvgColor, DenormalizedColor backgAvgColor,
-                                            Double threshold) {
+                                            Double threshold, Integer filterSize) {
         this.images = images;
         this.frameNumber = frameNumber;
         this.iterations = iterations;
@@ -41,6 +42,7 @@ public class ActiveBorderHelperTransformation implements Transformation {
         this.backgAvgColor = backgAvgColor;
         this.gamma = gamma;
         this.threshold = threshold;
+        this.filterSize = filterSize;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class ActiveBorderHelperTransformation implements Transformation {
         new SetImageTransformation(ImageUtils.copyImage(images.get(frameNumber)))
                 .transform(copy);
 
-        new ActiveBorderTransformation2(internal,external, gamma, objAvgColor, backgAvgColor, iterations, threshold).transform(copy);
+        new ActiveBorderTransformation2(internal,external, gamma, objAvgColor, backgAvgColor, iterations, threshold, filterSize).transform(copy);
 
         return copy;
     }

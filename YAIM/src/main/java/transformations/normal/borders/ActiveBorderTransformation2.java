@@ -35,18 +35,19 @@ public class ActiveBorderTransformation2 implements FullTransformation{
                     ColorUtils.getDifference(objectAvgColor,x)) > 0;
     private Double threshold;
 
-    private Predicate<DenormalizedColor> custom = x -> ColorUtils.getDifference(x,objectAvgColor)<threshold;
+    private Predicate<DenormalizedColor> custom = x -> (Math.sqrt(3)*ColorUtils.getDifference(x,objectAvgColor))<threshold;
 
-    private Predicate<DenormalizedColor> simple = (c) -> (ColorUtils.getDifference(c,objectAvgColor)/3)<4.0;
+    private Predicate<DenormalizedColor> simple = (c) -> (ColorUtils.getDifference(c,objectAvgColor)/Math.sqrt(3))<4.0;
 
     private Predicate<DenormalizedColor> usedCondition;
     private Set<DenormalizedColorPixel> internal;
     private Set<DenormalizedColorPixel> external;
+    private Integer filterSize;
 
     private Integer iterations;
     public ActiveBorderTransformation2(Set<DenormalizedColorPixel> internal, Set<DenormalizedColorPixel> external,
                                        DenormalizedImage gamma, DenormalizedColor objectAvgColor, DenormalizedColor backgroundAvgColor,
-                                       Integer iterations, Double threshold){
+                                       Integer iterations, Double threshold, Integer filterSize){
         this.internal = internal;
         this.external = external;
         this.gamma = gamma;
@@ -54,6 +55,7 @@ public class ActiveBorderTransformation2 implements FullTransformation{
         this.backgroundAvgColor = backgroundAvgColor;
         this.iterations = iterations;
         this.threshold = threshold;
+        this.filterSize = filterSize;
         usedCondition = custom;
     }
 
@@ -92,19 +94,18 @@ public class ActiveBorderTransformation2 implements FullTransformation{
                     .collect(Collectors.toSet());
             switchOut(ext,gamma,denormalizedImage);
         }
-
         for (int i = 0; i < iterations; i++) {
             Set<DenormalizedColorPixel> newInternal = external.stream()
                     .filter( cpx -> meanCombiner.combine(
-                            WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
-                            ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() < 0)
+                            WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),2*filterSize+1,2*filterSize+1)
+                            ,FiltersRepository.getGaussianMatrixWeight(1.0,filterSize)).getRed() < 0)
                     .collect(Collectors.toSet());
             switchIn(newInternal,gamma,denormalizedImage);
 
             Set<DenormalizedColorPixel> newExternal = internal.stream()
                     .filter( cpx -> meanCombiner.combine(
-                            WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),3,3)
-                            ,FiltersRepository.getGaussianMatrixWeight(1.0,1)).getRed() > 0)
+                            WindowOperator.getNeighborPixels(gamma,cpx.getPixel().getX(), cpx.getPixel().getY(),2*filterSize+1,2*filterSize+1)
+                            ,FiltersRepository.getGaussianMatrixWeight(1.0,filterSize)).getRed() > 0)
                     .collect(Collectors.toSet());
             switchOut(newExternal,gamma,denormalizedImage);
         }

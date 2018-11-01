@@ -95,13 +95,14 @@ public class ThingsRepository {
             MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
                     new ActiveBorderHelperTransformation(images, list.get(0).intValue(),
                             list.get(1).intValue(),internal,external,gamma,objAvgColor.get(),
-                            bckgAvgColor.get(),list.get(2).doubleValue()),transformationManagerView);
+                            bckgAvgColor.get(),list.get(2).doubleValue(),list.get(3).intValue()),transformationManagerView);
 
-            builder.addSlider("Frame Number",0.0,images.size()*1.0-1,1.0);
+            AtomicReference<Number> frameNumber = builder.addSlider("Frame Number",0.0,images.size()*1.0-1,1.0);
             builder.addSlider("Iterations",0.0,50.0,1.0);
             builder.addSlider("Threshold",0.0,1.0,0.01);
+            builder.addSlider("Filter Size",1.0,5.0,1.0);
 
-            Button resetButton = new Button("Reset");
+            Button resetButton = new Button("Reset LIN");
             resetButton.setOnMouseClicked(y ->{
                 System.out.println("clicking");
                 AtomicReference<Pixel> p1 = new AtomicReference<>();
@@ -116,15 +117,15 @@ public class ThingsRepository {
                     System.out.println("reseting");
                     internal.clear();
                     internal.addAll(ActiveBorderHelperTransformation.getIn(p1.get().getX(), p1.get().getY()
-                            ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
+                            ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(frameNumber.get().intValue()))));
                     external.clear();
                     external.addAll(ActiveBorderHelperTransformation.getOut(p1.get().getX(), p1.get().getY()
                             ,p2.get().getX(), p2.get().getY(), new DenormalizedImage(images.get(0))));
 
-                    objAvgColor.set(ActiveBorderHelperTransformation.getAverageInSquare(new DenormalizedImage(images.get(0)),
+                    objAvgColor.set(ActiveBorderHelperTransformation.getAverageInSquare(new DenormalizedImage(images.get(frameNumber.get().intValue())),
                             p1.get().getX(), p1.get().getY() ,p2.get().getX(), p2.get().getY()));
 
-                    bckgAvgColor.set(ActiveBorderHelperTransformation.getBackgroundAvg( new DenormalizedImage(images.get(0)),
+                    bckgAvgColor.set(ActiveBorderHelperTransformation.getBackgroundAvg( new DenormalizedImage(images.get(frameNumber.get().intValue())),
                             p1.get().getX(), p1.get().getY() ,p2.get().getX(), p2.get().getY()));
 
                     ActiveBorderHelperTransformation.setGamma(p1.get().getX(), p1.get().getY()
@@ -136,7 +137,7 @@ public class ThingsRepository {
             });
 
             GridPane gridPane = builder.build();
-            gridPane.add(resetButton,2,3);
+            gridPane.add(resetButton,2,4);
             StagesRepository.getStage("Video", gridPane).show();
         });
 
