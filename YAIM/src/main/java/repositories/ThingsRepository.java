@@ -94,18 +94,18 @@ public class ThingsRepository {
             transformationManagerView.setInitialImage(images.get(0));
             MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
                     new ActiveBorderHelperTransformation(images, list.get(0).intValue(),
-                            list.get(1).intValue(),internal,external,gamma,objAvgColor.get(),bckgAvgColor.get()),transformationManagerView);
+                            list.get(1).intValue(),internal,external,gamma,objAvgColor.get(),
+                            bckgAvgColor.get(),list.get(2).doubleValue()),transformationManagerView);
 
             builder.addSlider("Frame Number",0.0,images.size()*1.0-1,1.0);
             builder.addSlider("Iterations",0.0,50.0,1.0);
+            builder.addSlider("Threshold",0.0,1.0,0.01);
 
             Button resetButton = new Button("Reset");
             resetButton.setOnMouseClicked(y ->{
                 System.out.println("clicking");
                 AtomicReference<Pixel> p1 = new AtomicReference<>();
                 AtomicReference<Pixel> p2 = new AtomicReference<>();
-                AtomicReference<Pixel> p3 = new AtomicReference<>();
-                AtomicReference<Pixel> p4 = new AtomicReference<>();
                 eventManageableImageView.addActiveEventToQueue( event ->{
                     p1.set(Utils.getPixelFromMouseEvent(event));
                 });
@@ -136,7 +136,7 @@ public class ThingsRepository {
             });
 
             GridPane gridPane = builder.build();
-            gridPane.add(resetButton,2,2);
+            gridPane.add(resetButton,2,3);
             StagesRepository.getStage("Video", gridPane).show();
         });
 

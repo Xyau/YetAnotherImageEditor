@@ -33,9 +33,9 @@ public class ActiveBorderTransformation2 implements FullTransformation{
     private Predicate<DenormalizedColor> twoAverage = x -> Math.log(
                     ColorUtils.getDifference(backgroundAvgColor,x)/
                     ColorUtils.getDifference(objectAvgColor,x)) > 0;
+    private Double threshold;
 
-    private Predicate<DenormalizedColor> custom = x -> Math.log10(
-                    1-(ColorUtils.getDifference(x,objectAvgColor)-0.5))>0;
+    private Predicate<DenormalizedColor> custom = x -> ColorUtils.getDifference(x,objectAvgColor)<threshold;
 
     private Predicate<DenormalizedColor> simple = (c) -> (ColorUtils.getDifference(c,objectAvgColor)/3)<4.0;
 
@@ -46,14 +46,15 @@ public class ActiveBorderTransformation2 implements FullTransformation{
     private Integer iterations;
     public ActiveBorderTransformation2(Set<DenormalizedColorPixel> internal, Set<DenormalizedColorPixel> external,
                                        DenormalizedImage gamma, DenormalizedColor objectAvgColor, DenormalizedColor backgroundAvgColor,
-                                       Integer iterations){
+                                       Integer iterations, Double threshold){
         this.internal = internal;
         this.external = external;
         this.gamma = gamma;
         this.objectAvgColor = objectAvgColor;
         this.backgroundAvgColor = backgroundAvgColor;
         this.iterations = iterations;
-        usedCondition = twoAverage;
+        this.threshold = threshold;
+        usedCondition = custom;
     }
 
     public Set<DenormalizedColorPixel> getNeighborsWithGamma(Integer x, Integer y, DenormalizedColor gammaColor, DenormalizedImage image){
