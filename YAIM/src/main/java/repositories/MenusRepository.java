@@ -1,7 +1,5 @@
 package repositories;
 
-import backend.FocusablePane;
-import backend.Pixel;
 import backend.utils.FileUtils;
 import backend.utils.ImageUtils;
 import backend.SyntheticGenerator;
@@ -48,7 +46,6 @@ import transformations.normal.noise.AdditiveGaussianNoiseTransformation;
 import transformations.normal.noise.ExponentialDistributionNoiseTransformation;
 import transformations.normal.noise.SaltAndPeperNoiseTransformation;
 
-import java.beans.EventHandler;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -138,11 +135,10 @@ public class MenusRepository {
         imageMenu.getItems().addAll(singleChannelBinary
                 ,multiChannelBinary
                 ,getTernaryUmbralizationMenuItem(transformationManagerView)
-                ,getHisteresisUmbralizationMenuItem(transformationManagerView)
+                , getHysteresisUmbralizationMenuItem(transformationManagerView)
                 ,getMenuItemByTranformation("Border expand", new BorderExpandUmbralizationTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Global umbralization", new GlobalUmbralizationTransformation(), transformationManagerView)
                 ,getMenuItemByTranformation("Otsu umbralization", new OtsuUmbralizationTransformation(), transformationManagerView)
-                ,getHysteresisMenuItem(transformationManagerView)
         );
 
         return imageMenu;
@@ -157,7 +153,7 @@ public class MenusRepository {
         return sliderGridPaneBuilder.buildAndGetMenuItem("Ternary Umbralization");
     }
 
-    private static MenuItem getHisteresisUmbralizationMenuItem(TransformationManagerView transformationManagerView) {
+    private static MenuItem getHysteresisUmbralizationMenuItem(TransformationManagerView transformationManagerView) {
         MultiSliderGridPaneBuilder sliderGridPaneBuilder = new MultiSliderGridPaneBuilder(l ->
                 new HisteresisUmbralizationTransformation(l.get(0).doubleValue(),l.get(1).doubleValue()),transformationManagerView);
 
@@ -327,16 +323,6 @@ public class MenusRepository {
         builder.addSlider("Epsilon",0.1,1.0,0.1);
         builder.addSlider("Max lines",1.0,40.0,1.0);
         return builder.buildAndGetMenuItem("Hough");
-    }
-
-    private static MenuItem getHysteresisMenuItem(TransformationManagerView transformationManagerView){
-        MultiSliderGridPaneBuilder builder = new MultiSliderGridPaneBuilder((list) ->
-                new HisteresisUmbralizationTransformation(list.get(0).doubleValue(), list.get(1).intValue()),
-                transformationManagerView);
-
-        builder.addSlider("min",0.0,0.05,1.0);
-        builder.addSlider("max",0.0,0.05,1.0);
-        return builder.buildAndGetMenuItem("Precise Hough");
     }
 
     private static MenuItem getPreciseLineHoughMenuItem(TransformationManagerView transformationManagerView){
