@@ -1,5 +1,6 @@
 package transformations.normal.image;
 
+import backend.image.AnormalizedImage;
 import backend.image.DenormalizedImage;
 import backend.transformators.FullTransformation;
 import backend.utils.ColorUtils;
@@ -12,6 +13,10 @@ public class ModulusImageTransformation implements FullTransformation {
 
     public ModulusImageTransformation(Image image) {
         this.imageOperator = new ImageOperator(Utils.getAnormalized(image),ColorUtils::modulusColors);
+    }
+
+    public ModulusImageTransformation(AnormalizedImage image) {
+        this.imageOperator = new ImageOperator(image,ColorUtils::modulusColors);
     }
 
     @Override

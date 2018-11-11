@@ -64,6 +64,21 @@ public class ImageUtils {
         return baseImage;
     }
 
+    public static DenormalizedImage transformImages(DenormalizedImage baseImage, AnormalizedImage extraImage, AnormalizedImage extraImage2, TriFunction<DenormalizedColor, DenormalizedColor> function){
+        for (int i = 0; i < baseImage.getWidth(); i++) {
+            for (int j = 0; j < baseImage.getHeight(); j++) {
+                if(isPixelInImage(baseImage,i,j) && isPixelInImage(extraImage,i,j)){
+                    DenormalizedColor baseColor = baseImage.getColorAt(i,j);
+                    DenormalizedColor extraColor = extraImage.getColorAt(i,j);
+                    DenormalizedColor extra2Color = extraImage2.getColorAt(i,j);
+                    DenormalizedColor resultColor = function.compute(baseColor,extraColor,extra2Color);
+                    baseImage.setColor(i,j,resultColor);
+                }
+            }
+        }
+        return baseImage;
+    }
+
    public static WritableImage transformImagesNormalized(WritableImage imageToWriteIn, Image image, BiFunction<Color,Color,DenormalizedColor> function){
         DenormalizedColor[][] denormalizedColors = new DenormalizedColor[Utils.toInteger(imageToWriteIn.getHeight())]
                 [Utils.toInteger(imageToWriteIn.getWidth())];

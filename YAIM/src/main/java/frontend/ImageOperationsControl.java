@@ -12,29 +12,21 @@ import java.util.function.Function;
 
 public class ImageOperationsControl extends GridPane {
     private ImageLoadControl imageLoadControl;
-    private Button addButton;
-    private Button multiplyButton;
-    private Button substractButton;
-    private Button distanceButton;
-    private Button averageButton;
-    private Button modulusButton;
-    private Button getFromPreview;
-
-    private Button applyButton;
 
     private Transformation activeTransformation;
 
     public ImageOperationsControl(Scene scene, TransformationManagerView transformationManagerView){
         imageLoadControl = new ImageLoadControl(scene);
 
-        addButton = getTransformationPreviewButton("Add",AddImageTransformation::new,transformationManagerView);
-        multiplyButton = getTransformationPreviewButton("Multiply",MultiplyImageTransformation::new,transformationManagerView);
-        substractButton = getTransformationPreviewButton("Substract",MinusImageTransformation::new,transformationManagerView);
-        distanceButton = getTransformationPreviewButton("Modulus",DistanceImageTransformation::new,transformationManagerView);
-        averageButton = getTransformationPreviewButton("Average",AverageImageTransformation::new,transformationManagerView);
-        modulusButton = getTransformationPreviewButton("Modulus",ModulusImageTransformation::new,transformationManagerView);
-        applyButton = new Button("Apply");
-        getFromPreview = new Button("Get from preview");
+        Button addButton = getTransformationPreviewButton("Add", AddImageTransformation::new, transformationManagerView);
+        Button multiplyButton = getTransformationPreviewButton("Multiply", MultiplyImageTransformation::new, transformationManagerView);
+        Button substractButton = getTransformationPreviewButton("Substract", MinusImageTransformation::new, transformationManagerView);
+        Button distanceButton = getTransformationPreviewButton("Modulus", DistanceImageTransformation::new, transformationManagerView);
+        Button averageButton = getTransformationPreviewButton("Average", AverageImageTransformation::new, transformationManagerView);
+        Button modulusButton = getTransformationPreviewButton("Modulus", ModulusImageTransformation::new, transformationManagerView);
+        Button highlightButton = getTransformationPreviewButton("Highlight", HighlightRedImageTransformation::new, transformationManagerView);
+        Button applyButton = new Button("Apply");
+        Button getFromPreview = new Button("Get from preview");
 
         getFromPreview.setOnMouseClicked((x)->{
             imageLoadControl.setImage(ImageUtils.copyImage(transformationManagerView.getPreview()));
@@ -50,6 +42,7 @@ public class ImageOperationsControl extends GridPane {
         add(distanceButton,3,0);
         add(averageButton,4,0);
         add(modulusButton,5,0);
+        add(highlightButton,6,0);
         add(applyButton,0,1);
         add(getFromPreview,1,1,2,1);
         add(imageLoadControl,0,2,5,2);

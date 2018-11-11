@@ -53,6 +53,10 @@ public class ColorUtils {
         return new DenormalizedColor(red,blue,green,alpha);
     }
 
+    public static DenormalizedColor squareColor(DenormalizedColor c){
+        return multiplyColors(c,c);
+    }
+
     public static DenormalizedColor multiplyColors(DenormalizedColor c1, Double c){
         Double red = (c1.getRed() * c);
         Double blue = (c1.getBlue() * c);
@@ -106,6 +110,14 @@ public class ColorUtils {
         return new DenormalizedColor(red,blue,green,c1.getAlpha());
     }
 
+    public static DenormalizedColor combineColors(DenormalizedColor c1, DenormalizedColor c2, DenormalizedColor c3,
+                                                  TriFunction<Double, Double> transformation){
+        Double red = transformation.compute(c1.getRed(), c2.getRed(),c3.getRed());
+        Double green = transformation.compute(c1.getGreen(), c2.getGreen(), c3.getGreen());
+        Double blue = transformation.compute(c1.getBlue(), c2.getBlue(), c3.getBlue());
+        return new DenormalizedColor(red,blue,green,c1.getAlpha());
+    }
+
     public static Double normalize(Double x, Double min, Double max){
         return (x-min)/(max-min);
     }
@@ -151,6 +163,14 @@ public class ColorUtils {
 
     public static DenormalizedColor getMax(DenormalizedColor c1, DenormalizedColor c2){
         return combineColors(c1,c2, Math::max);
+    }
+
+    public static DenormalizedColor highlightRed(DenormalizedColor c1, DenormalizedColor c2){
+        return c1.equals(DenormalizedColor.RED) || c2.equals(DenormalizedColor.RED)? DenormalizedColor.RED : c1;
+    }
+
+    public static DenormalizedColor negative(DenormalizedColor c1){
+        return new DenormalizedColor(1-c1.getRed(),1-c1.getGreen(),1-c1.getBlue(), c1.getAlpha());
     }
 
     public static DenormalizedColor getDarker(DenormalizedColor c){

@@ -117,6 +117,8 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Laplacian",new LaplacianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Laplacian of Gaussian",new LaplacianOfGaussianBorderTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Harris",new HarrisTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Harris Only Features",new HarrisOnlyFeaturesTransformation(),transformationManagerView)
                 ,getAnisotropicDiffusionFilterMenuItem(transformationManagerView)
                 ,getIsotropicDiffusionFilterMenuItem(transformationManagerView)
         );

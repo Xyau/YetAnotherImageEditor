@@ -8,15 +8,14 @@ import backend.utils.Utils;
 import javafx.scene.image.Image;
 import transformations.denormalized.ImageOperator;
 
-public class MultiplyImageTransformation implements FullTransformation {
+public class HighlightRedImageTransformation implements FullTransformation {
     private ImageOperator imageOperator;
 
-    public MultiplyImageTransformation(Image image) {
-        this.imageOperator = new ImageOperator(Utils.getAnormalized(image),ColorUtils::multiplyColors);
+    public HighlightRedImageTransformation(Image image) {
+        this.imageOperator = new ImageOperator(Utils.getAnormalized(image),ColorUtils::highlightRed);
     }
-
-    public MultiplyImageTransformation(AnormalizedImage image) {
-        this.imageOperator = new ImageOperator(image,ColorUtils::multiplyColors);
+   public HighlightRedImageTransformation(AnormalizedImage image) {
+        this.imageOperator = new ImageOperator(image,ColorUtils::highlightRed);
     }
 
     @Override
@@ -26,6 +25,6 @@ public class MultiplyImageTransformation implements FullTransformation {
 
     @Override
     public String getDescription() {
-        return "Sums 2 images";
+        return "Highlights red";
     }
 }

@@ -12,6 +12,7 @@ public class DenormalizedColor {
     public static DenormalizedColor OBJECT = new DenormalizedColor(-3.0,-3.0,-3.0,1.0);
     public static DenormalizedColor WHITE = new DenormalizedColor(1.0,1.0,1.0,1.0);
     public static DenormalizedColor BLACK = new DenormalizedColor(0.0,0.0,0.0,1.0);
+    public static final DenormalizedColor RED = new DenormalizedColor(1.0,0.0,0.0,1.0);
     private Double red;
     private Double green;
     private Double blue;
