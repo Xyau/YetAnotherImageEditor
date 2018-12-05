@@ -1,5 +1,9 @@
 package backend.utils;
 
+import backend.cascading_features.Classifier;
+import backend.cascading_features.Feature;
+import backend.cascading_features.Rectangle;
+import com.google.common.collect.Lists;
 import frontend.TextAreaControlPane;
 import frontend.TransformationManagerView;
 import frontend.builder.MultiSliderGridPaneBuilder;
@@ -13,11 +17,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.omg.CORBA.PUBLIC_MEMBER;
+import org.w3c.dom.css.Rect;
 import repositories.StagesRepository;
 import transformations.helpers.ActiveBorderHelperTransformation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -51,4 +59,50 @@ public class FileUtils {
         List<WritableImage> images = file.stream().map(ImageUtils::readImage).collect(Collectors.toList());
         return images;
     }
+
+    public static List<Feature> loadFeatures(){
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File("./YAIM/src/main/resources/haarCascading/stage_rects.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        List<Feature> features = new ArrayList<>();
+        while (scanner.hasNextInt()){
+            Integer size = scanner.nextInt();
+            List<Rectangle> rectangles = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                rectangles.add(new Rectangle(scanner.nextInt(),
+                        scanner.nextInt(),scanner.nextInt(),
+                        scanner.nextInt(),scanner.nextDouble()));
+            }
+            features.add(new Feature(rectangles,features.size()));
+        }
+        return features;
+    }
+
+    public static List<backend.cascading_features.Stage> loadStages(){
+        Scanner scannerStages = null;
+        Scanner scannerClassifiers = null;
+        List<Feature> features = loadFeatures();
+        try {
+            scannerClassifiers = new Scanner(new File("./YAIM/src/main/resources/haarCascading/stage_thresholds.txt"));
+            scannerStages = new Scanner(new File("./YAIM/src/main/resources/haarCascading/stage_sizes.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        List<backend.cascading_features.Stage> stages = new ArrayList<>();
+        while (scannerClassifiers.hasNextInt()){
+            Integer size = scannerClassifiers.nextInt();
+            List<Classifier> classifiers = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                classifiers.add(new Classifier(features.get(scannerClassifiers.nextInt()),scannerClassifiers.nextDouble(),scannerClassifiers.nextDouble(),scannerClassifiers.nextDouble()));
+            }
+            scannerStages.nextInt();
+            stages.add(new backend.cascading_features.Stage(classifiers, scannerStages.nextDouble()));
+        }
+        return stages;
+    }
+
 }

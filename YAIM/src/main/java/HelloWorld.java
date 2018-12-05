@@ -1,5 +1,7 @@
 import backend.*;
+import backend.cascading_features.Feature;
 import backend.transformators.Transformation;
+import backend.utils.FileUtils;
 import backend.utils.ImageUtils;
 import backend.utils.Utils;
 import frontend.EventManageableImageView;
@@ -20,6 +22,7 @@ import repositories.ThingsRepository;
 import transformations.normal.DrawSquareTransformation;
 import transformations.normal.GradientTransformation;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class HelloWorld extends Application {
@@ -170,6 +173,7 @@ public class HelloWorld extends Application {
         primaryStage.show();
     }
     public static void main(String[] args) {
+		List<backend.cascading_features.Stage> featureList = FileUtils.loadStages();
         launch(args);
     }
 }
