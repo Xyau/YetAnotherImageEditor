@@ -3,30 +3,21 @@ package backend.utils;
 import backend.cascading_features.Classifier;
 import backend.cascading_features.Feature;
 import backend.cascading_features.Rectangle;
-import com.google.common.collect.Lists;
+import backend.cascading_features.Stage;
 import frontend.TextAreaControlPane;
 import frontend.TransformationManagerView;
-import frontend.builder.MultiSliderGridPaneBuilder;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.Window;
-import org.omg.CORBA.PUBLIC_MEMBER;
-import org.w3c.dom.css.Rect;
-import repositories.StagesRepository;
-import transformations.helpers.ActiveBorderHelperTransformation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FileUtils {
@@ -81,7 +72,7 @@ public class FileUtils {
         return features;
     }
 
-    public static List<backend.cascading_features.Stage> loadStages(){
+    public static List<Stage> loadStages(){
         Scanner scannerStages = null;
         Scanner scannerClassifiers = null;
         List<Feature> features = loadFeatures();
@@ -92,7 +83,7 @@ public class FileUtils {
             e.printStackTrace();
         }
 
-        List<backend.cascading_features.Stage> stages = new ArrayList<>();
+        List<Stage> stages = new ArrayList<>();
         while (scannerClassifiers.hasNextInt()){
             Integer size = scannerClassifiers.nextInt();
             List<Classifier> classifiers = new ArrayList<>();
@@ -100,7 +91,7 @@ public class FileUtils {
                 classifiers.add(new Classifier(features.get(scannerClassifiers.nextInt()),scannerClassifiers.nextDouble(),scannerClassifiers.nextDouble(),scannerClassifiers.nextDouble()));
             }
             scannerStages.nextInt();
-            stages.add(new backend.cascading_features.Stage(classifiers, scannerStages.nextDouble()));
+            stages.add(new Stage(classifiers, scannerStages.nextDouble()));
         }
         return stages;
     }

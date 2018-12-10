@@ -119,6 +119,7 @@ public class MenusRepository {
                 ,getMenuItemByTranformation("Zero Finding",new ZeroFindingTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Harris",new HarrisTransformation(),transformationManagerView)
                 ,getMenuItemByTranformation("Harris Only Features",new HarrisOnlyFeaturesTransformation(),transformationManagerView)
+                ,getMenuItemByTranformation("Viola Jones Features",new ViolaJonesFaceDetectionTransformation(),transformationManagerView)
                 ,getAnisotropicDiffusionFilterMenuItem(transformationManagerView)
                 ,getIsotropicDiffusionFilterMenuItem(transformationManagerView)
         );
