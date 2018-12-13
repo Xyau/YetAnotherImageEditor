@@ -6,6 +6,7 @@ import backend.image.AnormalizedImage;
 import backend.image.DenormalizedImage;
 import backend.image.Matrix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HaarCascadeUtils {
@@ -17,21 +18,27 @@ public class HaarCascadeUtils {
         return ColorUtils.substractColors(sum,resta);
     }
 
-    public static void isThereAFaceInImage(AnormalizedImage anormalizedImage){
+    public static List<ScaledRectangle> isThereAFaceInImage(AnormalizedImage anormalizedImage){
         List<Stage> stages = FileUtils.loadStages();
+        List<ScaledRectangle> faces = new ArrayList<>();
         Integer height = 24, width = 24;
-        Matrix integral = getIntegralMatrix(anormalizedImage);
+        Matrix integral =  getIntegralMatrix(anormalizedImage);
+        System.out.println("Image h:" + integral.getHeight() + " w:" + integral.getWidth());
 
-        for (Double scale = 1.0; scale*width < anormalizedImage.getWidth(); scale*=1.5) {
-            for (int i = 0; i < anormalizedImage.getWidth() - width * scale; i++) {
-                for (int j = 0; j < anormalizedImage.getHeight() - height * scale; j++) {
+        for (Double scale = 3.0; scale*width < anormalizedImage.getWidth(); scale*=1.5) {
+            Integer scaledHeight = Math.toIntExact(Math.round(height * scale));
+            Integer scaledWidth = Math.toIntExact(Math.round(width * scale));
+            for (int i = 0; i < anormalizedImage.getWidth() - scaledWidth -1; i++) {
+                for (int j = 0; j < anormalizedImage.getHeight() - scaledHeight -1; j++) {
 //                    System.out.println("Evaluating Scale: " + scale + " xOffset: " + i + " yOffset:" + j);
                     if(isThereAFaceInWindow(integral,stages,i,j,scale)){
+                        faces.add(new ScaledRectangle(new Rectangle(0,0,width,height,0.0),scale,i,j));
                         System.out.println("Face found! Scale: " + scale + " xOffset: " + i + " yOffset:" + j);
                     }
                 }
             }
         }
+        return faces;
     }
 
     public static Boolean isThereAFaceInWindow(Matrix integral, List<Stage> stages, Integer xOffset, Integer yOffset, Double scale){
@@ -48,12 +55,12 @@ public class HaarCascadeUtils {
         Double evaluatedStage = stage.getClassifiers().stream()
                 .mapToDouble( classifierValue -> classifierEvaluator(integral,classifierValue,xOffset,yOffset,scale))
                 .sum();
-        return evaluatedStage < stage.getStageThreshold();
+        return evaluatedStage < stage.getStageThreshold() * 1.25;
     }
 
     public static Double classifierEvaluator(Matrix integral, Classifier classifier, Integer xOffset, Integer yOffset, Double scale){
         Double evaluatedValue = featureEvaluator(integral, classifier.getFeature(),xOffset,yOffset,scale);
-        return evaluatedValue < classifier.getFeatureThreshold()? classifier.getThresholdPassWeight(): classifier.getThresholdFailWeight();
+        return evaluatedValue < classifier.getFeatureThreshold()? (classifier.getThresholdPassWeight()): (classifier.getThresholdFailWeight());
     }
 
     public static Double featureEvaluator(Matrix integral, Feature feature, Integer xOffset, Integer yOffset, Double scale){
